@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nutrición Parenteral en Adultos: Indicaciones, Recomendaciones y Calculadora</title>
+<style>
+  :root{
+    --bg:#0c1b2a;
+    --card:#122638;
+    --accent:#36c2b4;
+    --accent-2:#7ad9cf;
+    --text:#e8f1f5;
+    --muted:#a9c2cf;
+    --warn:#ffcc00;
+    --danger:#ff5c5c;
+    --ok:#3ddc97;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    background:linear-gradient(180deg, #0a1724 0%, var(--bg) 100%);
+    color:var(--text);
+    line-height:1.6;
+  }
+  header{
+    padding:28px 20px 10px;
+    text-align:center;
+  }
+  header h1{
+    margin:0 0 8px 0;
+    font-size:clamp(1.6rem, 2.4vw, 2.4rem);
+    letter-spacing:.2px;
+  }
+  header p{margin:0;color:var(--muted)}
+  .container{max-width:1100px;margin:20px auto;padding:0 16px 40px}
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(12,1fr);
+    gap:18px;
+  }
+  .card{
+    background:linear-gradient(180deg, #102233 0%, var(--card) 100%);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:14px;
+    padding:18px 18px 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  }
+  h2{
+    margin-top:0;
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    color:var(--accent-2);
+  }
+  h3{
+    margin:.8rem 0 .4rem;
+    font-size: clamp(1.0rem, 1.6vw, 1.2rem);
+    color:var(--accent);
+  }
+  ul{padding-left:20px;margin:.4rem 0 1rem}
+  li{margin:.3rem 0}
+  .kpi{
+    display:flex;gap:12px;flex-wrap:wrap;margin:.6rem 0 0
+  }
+  .pill{
+    background:rgba(122,217,207,.12);
+    border:1px solid rgba(122,217,207,.35);
+    color:var(--accent-2);
+    border-radius:999px;
+    padding:8px 12px;
+    font-size:.92rem;
+  }
+  .col-7{grid-column:span 7}
+  .col-5{grid-column:span 5}
+  .col-12{grid-column:span 12}
+  @media (max-width: 920px){
+    .col-7,.col-5{grid-column:span 12}
+  }
+  .calc{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:14px;
+    margin-top:8px;
+  }
+  .calc label{display:block;font-weight:600;color:var(--accent-2);margin-bottom:6px}
+  .calc input, .calc select{
+    width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.1);
+    background:#0d2132;color:var(--text);outline:none;
+  }
+  .btn{
+    margin-top:8px;
+    display:inline-block;
+    background:linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+    color:#0b1a26;border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer
+  }
+  .out{
+    margin-top:10px;
+    background:#0b1d2b;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px
+  }
+  .out table{width:100%;border-collapse:collapse}
+  .out th,.out td{padding:8px 8px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
+  .tag{font-weight:700}
+  .warn{color:var(--warn)}
+  .danger{color:var(--danger)}
+  .ok{color:var(--ok)}
+  .ref{
+    font-size:.95rem;color:var(--muted)
+  }
+  .ref a{color:var(--accent-2);text-decoration:underline}
+  .note{font-size:.92rem;color:var(--muted);margin-top:6px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Nutrición Parenteral (NP) en adultos: indicaciones, recomendaciones y calculadora</h1>
+  <p>Resumen práctico basado en guías ESPEN/ASPEN y literatura reciente. Incluye herramienta de cálculo a partir de kcal/kg.</p>
+</header>
+
+<div class="container">
+  <div class="grid">
+    <section class="card col-7">
+      <h2>Indicaciones principales de NP</h2>
+      <ul>
+        <li><strong>Fallo intestinal</strong> agudo o crónico cuando la vía oral/enteral no es posible o es insuficiente: <em>síndrome de intestino corto, fístulas de alto débito, obstrucción mecánica, discontinuidad intestinal, dismotilidad grave, extensa enteropatía mucosal</em>.</li>
+        <li><strong>Contraindicación o fracaso de la nutrición enteral</strong>: obstrucción/íleo prolongado, isquemia mesentérica, imposibilidad de acceso enteral.</li>
+        <li><strong>UCI</strong>: NP <em>suplementaria</em> cuando con EN no se alcanza &gt;60–70% del gasto energético previsto/medido tras 3–7 días.</li>
+        <li><strong>Posoperatorio</strong>: cuando no se prevé cubrir los requerimientos por VO/EN en ~7–10 días (o antes si desnutrición/riesgo nutricional alto).</li>
+      </ul>
+      <div class="kpi">
+        <span class="pill">Priorizar siempre la vía enteral cuando sea viable</span>
+        <span class="pill">Valorar riesgo de síndrome de realimentación</span>
+      </div>
+    </section>
+
+    <section class="card col-5">
+      <h2>Complicaciones y monitorización</h2>
+      <h3>Infecciosas y mecánicas</h3>
+      <ul>
+        <li>Bacteriemia relacionada con catéter, colonización, trombosis/oclusiones del acceso venoso.</li>
+      </ul>
+      <h3>Metabólicas</h3>
+      <ul>
+        <li>Hiperglucemia/hipoglucemia; alteraciones de Na/K/Mg/P; <strong>síndrome de realimentación</strong> (hipofosfatemia, déficit de tiamina).</li>
+        <li>Hipertrigliceridemia: considerar reducir/suspender lípidos si TG persistente &gt;400&nbsp;mg/dL (4.5&nbsp;mmol/L).</li>
+        <li>Hepáticas: esteatosis, colestasis/IFALD; enfermedad ósea metabólica a largo plazo.</li>
+      </ul>
+    </section>
+
+    <section class="card col-12">
+      <h2>Requerimientos energéticos y macronutrientes (adulto hospitalizado)</h2>
+      <div class="grid">
+        <div class="col-7">
+          <h3>Energía</h3>
+          <ul>
+            <li>Estimación habitual: <strong>25–35&nbsp;kcal/kg/día</strong> en hospitalización general.</li>
+            <li>UCI: titular hacia 70–100% del gasto energético (indirecta si disponible); usar aproximaciones si no se mide.</li>
+          </ul>
+          <h3>Proteínas (aminoácidos)</h3>
+          <ul>
+            <li>Hospitalización general: <strong>1.2–1.5&nbsp;g/kg/día</strong>.</li>
+            <li>UCI: objetivo <strong>≈1.3&nbsp;g/kg/día</strong>, progresivo.</li>
+          </ul>
+          <h3>Carbohidratos (dextrosa)</h3>
+          <ul>
+            <li>Factor energético: <strong>3.4&nbsp;kcal/g</strong>.</li>
+            <li><strong>No superar 5&nbsp;mg/kg/min</strong> (preferible ≤4) para minimizar hígado graso e hiperglucemia.</li>
+          </ul>
+          <h3>Lípidos (emulsiones intravenosas, ILE)</h3>
+          <ul>
+            <li>Dosis total habitual: <strong>0.7–1.3&nbsp;g/kg/día</strong>; <strong>máximo 1.5&nbsp;g/kg/día</strong> (incluir fuentes no nutritivas como propofol).</li>
+            <li>Monitorizar TG y función hepática; adaptar a tolerancia individual.</li>
+          </ul>
+          <p class="note">Factores energéticos usados en PN: aminoácidos 4&nbsp;kcal/g; dextrosa 3.4&nbsp;kcal/g; lípidos ILE 10&nbsp;kcal/g (20% ≈ 2&nbsp;kcal/mL).</p>
+        </div>
+        <div class="col-5">
+          <h3>Novedades en emulsiones lipídicas (SMOF y FO-ILE)</h3>
+          <ul>
+            <li><strong>SMOFlipid&reg; 20%</strong>: mezcla de <em>soja&nbsp;30%, MCT&nbsp;30%, oliva&nbsp;25%, pescado&nbsp;15%</em> (≈6/6/5/3&nbsp;g por 100&nbsp;mL); <strong>2&nbsp;kcal/mL</strong>.</li>
+            <li>En adultos hospitalizados, las ILE con omega-3 (FO-ILE, p.ej., SMOF) muestran <strong>mejoras de marcadores hepáticos y TG</strong> y <strong>estancias más cortas</strong> vs. emulsiones sin FO en metaanálisis.</li>
+            <li>Consensos recientes recomiendan en adultos <strong>FO 0.1–0.2&nbsp;g/kg/día</strong> dentro de la dosis lipídica total (≤1.5&nbsp;g/kg/día).</li>
+            <li>Las mezclas con soja/oliva/MCT/pescado <strong>no se asocian a déficit de ácidos grasos esenciales</strong> a dosis recomendadas.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card col-12">
+      <h2>Calculadora de NP a partir de kcal/kg</h2>
+      <div class="calc">
+        <div>
+          <label for="peso">Peso (kg)</label>
+          <input id="peso" type="number" min="20" step="0.1" value="70">
+        </div>
+        <div>
+          <label for="kcalkg">Objetivo energético (kcal/kg/día)</label>
+          <input id="kcalkg" type="number" min="10" step="0.5" value="30">
+        </div>
+        <div>
+          <label for="protkg">Proteína (g/kg/día)</label>
+          <input id="protkg" type="number" min="0.6" step="0.1" value="1.2">
+        </div>
+        <div>
+          <label for="lipkg">Lípidos (g/kg/día)</label>
+          <input id="lipkg" type="number" min="0.5" step="0.1" value="1.0">
+        </div>
+      </div>
+      <button class="btn" onclick="calc()">Calcular</button>
+      <div id="out" class="out" aria-live="polite"></div>
+      <p class="note">Cálculo: la dextrosa <em>ajusta el remanente calórico</em> tras proteína y lípidos. La herramienta avisa si la GIR supera 5&nbsp;mg/kg/min o si los lípidos exceden 1.5&nbsp;g/kg/día.</p>
+    </section>
+
+    <section class="card col-12">
+      <h2>Referencias clave</h2>
+      <ol class="ref">
+        <li>ESPEN Clinical Nutrition in the ICU (Singer <em>et&nbsp;al</em>, 2023): proteína ≈1.3&nbsp;g/kg/d y GIR ≤5&nbsp;mg/kg/min; lípidos ≤1.5&nbsp;g/kg/d. <a href="https://www.clinicalnutritionjournal.com/article/S0261-5614(23)00230-3/fulltext" target="_blank" rel="noopener">Acceso</a></li>
+        <li>ESPEN Hospital Nutrition (Thibault <em>et&nbsp;al</em>, 2021): energía 25–35&nbsp;kcal/kg/d y proteína 1.2–1.5&nbsp;g/kg/d. <a href="https://www.espen.org/files/ESPEN-Guidelines/ESPEN_guideline_on_hospital_nutrition.pdf" target="_blank" rel="noopener">Acceso</a></li>
+        <li>StatPearls TPN (Hamdan &amp; Gumpeni, 2023): evitar GIR &gt;5&nbsp;mg/kg/min por riesgo de hígado graso. <a href="https://www.ncbi.nlm.nih.gov/books/NBK559036/" target="_blank" rel="noopener">Acceso</a></li>
+        <li>ESPEN CIF crónica (Cuerda/Pironi <em>et&nbsp;al</em>, 2021–2023): indicaciones en fallo intestinal y monitorización. <a href="https://www.espen.org/files/ESPEN-Guidelines/ESPEN_practical_guideline_Clinical_nutrition_in_chronic_intestinal_failure.pdf" target="_blank" rel="noopener">Acceso</a></li>
+        <li>SMOFlipid&reg; 20% Ficha técnica (FDA/PI): composición 6/6/5/3&nbsp;g por 100&nbsp;mL; 2&nbsp;kcal/mL. <a href="https://www.accessdata.fda.gov/drugsatfda_docs/label/2022/207648s005lbl.pdf" target="_blank" rel="noopener">Acceso</a></li>
+        <li>Metaanálisis SMOF en adultos (Xu <em>et&nbsp;al</em>, Nutr Res 2021): ↓enzimas hepáticas, ↓TG y ↓estancia. <a href="https://pubmed.ncbi.nlm.nih.gov/34157593/" target="_blank" rel="noopener">Acceso</a></li>
+        <li>Consenso 2024–2025 sobre ILE (Stoppe 2024; Martindale 2025): FO-ILE hasta 1.5&nbsp;g/kg/d; FO 0.1–0.2&nbsp;g/kg/d; TG objetivo &lt;400&nbsp;mg/dL. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11321210/" target="_blank" rel="noopener">Acceso 1</a> · <a href="https://www.clinicalnutritionopenscience.com/article/S2667-2685(25)00004-X/fulltext" target="_blank" rel="noopener">Acceso 2</a></li>
+        <li>Revisión PN en adultos (Berlana <em>et&nbsp;al</em>, 2022): complicaciones (metabólicas, infecciosas, mecánicas). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9659055/" target="_blank" rel="noopener">Acceso</a></li>
+      </ol>
+    </section>
+  </div>
+</div>
+
+<script>
+function fmt(n){return Number(n).toLocaleString('es-ES',{maximumFractionDigits:1})}
+function calc(){
+  const peso = parseFloat(document.getElementById('peso').value||0);
+  const kcalkg = parseFloat(document.getElementById('kcalkg').value||0);
+  const protkg = parseFloat(document.getElementById('protkg').value||0);
+  const lipkg = parseFloat(document.getElementById('lipkg').value||0);
+  const total_kcal = peso * kcalkg;
+
+  const prot_g = peso * protkg;
+  const prot_kcal = prot_g * 4;
+
+  const lip_g = peso * lipkg;
+  const lip_kcal = lip_g * 10; // ILE 10 kcal/g (≈2 kcal/mL en 20%)
+
+  let rem_kcal = total_kcal - (prot_kcal + lip_kcal);
+  let carb_g = rem_kcal > 0 ? rem_kcal / 3.4 : 0;
+  let carb_kcal = carb_g * 3.4;
+
+  const gir = (carb_g * 1000) / (peso * 1440); // mg/kg/min
+
+  const non_protein_kcal = total_kcal - prot_kcal;
+  const lipid_np_share = non_protein_kcal > 0 ? (lip_kcal/non_protein_kcal)*100 : 0;
+
+  const ile_ml_20 = lip_g/0.2; // 20% => 0.2 g/mL
+  const ile_kcal_via_ml = ile_ml_20 * 2; // 2 kcal/mL
+
+  const warn_lip = lipkg > 1.5;
+  const warn_gir = gir > 5;
+  const near_gir = gir > 4 && gir <= 5;
+  const neg_rem = rem_kcal < 0;
+
+  let rows = `
+  <table>
+    <tr><th>Parámetro</th><th>Resultado</th></tr>
+    <tr><td class="tag">Energía total</td><td>${fmt(total_kcal)} kcal/d</td></tr>
+    <tr><td class="tag">Proteína</td><td>${fmt(prot_g)} g/d (${fmt(prot_kcal)} kcal)</td></tr>
+    <tr><td class="tag">Lípidos</td><td>${fmt(lip_g)} g/d (${fmt(lip_kcal)} kcal) · Volumen 20% ≈ ${fmt(ile_ml_20)} mL/d (${fmt(ile_kcal_via_ml)} kcal)</td></tr>
+    <tr><td class="tag">Carbohidratos (dextrosa)</td><td>${fmt(carb_g)} g/d (${fmt(carb_kcal)} kcal)</td></tr>
+    <tr><td class="tag">GIR estimada</td><td>${gir.toFixed(2)} mg/kg/min</td></tr>
+    <tr><td class="tag">% kcal no proteicas desde lípidos</td><td>${lipid_np_share.toFixed(0)}%</td></tr>
+  </table>
+  `;
+
+  let alerts = [];
+  if(neg_rem){
+    alerts.push('<span class="danger">El objetivo calórico no cubre proteína+lípidos seleccionados (remanente negativo). Disminuya g/kg de proteína y/o lípidos o aumente kcal/kg.</span>');
+  }
+  if(warn_lip){
+    alerts.push('<span class="danger">Lípidos &gt;1.5 g/kg/d: reduzca dosis total de ILE (incluya propofol si aplica).</span>');
+  }
+  if(warn_gir){
+    alerts.push('<span class="danger">GIR &gt;5 mg/kg/min: reduzca carbohidratos o aumente la fracción de lípidos.</span>');
+  } else if(near_gir){
+    alerts.push('<span class="warn">GIR &gt;4 mg/kg/min: cercano al umbral superior recomendado.</span>');
+  } else {
+    alerts.push('<span class="ok">GIR dentro de límites recomendados (≤5 mg/kg/min).</span>');
+  }
+
+  document.getElementById('out').innerHTML = rows + '<div style="margin-top:8px">'+alerts.join('<br>')+'</div>';
+}
+</script>
+</body>
+</html>
