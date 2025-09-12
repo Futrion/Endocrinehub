@@ -1,31 +1,56 @@
+
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
-  background: #f7f7f7;
+  background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
   margin: 0;
   color: #222;
 }
+
 nav {
   background: #0077b6;
-  padding: 1em;
+  padding: 1em 2em;
   display: flex;
   gap: 2em;
+  border-bottom: 2px solid #90e0ef;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 nav a {
   color: #fff;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
 }
 nav a:hover {
-  text-decoration: underline;
+  color: #90e0ef;
 }
+
 main {
-  max-width: 700px;
+  max-width: 800px;
   margin: 2em auto;
   background: #fff;
-  padding: 2em;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 2.5em 2em;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
 }
+
+h1, h2, h3 {
+  color: #0077b6;
+  margin-top: 0.5em;
+}
+
+ul, ol {
+  margin-left: 1.5em;
+}
+
+section {
+  background: #f1f8ff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,119,182,0.07);
+  padding: 1.5em 1em;
+  margin-bottom: 2em;
+}
+
 form label {
   display: block;
   margin: 1em 0 0.5em;
@@ -33,15 +58,45 @@ form label {
 input, select, button {
   padding: 0.5em;
   margin-right: 1em;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+  border-radius: 6px;
+  border: 1px solid #90e0ef;
+  font-size: 1em;
+}
+input:focus, select:focus {
+  outline: 2px solid #0077b6;
 }
 button {
-  background: #0077b6;
+  background: linear-gradient(90deg, #0077b6 60%, #90e0ef 100%);
   color: #fff;
   border: none;
   cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0,119,182,0.07);
+  transition: background 0.2s;
 }
 button:hover {
-  background: #023e8a;
+  background: linear-gradient(90deg, #023e8a 60%, #90e0ef 100%);
+}
+
+/* Menú de apuntes anidado */
+ul ul {
+  background: #e0eafc;
+  border-radius: 8px;
+  margin-top: 0.5em;
+  padding: 0.5em 1em;
+  box-shadow: 0 1px 4px rgba(0,119,182,0.04);
+}
+ul li {
+  margin-bottom: 0.7em;
+}
+
+@media (max-width: 600px) {
+  nav {
+    flex-direction: column;
+    gap: 1em;
+    padding: 1em;
+  }
+  main {
+    padding: 1em 0.5em;
+  }
 }
