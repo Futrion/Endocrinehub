@@ -39,6 +39,25 @@ h1, h2, h3 {
   margin-top: 0.5em;
 }
 
+.full-width {
+  max-width: 100%;
+  height: auto;
+}
+
+.contenedor {
+  display: flex;
+  align-items: center;
+  gap: 2em;
+}
+
+.texto {
+  flex: 1;
+}
+
+.imagen {
+  flex: 1;
+}
+
 ul, ol {
   margin-left: 1.5em;
 }
@@ -98,5 +117,8 @@ ul li {
   }
   main {
     padding: 1em 0.5em;
+  }
+  .contenedor {
+    flex-direction: column;
   }
 }
