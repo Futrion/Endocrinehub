@@ -3,13 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<nav>
-    <a href="index.html">Inicio</a>
-    <a href="herramientas.html">Herramientas</a>
-    <a href="apuntes/index.html">Apuntes</a>
-    <a href="prueba.html">Calculadora osmolaridad NPT</a>
-  </nav>
 <title>Calculadora de Osmolaridad PN & Producto Ca–P</title>
+<link rel="stylesheet" href="style.css">
 <style>
   :root { --ok:#1b9e3f; --warn:#e6a700; --bad:#c62828; --muted:#666; }
   body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 2rem; }
@@ -35,6 +30,13 @@
 </style>
 </head>
 <body>
+  <nav>
+    <a href="index.html">Inicio</a>
+    <a href="herramientas.html">Herramientas</a>
+    <a href="apuntes/index.html">Apuntes</a>
+    <a href="prueba.html">Calculadora osmolaridad NPT</a>
+  </nav>
+  <main>
   <h1>Calculadora de Osmolaridad de PN y Producto Calcio–Fosfato</h1>
   <p class="small">Introduce electrolitos en <b>mEq</b> (Na, K, Ca, Mg), <b>Fosfato</b> en <b>mmol</b>, y el <b>volumen total</b> del bolso (mL). Puedes añadir (opcional) los gramos totales de <b>glucosa</b> y <b>aminoácidos</b> de la PN.</p>
 
@@ -254,5 +256,6 @@
   });
 })();
 </script>
+  </main>
 </body>
 </html>
