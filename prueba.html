@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<nav>
+    <a href="index.html">Inicio</a>
+    <a href="herramientas.html">Herramientas</a>
+    <a href="apuntes/index.html">Apuntes</a>
+    <a href="prueba.html">Calculadora osmolaridad NPT</a>
+  </nav>
+<title>Calculadora de Osmolaridad PN & Producto Ca–P</title>
+<style>
+  :root { --ok:#1b9e3f; --warn:#e6a700; --bad:#c62828; --muted:#666; }
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 2rem; }
+  h1 { font-size: 1.4rem; margin-bottom: .5rem; }
+  .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); }
+  .card { border: 1px solid #ddd; border-radius: 10px; padding: 1rem; }
+  label { display:block; font-size:.93rem; margin:.35rem 0 .25rem; }
+  input, select { width:100%; padding:.6rem; border:1px solid #ccc; border-radius:8px; font-size:1rem; }
+  .hint { font-size:.85rem; color:var(--muted); }
+  .row { display:flex; gap:.75rem; align-items:center; flex-wrap: wrap;}
+  .btn { cursor:pointer; padding:.7rem 1rem; border-radius:8px; border:1px solid #ccc; background:#f7f7f7; }
+  .btn:hover { background:#efefef; }
+  .results { margin-top:1rem; }
+  .badge { display:inline-block; padding:.25rem .6rem; border-radius:999px; font-size:.82rem; }
+  .ok { background:#e8f5ee; color:var(--ok); border:1px solid var(--ok); }
+  .warn { background:#fff7e6; color:var(--warn); border:1px solid var(--warn); }
+  .bad { background:#fdecea; color:var(--bad); border:1px solid var(--bad); }
+  table { width:100%; border-collapse: collapse; margin-top:.5rem;}
+  th, td { border:1px solid #eee; padding:.6rem; text-align:right; }
+  th { background:#fafafa; text-align:left; }
+  .small { font-size:.9rem; color:var(--muted); }
+  .footnote { margin-top:1rem; font-size:.85rem; color:#444; }
+</style>
+</head>
+<body>
+  <h1>Calculadora de Osmolaridad de PN y Producto Calcio–Fosfato</h1>
+  <p class="small">Introduce electrolitos en <b>mEq</b> (Na, K, Ca, Mg), <b>Fosfato</b> en <b>mmol</b>, y el <b>volumen total</b> del bolso (mL). Puedes añadir (opcional) los gramos totales de <b>glucosa</b> y <b>aminoácidos</b> de la PN.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h2 style="font-size:1.1rem;margin-top:0">Electrolitos (totales por bolso)</h2>
+      <label for="na">Sodio (Na), mEq</label>
+      <input id="na" type="number" min="0" step="0.1" placeholder="p. ej., 70" />
+      <label for="k">Potasio (K), mEq</label>
+      <input id="k" type="number" min="0" step="0.1" placeholder="p. ej., 50" />
+      <label for="ca">Calcio (Ca), mEq</label>
+      <input id="ca" type="number" min="0" step="0.1" placeholder="p. ej., 10" />
+      <label for="mg">Magnesio (Mg), mEq</label>
+      <input id="mg" type="number" min="0" step="0.1" placeholder="p. ej., 8" />
+      <label for="p">Fosfato (PO₄), mmol</label>
+      <input id="p" type="number" min="0" step="0.1" placeholder="p. ej., 20 (mmol)" />
+      <label for="pType">Tipo de fosfato</label>
+      <select id="pType">
+        <option value="inorg">Inorgánico (Na/K fosfato)</option>
+        <option value="glic">Glicerofosfato (orgánico)</option>
+      </select>
+    </div>
+
+    <div class="card">
+      <h2 style="font-size:1.1rem;margin-top:0">Composición opcional</h2>
+      <label for="dex">Glucosa total (g) — opcional</label>
+      <input id="dex" type="number" min="0" step="1" placeholder="p. ej., 190" />
+      <label for="aa">Aminoácidos totales (g) — opcional</label>
+      <input id="aa" type="number" min="0" step="1" placeholder="p. ej., 70" />
+      <p class="hint">Reglas de bolsillo: Glucosa ≈ 5 mOsm/g/L; AA ≈ 10 mOsm/g/L; Lípidos ≈ 0 mOsm.</p>
+    </div>
+
+    <div class="card">
+      <h2 style="font-size:1.1rem;margin-top:0">Volumen y vía</h2>
+      <label for="vol">Volumen total del bolso (mL)</label>
+      <input id="vol" type="number" min="1" step="1" placeholder="p. ej., 1200" />
+      <label for="route">Vía prevista</label>
+      <select id="route">
+        <option value="perif">Periférica (umbral 900 mOsm/L, orientativo)</option>
+        <option value="cent">Central (umbral 1800 mOsm/L, orientativo)</option>
+        <option value="custom">Personalizar umbral…</option>
+      </select>
+      <div id="customWrap" style="display:none;">
+        <label for="thres">Umbral de osmolaridad (mOsm/L)</label>
+        <input id="thres" type="number" min="100" step="10" value="900" />
+      </div>
+      <div class="row" style="margin-top:.75rem;">
+        <button class="btn" id="calcBtn">Calcular</button>
+        <button class="btn" id="resetBtn" type="button">Limpiar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="results" id="results" style="display:none;">
+    <h2 style="font-size:1.1rem;">Resultados</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Componente</th>
+          <th>mOsm/L</th>
+          <th class="small">Detalles</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Electrolitos (Na, K, Ca, Mg)</td>
+          <td id="elec_osm">—</td>
+          <td class="small" id="elec_det">—</td>
+        </tr>
+        <tr>
+          <td>Glucosa</td>
+          <td id="dex_osm">—</td>
+          <td class="small" id="dex_det">—</td>
+        </tr>
+        <tr>
+          <td>Aminoácidos</td>
+          <td id="aa_osm">—</td>
+          <td class="small" id="aa_det">—</td>
+        </tr>
+        <tr>
+          <th>Total estimado</th>
+          <th id="tot_osm">—</th>
+          <th></th>
+        </tr>
+      </tbody>
+    </table>
+
+    <p id="admit" style="margin-top:.5rem;"></p>
+
+    <h3 style="font-size:1.05rem;margin-top:1rem;">Producto Calcio–Fosfato</h3>
+    <table>
+      <tbody>
+        <tr>
+          <td style="text-align:left;">Ca (mEq/L)</td>
+          <td id="ca_per_l">—</td>
+        </tr>
+        <tr>
+          <td style="text-align:left;">Fosfato (mmol/L)</td>
+          <td id="p_per_l">—</td>
+        </tr>
+        <tr>
+          <th style="text-align:left;">Ca (mEq/L) × P (mmol/L)</th>
+          <th id="cap_prod">—</th>
+        </tr>
+      </tbody>
+    </table>
+    <p id="cap_flag" style="margin-top:.5rem;"></p>
+
+    <div class="footnote">
+      <p>⚠️ <b>Notas técnicas (cribado, no sustituyen curvas de solubilidad):</b> 
+        Osmolaridad estimada con reglas de bolsillo: Na/K ≈ 2 mOsm por mEq; Ca/Mg ≈ 1.5 mOsm por mEq; Glucosa ≈ 5 mOsm/g/L; AA ≈ 10 mOsm/g/L; Lípidos ≈ 0. 
+        Para evitar doble conteo, no sumo mOsm adicionales por el anión fosfato cuando se usa Na/K fosfato. 
+        La compatibilidad Ca–P depende de pH, %AA, T°, orden de mezcla, sal de Ca (gluconato &gt; cloruro) y tipo de fosfato (glicerofosfato &gt; inorgánico). Verifica con la documentación del fabricante/centro.
+      </p>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const $ = (id)=>document.getElementById(id);
+  const fmt = (x, d=1)=> isFinite(x) ? x.toFixed(d) : '—';
+
+  function getThreshold() {
+    const route = $('route').value;
+    if (route === 'perif') return 900;
+    if (route === 'cent') return 1800;
+    if (route === 'custom') return parseFloat($('thres').value) || 900;
+    return 900;
+  }
+
+  function classify(total, thr) {
+    if (!isFinite(total) || !isFinite(thr)) return '';
+    if (total <= 0) return '';
+    if (total <= 0.85*thr) return `<span class="badge ok">Dentro del umbral</span>`;
+    if (total <= thr) return `<span class="badge warn">Cerca del límite</span>`;
+    return `<span class="badge bad">Supera el umbral</span>`;
+  }
+
+  function capAdvice(prod, pType) {
+    // Semáforo ORIENTATIVO (no sustituye curvas)
+    // Inorgánico: <150 bajo riesgo; 150–300 precaución; >300 alto riesgo
+    // Glicerofosfato: umbrales más altos por mayor solubilidad (doble aprox.)
+    if (!isFinite(prod)) return '';
+    let low, mid;
+    if (pType === 'glic') { low = 300; mid = 600; }
+    else { low = 150; mid = 300; }
+    if (prod < low) return `<span class="badge ok">Riesgo bajo (orientativo)</span>`;
+    if (prod <= mid) return `<span class="badge warn">Precaución / confirmar en curvas</span>`;
+    return `<span class="badge bad">Alto riesgo de precipitado (confirmar)</span>`;
+  }
+
+  $('route').addEventListener('change', ()=>{
+    $('customWrap').style.display = ($('route').value === 'custom') ? 'block' : 'none';
+  });
+
+  $('resetBtn').addEventListener('click', ()=>{
+    ['na','k','ca','mg','p','dex','aa','vol','thres'].forEach(id=>{$(id).value='';});
+    $('route').value='perif'; $('pType').value='inorg';
+    $('customWrap').style.display='none';
+    $('results').style.display='none';
+  });
+
+  $('calcBtn').addEventListener('click', (e)=>{
+    e.preventDefault();
+    const na = parseFloat($('na').value) || 0;
+    const k  = parseFloat($('k').value)  || 0;
+    const ca = parseFloat($('ca').value) || 0;
+    const mg = parseFloat($('mg').value) || 0;
+    const p  = parseFloat($('p').value)  || 0; // mmol
+    const dex = parseFloat($('dex').value) || 0; // g
+    const aa  = parseFloat($('aa').value)  || 0; // g
+    const vol = parseFloat($('vol').value);
+
+    if (!vol || vol <= 0) { alert('Indica un volumen total válido (mL).'); return; }
+    const VL = vol / 1000; // litros
+
+    // mOsm ELECTROLITOS (por bolso) usando reglas de bolsillo para evitar doble conteo del anión fosfato:
+    // Na/K: ~2 mOsm por mEq (catión + anión); Ca/Mg: ~1.5 mOsm por mEq (catión + 2 aniones).
+    const elec_mOsm_bag = 2*(na + k) + 1.5*(ca + mg);
+    const elec_mOsm_L = elec_mOsm_bag / VL;
+
+    // mOsm GLUCOSA (por L) = 5 * gramos dextrosa por L
+    const dex_mOsm_L = (dex>0) ? (5 * (dex / VL)) : 0;
+
+    // mOsm AA (por L) = 10 * gramos AA por L
+    const aa_mOsm_L = (aa>0) ? (10 * (aa / VL)) : 0;
+
+    const total_mOsm_L = elec_mOsm_L + dex_mOsm_L + aa_mOsm_L;
+
+    // Producto Ca–P
+    const ca_per_L = ca / VL;    // mEq/L
+    const p_per_L  = p  / VL;    // mmol/L
+    const cap_prod = ca_per_L * p_per_L;
+
+    // Umbral & mensajes
+    const thr = getThreshold();
+    const status = classify(total_mOsm_L, thr);
+
+    $('elec_osm').textContent = fmt(elec_mOsm_L, 0);
+    $('elec_det').textContent = `Na+K: ${fmt(2*(na+k),0)} mOsm/bolso; Ca+Mg: ${fmt(1.5*(ca+mg),0)} mOsm/bolso`;
+    $('dex_osm').textContent = fmt(dex_mOsm_L, 0);
+    $('dex_det').textContent = dex>0 ? `${fmt(dex/VL,0)} g/L × 5` : '—';
+    $('aa_osm').textContent  = fmt(aa_mOsm_L, 0);
+    $('aa_det').textContent  = aa>0 ? `${fmt(aa/VL,0)} g/L × 10` : '—';
+    $('tot_osm').textContent = fmt(total_mOsm_L, 0);
+
+    const routeTxt = ($('route').value==='perif') ? 'periférica' : ($('route').value==='cent' ? 'central' : 'seleccionada');
+    $('admit').innerHTML = `Osmolaridad estimada: <b>${fmt(total_mOsm_L,0)} mOsm/L</b> (umbral ${fmt(thr,0)} para vía ${routeTxt}) ${status}`;
+
+    $('ca_per_l').textContent  = fmt(ca_per_L,1);
+    $('p_per_l').textContent   = fmt(p_per_L,1);
+    $('cap_prod').textContent  = isFinite(cap_prod) ? fmt(cap_prod,1) : '—';
+    $('cap_flag').innerHTML    = capAdvice(cap_prod, $('pType').value);
+
+    $('results').style.display = 'block';
+  });
+})();
+</script>
+</body>
+</html>
