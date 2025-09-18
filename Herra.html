@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Requerimientos nutricionales</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav>
+    <a href="index.html">Inicio</a>
+    <a href="herramientas.html">Herramientas</a>
+    <a href="apuntes/index.html">Apuntes</a>
+    <a href="prueba.html">Calculadora osmolaridad NPT</a>
+  </nav>
+  <main>
+    <div class="container">
+        <div class="header">
+            <h1>Calculadora Nutricional</h1>
+        </div>
+        <div class="main-content">    
+            <form id="calculatorForm">
+                <label for="genero">Genero:</label>
+                <select id="genero" name="Genero">
+                    <option value="mujer">Mujer</option>
+                    <option value="hombre">Hombre</option>
+                </select><br><br>
+        
+                <label for="edad">Edad:</label>
+                <input type="number" step="1" id="edad" required><br><br>
+    
+                <label for="pesoHabitual">Peso habitual (kg):</label>
+                <input type="number" id="pesoHabitual" required><br><br>
+        
+                <label for="pesoActual">Peso actual (kg):</label>
+                <input type="number" id="pesoActual" required><br><br>
+        
+                <label for="talla">Talla (cm):</label>
+                <input type="number" step="1" id="talla" required><br><br>
+        
+                <label for="servicio">Servicio:</label>
+                <input type="text" id="servicio" placeholder="ej: UCI" required><br><br>
+        
+                <input type="button" value="Calcular" onclick="calcular()">
+            </form>
+        </div>
+        <div class="main-content" id="resultados"></div>
+    </div>
+    <script>
+        function calcular() {
+
+            // Constantes Aporte
+            let duraciones = [12, 16, 20];
+            let tasasGlucosa = [5, 6];
+            let tasaLipidos = 0.11;
+            let resultadoAporte = '';
+            let pesoCalculo = '';
+            let imcCorte = 30;
+
+            //Parámetros
+            const genero = document.getElementById('genero').value
+            const edad = parseFloat(document.getElementById('edad').value);
+            const servicio = document.getElementById('servicio').value;
+            const pesoHabitual = parseFloat(document.getElementById('pesoHabitual').value);
+            const pesoActual = parseFloat(document.getElementById('pesoActual').value);
+            const tallaM = parseFloat(document.getElementById('talla').value)/100;
+            const tallaCM = parseFloat(document.getElementById('talla').value);
+
+            // Validación de Parámetros
+            if (isNaN(pesoActual) || pesoActual <= 0) {
+                alert('Por favor, introduce un peso actual v\u00e1lido en kg.');
+                return;
+            }
+
+            // Cálculo del IMC
+            let imc = pesoActual / (tallaM * tallaM);
+
+            // Cálculo del % de pérdida de peso
+            let perdidaPeso = ((pesoHabitual - pesoActual) / pesoHabitual) * 100;
+
+            //Cálculo del Peso Ideal
+            let pesoIdeal = calcularPesoIdeal(tallaCM, genero);
+            let pesoAjustado = calcularPesoAjustado(pesoActual, tallaCM, genero);
+
+            if (imc >= imcCorte) {
+                pesoCalculo = pesoAjustado
+            } else {
+                pesoCalculo = pesoActual
+            }
+
+            // Cálculo de los requerimientos energéticos
+            const requerimientosEnergeticos = {
+                kcal20: 20 * pesoCalculo,
+                kcal25: 25 * pesoCalculo,
+                kcal30: 30 * pesoCalculo
+            };
+
+            // Cálculo de los requerimientos proteicos
+            const requerimientosProteicos = {
+                proteina1_1: 1.0 * pesoCalculo,
+                proteina1_2: 1.2 * pesoCalculo,
+                proteina1_3: 1.3 * pesoCalculo,
+                proteina1_5: 1.5 * pesoCalculo
+            };
+
+            // Cálculo de todas las tasas de aporte
+            duraciones.forEach(duracion => {
+                tasasGlucosa.forEach(tasa => {
+                    let aporteGlucosa = calcularAporteMaximo(pesoActual, tasa, duracion, true);
+                    resultadoAporte += `<p>Para glucosa a ${tasa} mg/kg/min, en ${duracion} horas: ${aporteGlucosa.toFixed(2)} g</p>`;
+                });
+                let aporteLipidos = calcularAporteMaximo(pesoActual, tasaLipidos, duracion, false);
+                resultadoAporte += `<p>Para l&iacutepidos a ${tasaLipidos} g/kg/h, en ${duracion} horas: ${aporteLipidos.toFixed(2)} g</p>`;
+                resultadoAporte += `<p>-</p>`
+            });
+
+            // Mostrar resultados
+            const resultadosDiv = document.getElementById('resultados');
+            resultadosDiv.innerHTML = `
+                <h3>Resultados:</h3>
+                <p>IMC: ${imc.toFixed(2)} kg/m2 (Corte IMC ${imcCorte.toFixed(2)})</p>
+            `;
+            if (imc >= imcCorte) {
+                resultadosDiv.innerHTML += `
+                    <p>Peso Ideal: ${pesoIdeal.toFixed(2)} kg</p>
+                    <p>Peso Ajustado: ${pesoAjustado.toFixed(2)} kg</p>
+                    <p>Peso C&aacute;lculo: ${pesoCalculo.toFixed(2)} kg</p>
+                `;          
+            }      
+            resultadosDiv.innerHTML += `
+                <p>% de p&eacute;rdida de peso: ${perdidaPeso.toFixed(2)}%</p>
+                <p>Requerimientos energ&eacute;ticos:</p>
+                <ul>
+                    <li>20 kcal/kg: ${requerimientosEnergeticos.kcal20.toFixed(0)} kcal</li>
+                    <li>25 kcal/kg: ${requerimientosEnergeticos.kcal25.toFixed(0)} kcal</li>
+                    <li>30 kcal/kg: ${requerimientosEnergeticos.kcal30.toFixed(0)} kcal</li>
+                </ul>
+                <p>Requerimientos proteicos:</p>
+                <ul>
+                    <li>1.2 g prote&iacute;na/kg: ${requerimientosProteicos.proteina1_2.toFixed(1)} g</li>
+                    <li>1.3 g prote&iacute;na/kg: ${requerimientosProteicos.proteina1_3.toFixed(1)} g</li>
+                    <li>1.5 g prote&iacute;na/kg: ${requerimientosProteicos.proteina1_5.toFixed(1)} g</li>
+                </ul>
+                <h3>Resumen:</h3>
+                <p>NUTRICI&Oacute;N</p>
+                <p>Solicit&aacuten apoyo nutricional en ${genero} de ${edad.toFixed(0)} a&ntilde;os que ingresa a ${servicio} por:</p>
+                <p>Valoraci&oacute;n Estado Nutricional:</p>
+            `;         
+            if (imc >= imcCorte) {       
+                resultadosDiv.innerHTML += `
+                    <p>Peso habitual: ${pesoHabitual.toFixed(1)} kg - Peso actual: ${pesoActual.toFixed(1)} kg - Talla: ${tallaM.toFixed(2)} m - IMC: ${imc.toFixed(2)} - Peso ajustado: ${pesoAjustado.toFixed(1)} kg - % de p&eacute;rdida de peso: ${perdidaPeso.toFixed(2)}%</p>
+                `;
+            } else {
+                resultadosDiv.innerHTML += `
+                    <p>Peso habitual: ${pesoHabitual.toFixed(1)} kg - Peso actual: ${pesoActual.toFixed(1)} kg - Talla: ${tallaM.toFixed(2)} m - IMC: ${imc.toFixed(2)} - % de p&eacute;rdida de peso: ${perdidaPeso.toFixed(2)}%</p>
+                `;
+            }               
+            resultadosDiv.innerHTML += `                
+                <p>Requerimientos: 25 kcal/kg: ${requerimientosEnergeticos.kcal25.toFixed(0)} kcal - 1.2 g prote&iacute;na/kg: ${requerimientosProteicos.proteina1_2.toFixed(1)} g</p>
+                <p>Jucio cl&iacute;nico:</p>
+                <p>Plan:</p>
+
+                <h3>Tasa M&aacute;xima de Infusi&oacute;n ${pesoActual.toFixed(1)} kg:</h3>
+                ${resultadoAporte}
+            `;
+        }
+
+        // Función para calcular el aporte máximo
+        function calcularAporteMaximo(pesoKg, tasa, duracionHoras, esGlucosa) {
+            let tasaPorHora = esGlucosa ? tasa * 60 : tasa; // Si es glucosa, convertir a mg/hora
+            let totalEnMg = tasaPorHora * pesoKg * duracionHoras;
+            
+            if (esGlucosa) {
+                // Convertir de mg a g
+                return totalEnMg / 1000;
+            } else {
+                // Para lípidos, ya está en gramos
+                return totalEnMg;
+            }
+        }
+
+        // Función para calcular el peso ideal usando la fórmula de Devine
+        function calcularPesoIdeal(tallaCM, genero) {
+            let pesoIdeal;
+            if (genero === 'hombre') {
+                pesoIdeal = 50 + 2.3 * ((tallaCM / 2.54) - 60);
+            } else if (genero === 'mujer') {
+                pesoIdeal = 45.5 + 2.3 * ((tallaCM / 2.54) - 60);
+            }
+            return pesoIdeal;
+        }
+
+        // Función para calcular el peso ajustado
+        function calcularPesoAjustado(pesoActual, tallaCM, genero) {
+            let pesoIdeal = calcularPesoIdeal(tallaCM, genero);
+            return pesoIdeal + 0.25 * (pesoActual - pesoIdeal);
+        }
+    </script>
+  </main>
+</body>
+</html>
