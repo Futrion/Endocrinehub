@@ -34,6 +34,17 @@
       <button type="submit">Calcular GET</button>
     </form>
     <p id="resultadoGET"></p>
+    
+    <h2>Calculadora de Nutrición Parenteral</h2>
+    <form id="nptForm">
+      <label>Peso (kg): <input type="number" id="pesoNPT" required></label>
+      <label>Calorías por kg: <input type="number" id="calorias" required></label>
+      <label>Proteínas por kg: <input type="number" id="proteinas" required></label>
+      <button type="submit">Calcular NPT</button>
+    </form>
+    <p id="resultadoNPT"></p>
+    
+    <a href="Herra.html">Requerimientos nutricionales</a>
   </main>
   <script>
     // IMC
@@ -58,6 +69,52 @@
         get = 10 * peso + 6.25 * altura - 5 * edad - 161;
       }
       document.getElementById('resultadoGET').textContent = 'GET (kcal/día): ' + get.toFixed(0);
+    };
+    
+    // NPT
+    document.getElementById('nptForm').onsubmit = function(e) {
+      e.preventDefault();
+      const peso = parseFloat(document.getElementById('pesoNPT').value);
+      const caloriasPorKg = parseFloat(document.getElementById('calorias').value);
+      const proteinasPorKg = parseFloat(document.getElementById('proteinas').value);
+
+      if (isNaN(peso) || isNaN(caloriasPorKg) || isNaN(proteinasPorKg)) {
+        alert('Por favor, introduce parámetros válidos');
+        return;
+      }
+
+      // Constantes calóricas
+      const kcalPorGramoProteina = 4;
+      const kcalPorGramoGlucosa = 4;
+      const kcalPorGramoLipidos = 10;
+
+      // Distribución de calorías no proteicas
+      const porcentajeLipidos = 0.4;
+      const porcentajeGlucosa = 0.6;
+
+      // Cálculos
+      const caloriasTotales = peso * caloriasPorKg;
+      const gramosAminoacidos = peso * proteinasPorKg;
+      const gramosN2 = gramosAminoacidos / 6.25;
+
+      const caloriasAminoacidos = gramosAminoacidos * kcalPorGramoProteina;
+      const caloriasNoProteicas = caloriasTotales - caloriasAminoacidos;
+
+      const caloriasLipidos = caloriasNoProteicas * porcentajeLipidos;
+      const caloriasGlucosa = caloriasNoProteicas * porcentajeGlucosa;
+
+      const gramosLipidos = Math.round(caloriasLipidos / kcalPorGramoLipidos / 10) * 10;
+      const gramosGlucosa = Math.floor(caloriasGlucosa / kcalPorGramoGlucosa / 25) * 25;
+
+      document.getElementById('resultadoNPT').innerHTML = `
+        <h3>Informe de Formulación NPT</h3>
+        <ul>
+          <li>Peso del paciente: ${peso} kg</li>
+          <li>Aminoácidos: ${gramosAminoacidos.toFixed(0)} g (${gramosN2.toFixed(0)} g de N2)</li>
+          <li>Lípidos: ${gramosLipidos} g</li>
+          <li>Glucosa: ${gramosGlucosa} g</li>
+          <li>Kcal totales: ${caloriasTotales.toFixed(0)} kcal</li>
+        </ul>`;
     };
   </script>
 </body>
