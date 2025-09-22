@@ -13,9 +13,9 @@
   </nav>
   <main>
     <style>
-      .calculators-grid {
+      .calculators-container {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
         gap: 2em;
         margin-bottom: 2em;
       }
@@ -25,9 +25,12 @@
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0,119,182,0.07);
       }
-      @media (max-width: 768px) {
-        .calculators-grid {
+      @media (max-width: 480px) {
+        .calculators-container {
           grid-template-columns: 1fr;
+        }
+        .calculator-section {
+          padding: 1em;
         }
       }
       .btn { cursor:pointer; padding:.7rem 1rem; border-radius:8px; border:1px solid #ccc; background:#f7f7f7; }
@@ -37,91 +40,223 @@
       .small { font-size:.9rem; color:#666; }
     </style>
     
-    <div class="calculators-grid">
+    <div class="calculators-container">
       <div class="calculator-section">
-        <h2>Calculadora de IMC</h2>
-        <form id="imcForm">
-          <label>Peso (kg): <input type="number" id="peso" required></label>
-          <label>Altura (cm): <input type="number" id="altura" required></label>
-          <button type="submit">Calcular IMC</button>
-        </form>
-        <p id="resultadoIMC"></p>
-      </div>
+        <h2>Calculadora de Osmolaridad de PN y Producto Calcio–Fosfato</h2>
+      <p class="small">Introduce electrolitos en <b>mEq</b> (Na, K, Ca, Mg), <b>Fosfato</b> en <b>mmol</b>, y el <b>volumen total</b> del bolso (mL).</p>
       
-      <div class="calculator-section">
-        <h2>Gasto Energético Total</h2>
-        <form id="getForm">
-          <label>Peso (kg): <input type="number" id="pesoGET" required></label>
-          <label>Altura (cm): <input type="number" id="alturaGET" required></label>
-          <label>Edad (años): <input type="number" id="edadGET" required></label>
-          <label>Sexo:
-            <select id="sexoGET">
-              <option value="hombre">Hombre</option>
-              <option value="mujer">Mujer</option>
+      <div class="grid" style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); margin: 1rem 0;">
+        <div class="card" style="border: 1px solid #ddd; border-radius: 10px; padding: 1rem;">
+          <h3 style="font-size:1.1rem;margin-top:0">Electrolitos (totales por bolso)</h3>
+          <label>Sodio (Na), mEq: <input id="na" type="number" min="0" step="0.1" placeholder="ej: 70"></label>
+          <label>Potasio (K), mEq: <input id="k" type="number" min="0" step="0.1" placeholder="ej: 50"></label>
+          <label>Calcio (Ca), mEq: <input id="ca" type="number" min="0" step="0.1" placeholder="ej: 10"></label>
+          <label>Magnesio (Mg), mEq: <input id="mg" type="number" min="0" step="0.1" placeholder="ej: 8"></label>
+          <label>Fosfato (PO₄), mmol: <input id="p" type="number" min="0" step="0.1" placeholder="ej: 20"></label>
+          <label>Tipo de fosfato:
+            <select id="pType">
+              <option value="inorg">Inorgánico (Na/K fosfato)</option>
+              <option value="glic">Glicerofosfato (orgánico)</option>
             </select>
           </label>
-          <button type="submit">Calcular GET</button>
-        </form>
-        <p id="resultadoGET"></p>
+        </div>
+        
+        <div class="card" style="border: 1px solid #ddd; border-radius: 10px; padding: 1rem;">
+          <h3 style="font-size:1.1rem;margin-top:0">Composición y Volumen</h3>
+          <label>Glucosa total (g) — opcional: <input id="dex" type="number" min="0" step="1" placeholder="ej: 190"></label>
+          <label>Aminoácidos totales (g) — opcional: <input id="aa" type="number" min="0" step="1" placeholder="ej: 70"></label>
+          <label>Volumen total del bolso (mL): <input id="vol" type="number" min="1" step="1" placeholder="ej: 1200" required></label>
+          <label>Vía prevista:
+            <select id="route">
+              <option value="perif">Periférica (umbral 900 mOsm/L)</option>
+              <option value="cent">Central (umbral 1800 mOsm/L)</option>
+              <option value="custom">Personalizar umbral…</option>
+            </select>
+          </label>
+          <div id="customWrap" style="display:none;">
+            <label>Umbral de osmolaridad (mOsm/L): <input id="thres" type="number" min="100" step="10" value="900"></label>
+          </div>
+          <div style="margin-top: 1rem;">
+            <button class="btn" id="calcBtn" style="margin-right: 0.5rem;">Calcular</button>
+            <button class="btn" id="resetBtn" type="button">Limpiar</button>
+          </div>
+        </div>
       </div>
-    </div>
-    
-    <div class="calculators-grid">
+      
+      <div id="results" style="display:none; margin-top: 1rem;">
+        <h3>Resultados</h3>
+        <table style="width:100%; border-collapse: collapse; margin-top:.5rem;">
+          <thead>
+            <tr>
+              <th style="border:1px solid #eee; padding:.6rem; background:#fafafa; text-align:left;">Componente</th>
+              <th style="border:1px solid #eee; padding:.6rem; background:#fafafa; text-align:right;">mOsm/L</th>
+              <th style="border:1px solid #eee; padding:.6rem; background:#fafafa; text-align:left;">Detalles</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="border:1px solid #eee; padding:.6rem;">Electrolitos (Na, K, Ca, Mg)</td>
+              <td id="elec_osm" style="border:1px solid #eee; padding:.6rem; text-align:right;">—</td>
+              <td id="elec_det" style="border:1px solid #eee; padding:.6rem; font-size:.9rem; color:#666;">—</td>
+            </tr>
+            <tr>
+              <td style="border:1px solid #eee; padding:.6rem;">Glucosa</td>
+              <td id="dex_osm" style="border:1px solid #eee; padding:.6rem; text-align:right;">—</td>
+              <td id="dex_det" style="border:1px solid #eee; padding:.6rem; font-size:.9rem; color:#666;">—</td>
+            </tr>
+            <tr>
+              <td style="border:1px solid #eee; padding:.6rem;">Aminoácidos</td>
+              <td id="aa_osm" style="border:1px solid #eee; padding:.6rem; text-align:right;">—</td>
+              <td id="aa_det" style="border:1px solid #eee; padding:.6rem; font-size:.9rem; color:#666;">—</td>
+            </tr>
+            <tr>
+              <th style="border:1px solid #eee; padding:.6rem; background:#fafafa;">Total estimado</th>
+              <th id="tot_osm" style="border:1px solid #eee; padding:.6rem; background:#fafafa; text-align:right;">—</th>
+              <th style="border:1px solid #eee; padding:.6rem; background:#fafafa;"></th>
+            </tr>
+          </tbody>
+        </table>
+        <p id="admit" style="margin-top:.5rem;"></p>
+        
+        <h4>Producto Calcio–Fosfato</h4>
+        <table style="width:100%; border-collapse: collapse; margin-top:.5rem;">
+          <tbody>
+            <tr>
+              <td style="border:1px solid #eee; padding:.6rem;">Ca (mEq/L)</td>
+              <td id="ca_per_l" style="border:1px solid #eee; padding:.6rem; text-align:right;">—</td>
+            </tr>
+            <tr>
+              <td style="border:1px solid #eee; padding:.6rem;">Fosfato (mmol/L)</td>
+              <td id="p_per_l" style="border:1px solid #eee; padding:.6rem; text-align:right;">—</td>
+            </tr>
+            <tr>
+              <th style="border:1px solid #eee; padding:.6rem; background:#fafafa;">Ca (mEq/L) × P (mmol/L)</th>
+              <th id="cap_prod" style="border:1px solid #eee; padding:.6rem; background:#fafafa; text-align:right;">—</th>
+            </tr>
+          </tbody>
+        </table>
+        <p id="cap_flag" style="margin-top:.5rem;"></p>
+      </div>
+      </div>
+
       <div class="calculator-section">
         <h2>Calculadora de Nutrición Parenteral</h2>
-        <form id="nptForm">
-          <label>Peso (kg): <input type="number" id="pesoNPT" required></label>
-          <label>Calorías por kg: <input type="number" id="calorias" required></label>
-          <label>Proteínas por kg: <input type="number" id="proteinas" required></label>
-          <button type="submit">Calcular NPT</button>
-        </form>
-        <p id="resultadoNPT"></p>
+      <form id="nptForm">
+        <label>Peso (kg): <input type="number" id="pesoNPT" required></label>
+        <label>Calorías por kg: <input type="number" id="calorias" required></label>
+        <label>Proteínas por kg: <input type="number" id="proteinas" required></label>
+        <button type="submit">Calcular NPT</button>
+      </form>
+      <p id="resultadoNPT"></p>
       </div>
-      
+
       <div class="calculator-section">
         <h2>Requerimientos Nutricionales</h2>
-        <form id="calculatorForm">
-          <label>Género:
-            <select id="genero">
-              <option value="mujer">Mujer</option>
-              <option value="hombre">Hombre</option>
-            </select>
-          </label>
-          <label>Edad: <input type="number" id="edad" required></label>
-          <label>Peso habitual (kg): <input type="number" id="pesoHabitual" required></label>
-          <label>Peso actual (kg): <input type="number" id="pesoActual" required></label>
-          <label>Talla (cm): <input type="number" id="talla" required></label>
-          <label>Servicio: <input type="text" id="servicio" placeholder="ej: UCI" required></label>
-          <button type="button" onclick="calcular()">Calcular</button>
-        </form>
+      <form id="calculatorForm">
+        <label>Género:
+          <select id="genero">
+            <option value="mujer">Mujer</option>
+            <option value="hombre">Hombre</option>
+          </select>
+        </label>
+        <label>Edad: <input type="number" id="edad" required></label>
+        <label>Peso habitual (kg): <input type="number" id="pesoHabitual" required></label>
+        <label>Peso actual (kg): <input type="number" id="pesoActual" required></label>
+        <label>Talla (cm): <input type="number" id="talla" required></label>
+        <label>Servicio: <input type="text" id="servicio" placeholder="ej: UCI" required></label>
+        <button type="button" onclick="calcular()">Calcular</button>
+      </form>
         <div id="resultados"></div>
       </div>
     </div>
   </main>
   <script>
-    // IMC
-    document.getElementById('imcForm').onsubmit = function(e) {
+    // Osmolaridad NPT
+    const $ = (id) => document.getElementById(id);
+    const fmt = (x, d=1) => isFinite(x) ? x.toFixed(d) : '—';
+    
+    function getThreshold() {
+      const route = $('route').value;
+      if (route === 'perif') return 900;
+      if (route === 'cent') return 1800;
+      if (route === 'custom') return parseFloat($('thres').value) || 900;
+      return 900;
+    }
+    
+    function classify(total, thr) {
+      if (!isFinite(total) || !isFinite(thr)) return '';
+      if (total <= 0) return '';
+      if (total <= 0.85*thr) return `<span style="background:#e8f5ee; color:#1b9e3f; border:1px solid #1b9e3f; padding:.25rem .6rem; border-radius:999px; font-size:.82rem;">Dentro del umbral</span>`;
+      if (total <= thr) return `<span style="background:#fff7e6; color:#e6a700; border:1px solid #e6a700; padding:.25rem .6rem; border-radius:999px; font-size:.82rem;">Cerca del límite</span>`;
+      return `<span style="background:#fdecea; color:#c62828; border:1px solid #c62828; padding:.25rem .6rem; border-radius:999px; font-size:.82rem;">Supera el umbral</span>`;
+    }
+    
+    function capAdvice(prod, pType) {
+      if (!isFinite(prod)) return '';
+      let low, mid;
+      if (pType === 'glic') { low = 300; mid = 600; }
+      else { low = 150; mid = 300; }
+      if (prod < low) return `<span style="background:#e8f5ee; color:#1b9e3f; border:1px solid #1b9e3f; padding:.25rem .6rem; border-radius:999px; font-size:.82rem;">Riesgo bajo (orientativo)</span>`;
+      if (prod <= mid) return `<span style="background:#fff7e6; color:#e6a700; border:1px solid #e6a700; padding:.25rem .6rem; border-radius:999px; font-size:.82rem;">Precaución / confirmar en curvas</span>`;
+      return `<span style="background:#fdecea; color:#c62828; border:1px solid #c62828; padding:.25rem .6rem; border-radius:999px; font-size:.82rem;">Alto riesgo de precipitado</span>`;
+    }
+    
+    $('route').addEventListener('change', () => {
+      $('customWrap').style.display = ($('route').value === 'custom') ? 'block' : 'none';
+    });
+    
+    $('resetBtn').addEventListener('click', () => {
+      ['na','k','ca','mg','p','dex','aa','vol','thres'].forEach(id => {$(id).value='';});
+      $('route').value='perif'; $('pType').value='inorg';
+      $('customWrap').style.display='none';
+      $('results').style.display='none';
+    });
+    
+    $('calcBtn').addEventListener('click', (e) => {
       e.preventDefault();
-      const peso = parseFloat(document.getElementById('peso').value);
-      const altura = parseFloat(document.getElementById('altura').value) / 100;
-      const imc = peso / (altura * altura);
-      document.getElementById('resultadoIMC').textContent = 'IMC: ' + imc.toFixed(2);
-    };
-    // GET
-    document.getElementById('getForm').onsubmit = function(e) {
-      e.preventDefault();
-      const peso = parseFloat(document.getElementById('pesoGET').value);
-      const altura = parseFloat(document.getElementById('alturaGET').value);
-      const edad = parseFloat(document.getElementById('edadGET').value);
-      const sexo = document.getElementById('sexoGET').value;
-      let get;
-      if (sexo === 'hombre') {
-        get = 10 * peso + 6.25 * altura - 5 * edad + 5;
-      } else {
-        get = 10 * peso + 6.25 * altura - 5 * edad - 161;
-      }
-      document.getElementById('resultadoGET').textContent = 'GET (kcal/día): ' + get.toFixed(0);
-    };
+      const na = parseFloat($('na').value) || 0;
+      const k = parseFloat($('k').value) || 0;
+      const ca = parseFloat($('ca').value) || 0;
+      const mg = parseFloat($('mg').value) || 0;
+      const p = parseFloat($('p').value) || 0;
+      const dex = parseFloat($('dex').value) || 0;
+      const aa = parseFloat($('aa').value) || 0;
+      const vol = parseFloat($('vol').value);
+      
+      if (!vol || vol <= 0) { alert('Indica un volumen total válido (mL).'); return; }
+      const VL = vol / 1000;
+      
+      const elec_mOsm_bag = 2*(na + k) + 1.5*(ca + mg);
+      const elec_mOsm_L = elec_mOsm_bag / VL;
+      const dex_mOsm_L = (dex>0) ? (5 * (dex / VL)) : 0;
+      const aa_mOsm_L = (aa>0) ? (10 * (aa / VL)) : 0;
+      const total_mOsm_L = elec_mOsm_L + dex_mOsm_L + aa_mOsm_L;
+      
+      const ca_per_L = ca / VL;
+      const p_per_L = p / VL;
+      const cap_prod = ca_per_L * p_per_L;
+      
+      const thr = getThreshold();
+      const status = classify(total_mOsm_L, thr);
+      
+      $('elec_osm').textContent = fmt(elec_mOsm_L, 0);
+      $('elec_det').textContent = `Na+K: ${fmt(2*(na+k),0)} mOsm/bolso; Ca+Mg: ${fmt(1.5*(ca+mg),0)} mOsm/bolso`;
+      $('dex_osm').textContent = fmt(dex_mOsm_L, 0);
+      $('dex_det').textContent = dex>0 ? `${fmt(dex/VL,0)} g/L × 5` : '—';
+      $('aa_osm').textContent = fmt(aa_mOsm_L, 0);
+      $('aa_det').textContent = aa>0 ? `${fmt(aa/VL,0)} g/L × 10` : '—';
+      $('tot_osm').textContent = fmt(total_mOsm_L, 0);
+      
+      const routeTxt = ($('route').value==='perif') ? 'periférica' : ($('route').value==='cent' ? 'central' : 'seleccionada');
+      $('admit').innerHTML = `Osmolaridad estimada: <b>${fmt(total_mOsm_L,0)} mOsm/L</b> (umbral ${fmt(thr,0)} para vía ${routeTxt}) ${status}`;
+      
+      $('ca_per_l').textContent = fmt(ca_per_L,1);
+      $('p_per_l').textContent = fmt(p_per_L,1);
+      $('cap_prod').textContent = isFinite(cap_prod) ? fmt(cap_prod,1) : '—';
+      $('cap_flag').innerHTML = capAdvice(cap_prod, $('pType').value);
+      
+      $('results').style.display = 'block';
+    });
     
     // NPT
     document.getElementById('nptForm').onsubmit = function(e) {
