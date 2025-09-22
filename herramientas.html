@@ -33,14 +33,41 @@
           padding: 1em;
         }
       }
-      .btn { cursor:pointer; padding:.7rem 1rem; border-radius:8px; border:1px solid #ccc; background:#f7f7f7; }
-      .btn:hover { background:#efefef; }
+      .btn { cursor:pointer; padding:.7rem 1rem; border-radius:8px; border:none; background:linear-gradient(90deg, #0077b6 60%, #90e0ef 100%); color:#fff; font-weight:bold; box-shadow: 0 2px 8px rgba(0,119,182,0.07); transition: background 0.2s; }
+      .btn:hover { background:linear-gradient(90deg, #023e8a 60%, #90e0ef 100%); }
       .card { border: 1px solid #ddd; border-radius: 10px; padding: 1rem; }
       .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); }
       .small { font-size:.9rem; color:#666; }
     </style>
     
     <div class="calculators-container">
+      <div class="calculator-section">
+        <h2>Calculadora de IMC</h2>
+        <form id="imcForm">
+          <label>Peso (kg): <input type="number" id="peso" required></label>
+          <label>Altura (cm): <input type="number" id="altura" required></label>
+          <button type="submit">Calcular IMC</button>
+        </form>
+        <p id="resultadoIMC"></p>
+      </div>
+
+      <div class="calculator-section">
+        <h2>Gasto Energético Total</h2>
+        <form id="getForm">
+          <label>Peso (kg): <input type="number" id="pesoGET" required></label>
+          <label>Altura (cm): <input type="number" id="alturaGET" required></label>
+          <label>Edad (años): <input type="number" id="edadGET" required></label>
+          <label>Sexo:
+            <select id="sexoGET">
+              <option value="hombre">Hombre</option>
+              <option value="mujer">Mujer</option>
+            </select>
+          </label>
+          <button type="submit">Calcular GET</button>
+        </form>
+        <p id="resultadoGET"></p>
+      </div>
+
       <div class="calculator-section">
         <h2>Calculadora de Osmolaridad de PN y Producto Calcio–Fosfato</h2>
       <p class="small">Introduce electrolitos en <b>mEq</b> (Na, K, Ca, Mg), <b>Fosfato</b> en <b>mmol</b>, y el <b>volumen total</b> del bolso (mL).</p>
