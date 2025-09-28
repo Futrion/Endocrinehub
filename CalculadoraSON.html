@@ -4,45 +4,35 @@
   <meta charset="UTF-8">
   <title>Herramientas - EndocrineHub</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    /* Fuerza 1 columna en el módulo Enteral */
-.grid-1col{ 
-  display: grid;
-  grid-template-columns: 1fr !important;  /* gana a repeat(auto-fit,...) */
-  gap: 1rem;
-}
-
-/* por si hay alguna regla muy específica previa */
-#enteralModule .grid{ grid-template-columns: 1fr !important; }
-
-    .calculators-grid { display:grid; grid-template-columns:1fr 1fr; gap:2em; margin-bottom:2em; }
-    .calculator-section { background:#f1f8ff; padding:1.5em; border-radius:12px; box-shadow:0 2px 8px rgba(0,119,182,.07); }
-    @media (max-width:768px){ .calculators-grid{ grid-template-columns:1fr; } }
-    .btn{ cursor:pointer; padding:.6rem .9rem; border-radius:8px; border:1px solid #ccc; background:#f7f7f7; }
-    .btn:hover{ background:#efefef; }
-    .btn-danger{ border-color:#c62828; color:#c62828; background:#fdecea; }
-    .btn-primary{ border-color:#28527a; color:#fff; background:#28527a; }
-    .card{ border:1px solid #ddd; border-radius:10px; padding:1rem; }
-    .grid{ display:grid; gap:1rem; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
-    .small{ font-size:.9rem; color:#666; }
-    table{ width:100%; border-collapse:collapse; margin-top:.5rem; }
-    th,td{ border:1px solid #eee; padding:.5rem; text-align:right; }
-    th{ background:#fafafa; text-align:left; }
-    input[type="number"], input[type="text"]{ width:100%; }
-    details > summary{ cursor:pointer; }
-    .tag{ display:inline-block; padding:.1rem .45rem; margin:.05rem; border-radius:999px; font-size:.78rem; background:#eef; border:1px solid #cde; }
-    .muted{ color:#777; }
-    .row { display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; }
-
-
-    /* ====== Fix: scroll horizontal para tablas grandes ====== */
-    .table-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
-    .table-scroll table { width:100%; min-width:900px; border-collapse:collapse; }
-
-    /* En pantallas medianas, apilar listado + formulario del catálogo */
-    @media (max-width:1100px){ .catalogo-grid{ grid-template-columns:1fr !important; } }
-  </style>
-</head>
+   <style>
+      .calculators-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2em;
+        margin-bottom: 2em;
+      }
+      .calculator-section {
+        background: #f1f8ff;
+        padding: 1.5em;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,119,182,0.07);
+      }
+      @media (max-width: 480px) {
+        .calculators-container {
+          grid-template-columns: 1fr;
+        }
+        .calculator-section {
+          padding: 1em;
+        }
+      }
+      .btn { cursor:pointer; padding:.7rem 1rem; border-radius:8px; border:none; background:linear-gradient(90deg, #0077b6 60%, #90e0ef 100%); color:#fff; font-weight:bold; box-shadow: 0 2px 8px rgba(0,119,182,0.07); transition: background 0.2s; }
+      .btn:hover { background:linear-gradient(90deg, #023e8a 60%, #90e0ef 100%); }
+      .card { border: 1px solid #ddd; border-radius: 10px; padding: 1rem; }
+      .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); }
+      .small { font-size:.9rem; color:#666; }
+    </style>
+    <div class="calculators-container">
+      <div class="calculator-section">
 <body>
   <nav>
     <a href="index.html">Inicio</a>
