@@ -48,72 +48,11 @@
     <a href="index.html">Inicio</a>
     <a href="herramientas.html">Herramientas</a>
     <a href="apuntes/index.html">Apuntes</a>
+    <a href="CalculadoraSON.html">Calculadoras SON </a>
   </nav>
 
   <main>
     <div class="calculators-grid">
-      <div class="calculator-section">
-        <a href="prueba.html">Calculadora osmolaridad</a>
-        <h2>Calculadora de IMC</h2>
-        <form id="imcForm">
-          <label>Peso (kg): <input type="number" id="peso" required></label>
-          <label>Altura (cm): <input type="number" id="altura" required></label>
-          <button type="submit" class="btn">Calcular IMC</button>
-        </form>
-        <p id="resultadoIMC"></p>
-      </div>
-
-      <div class="calculator-section">
-        <h2>Gasto Energético Total</h2>
-        <form id="getForm">
-          <label>Peso (kg): <input type="number" id="pesoGET" required></label>
-          <label>Altura (cm): <input type="number" id="alturaGET" required></label>
-          <label>Edad (años): <input type="number" id="edadGET" required></label>
-          <label>Sexo:
-            <select id="sexoGET">
-              <option value="hombre">Hombre</option>
-              <option value="mujer">Mujer</option>
-            </select>
-          </label>
-          <button type="submit" class="btn">Calcular GET</button>
-        </form>
-        <p id="resultadoGET"></p>
-      </div>
-    </div>
-
-    <div class="calculators-grid">
-      <div class="calculator-section">
-        <h2>Calculadora de Nutrición Parenteral</h2>
-        <form id="nptForm">
-          <label>Peso (kg): <input type="number" id="pesoNPT" required></label>
-          <label>Calorías por kg: <input type="number" id="calorias" required></label>
-          <label>Proteínas por kg: <input type="number" id="proteinas" required></label>
-          <button type="submit" class="btn">Calcular NPT</button>
-        </form>
-        <p id="resultadoNPT"></p>
-      </div>
-
-      <div class="calculator-section">
-        <h2>Requerimientos Nutricionales</h2>
-        <form id="calculatorForm">
-          <label>Género:
-            <select id="genero">
-              <option value="mujer">Mujer</option>
-              <option value="hombre">Hombre</option>
-            </select>
-          </label>
-          <label>Edad: <input type="number" id="edad" required></label>
-          <label>Peso habitual (kg): <input type="number" id="pesoHabitual" required></label>
-          <label>Peso actual (kg): <input type="number" id="pesoActual" required></label>
-          <label>Talla (cm): <input type="number" id="talla" required></label>
-          <label>Servicio: <input type="text" id="servicio" placeholder="ej: UCI" required></label>
-          <button type="button" class="btn" onclick="calcular()">Calcular</button>
-        </form>
-        <div id="resultados"></div>
-      </div>
-    </div>
-
-    <!-- ======================= RECOMENDADOR + CATÁLOGO ======================= -->
     <div class="calculator-section">
       <h2>Recomendador de suplementos orales nutricionales</h2>
       <p class="small">Cubre objetivos de <b>kcal</b> y <b>proteína</b> según <b>patología</b> y <b>fibra</b>. Gestiona tu <b>catálogo</b> (añadir/quitar/importar/exportar). Los datos se guardan en <code>localStorage</code>.</p>
