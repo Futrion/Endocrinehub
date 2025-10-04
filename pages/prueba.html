@@ -1,73 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Herramientas - EndocrineHub</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <nav>
-    <a href="index.html">Inicio</a>
-    <a href="herramientas.html">Herramientas</a>
-    <a href="apuntes/index.html">Apuntes</a>
-  </nav>
-  <main>
-    <style>
-      .calculators-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2em;
-        margin-bottom: 2em;
-      }
-      .calculator-section {
-        background: #f1f8ff;
-        padding: 1.5em;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,119,182,0.07);
-      }
-      @media (max-width: 768px) {
-        .calculators-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-      .btn { cursor:pointer; padding:.7rem 1rem; border-radius:8px; border:1px solid #ccc; background:#f7f7f7; }
-      .btn:hover { background:#efefef; }
-      .card { border: 1px solid #ddd; border-radius: 10px; padding: 1rem; }
-      .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); }
-      .small { font-size:.9rem; color:#666; }
-    </style>
-    
-    <div class="calculators-grid">
-      <div class="calculator-section">
-        <h2>Calculadora de IMC</h2>
-        <form id="imcForm">
-          <label>Peso (kg): <input type="number" id="peso" required></label>
-          <label>Altura (cm): <input type="number" id="altura" required></label>
-          <button type="submit">Calcular IMC</button>
-        </form>
-        <p id="resultadoIMC"></p>
-      </div>
-      
-      <div class="calculator-section">
-        <h2>Gasto Energético Total</h2>
-        <form id="getForm">
-          <label>Peso (kg): <input type="number" id="pesoGET" required></label>
-          <label>Altura (cm): <input type="number" id="alturaGET" required></label>
-          <label>Edad (años): <input type="number" id="edadGET" required></label>
-          <label>Sexo:
-            <select id="sexoGET">
-              <option value="hombre">Hombre</option>
-              <option value="mujer">Mujer</option>
-            </select>
-          </label>
-          <button type="submit">Calcular GET</button>
-        </form>
-        <p id="resultadoGET"></p>
-      </div>
-    </div>
-     <div class="calculators-grid">
-      <div class="calculator-section">
-      <title>Calculadora de Osmolaridad PN & Producto Ca–P</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calculadora de Osmolaridad PN & Producto Ca–P</title>
 <link rel="stylesheet" href="style.css">
 <style>
   :root { --ok:#1b9e3f; --warn:#e6a700; --bad:#c62828; --muted:#666; }
@@ -94,6 +30,13 @@
 </style>
 </head>
 <body>
+  <nav>
+    <a href="index.html">Inicio</a>
+    <a href="herramientas.html">Herramientas</a>
+    <a href="calculators.html">Calculadoras</a>
+    <a href="apuntes/index.html">Apuntes</a>
+    <a href="prueba.html">Calculadora osmolaridad</a>
+  </nav>
   <main>
   <h1>Calculadora de Osmolaridad de PN y Producto Calcio–Fosfato</h1>
   <p class="small">Introduce electrolitos en <b>mEq</b> (Na, K, Ca, Mg), <b>Fosfato</b> en <b>mmol</b>, y el <b>volumen total</b> del bolso (mL). Puedes añadir (opcional) los gramos totales de <b>glucosa</b> y <b>aminoácidos</b> de la PN.</p>
@@ -314,206 +257,6 @@
   });
 })();
 </script>
-      </div>
-    
-    
-    <div class="calculators-grid">
-      <div class="calculator-section">
-        <h2>Calculadora de Nutrición Parenteral hecha por ECL</h2>
-        <form id="nptForm">
-          <label>Peso (kg): <input type="number" id="pesoNPT" required></label>
-          <label>Calorías por kg: <input type="number" id="calorias" required></label>
-          <label>Proteínas por kg: <input type="number" id="proteinas" required></label>
-          <button type="submit">Calcular NPT</button>
-        </form>
-        <p id="resultadoNPT"></p>
-      </div>
-      
-      <div class="calculator-section">
-        <h2>Requerimientos Nutricionales hecha por ECL</h2>
-        <form id="calculatorForm">
-          <label>Género:
-            <select id="genero">
-              <option value="mujer">Mujer</option>
-              <option value="hombre">Hombre</option>
-            </select>
-          </label>
-          <label>Edad: <input type="number" id="edad" required></label>
-          <label>Peso habitual (kg): <input type="number" id="pesoHabitual" required></label>
-          <label>Peso actual (kg): <input type="number" id="pesoActual" required></label>
-          <label>Talla (cm): <input type="number" id="talla" required></label>
-          <label>Servicio: <input type="text" id="servicio" placeholder="ej: UCI" required></label>
-          <button type="button" onclick="calcular()">Calcular</button>
-        </form>
-        <div id="resultados"></div>
-      </div>
-    </div>
-  </main>
-  <script>
-    // IMC
-    document.getElementById('imcForm').onsubmit = function(e) {
-      e.preventDefault();
-      const peso = parseFloat(document.getElementById('peso').value);
-      const altura = parseFloat(document.getElementById('altura').value) / 100;
-      const imc = peso / (altura * altura);
-      document.getElementById('resultadoIMC').textContent = 'IMC: ' + imc.toFixed(2);
-    };
-    // GET
-    document.getElementById('getForm').onsubmit = function(e) {
-      e.preventDefault();
-      const peso = parseFloat(document.getElementById('pesoGET').value);
-      const altura = parseFloat(document.getElementById('alturaGET').value);
-      const edad = parseFloat(document.getElementById('edadGET').value);
-      const sexo = document.getElementById('sexoGET').value;
-      let get;
-      if (sexo === 'hombre') {
-        get = 10 * peso + 6.25 * altura - 5 * edad + 5;
-      } else {
-        get = 10 * peso + 6.25 * altura - 5 * edad - 161;
-      }
-      document.getElementById('resultadoGET').textContent = 'GET (kcal/día): ' + get.toFixed(0);
-    };
-    
-    // NPT
-    document.getElementById('nptForm').onsubmit = function(e) {
-      e.preventDefault();
-      const peso = parseFloat(document.getElementById('pesoNPT').value);
-      const caloriasPorKg = parseFloat(document.getElementById('calorias').value);
-      const proteinasPorKg = parseFloat(document.getElementById('proteinas').value);
-
-      if (isNaN(peso) || isNaN(caloriasPorKg) || isNaN(proteinasPorKg)) {
-        alert('Por favor, introduce parámetros válidos');
-        return;
-      }
-
-      // Constantes calóricas
-      const kcalPorGramoProteina = 4;
-      const kcalPorGramoGlucosa = 4;
-      const kcalPorGramoLipidos = 10;
-
-      // Distribución de calorías no proteicas
-      const porcentajeLipidos = 0.4;
-      const porcentajeGlucosa = 0.6;
-
-      // Cálculos
-      const caloriasTotales = peso * caloriasPorKg;
-      const gramosAminoacidos = peso * proteinasPorKg;
-      const gramosN2 = gramosAminoacidos / 6.25;
-
-      const caloriasAminoacidos = gramosAminoacidos * kcalPorGramoProteina;
-      const caloriasNoProteicas = caloriasTotales - caloriasAminoacidos;
-
-      const caloriasLipidos = caloriasNoProteicas * porcentajeLipidos;
-      const caloriasGlucosa = caloriasNoProteicas * porcentajeGlucosa;
-
-      const gramosLipidos = Math.round(caloriasLipidos / kcalPorGramoLipidos / 10) * 10;
-      const gramosGlucosa = Math.floor(caloriasGlucosa / kcalPorGramoGlucosa / 25) * 25;
-
-      document.getElementById('resultadoNPT').innerHTML = `
-        <h3>Informe de Formulación NPT</h3>
-        <ul>
-          <li>Peso del paciente: ${peso} kg</li>
-          <li>Aminoácidos: ${gramosAminoacidos.toFixed(0)} g (${gramosN2.toFixed(0)} g de N2)</li>
-          <li>Lípidos: ${gramosLipidos} g</li>
-          <li>Glucosa: ${gramosGlucosa} g</li>
-          <li>Kcal totales: ${caloriasTotales.toFixed(0)} kcal</li>
-        </ul>`;
-    };
-    
-    // Calculadora Nutricional (de Herra.html)
-    function calcular() {
-      let duraciones = [12, 16, 20];
-      let tasasGlucosa = [5, 6];
-      let tasaLipidos = 0.11;
-      let resultadoAporte = '';
-      let pesoCalculo = '';
-      let imcCorte = 30;
-
-      const genero = document.getElementById('genero').value;
-      const edad = parseFloat(document.getElementById('edad').value);
-      const servicio = document.getElementById('servicio').value;
-      const pesoHabitual = parseFloat(document.getElementById('pesoHabitual').value);
-      const pesoActual = parseFloat(document.getElementById('pesoActual').value);
-      const tallaM = parseFloat(document.getElementById('talla').value)/100;
-      const tallaCM = parseFloat(document.getElementById('talla').value);
-
-      if (isNaN(pesoActual) || pesoActual <= 0) {
-        alert('Por favor, introduce un peso actual válido en kg.');
-        return;
-      }
-
-      let imc = pesoActual / (tallaM * tallaM);
-      let perdidaPeso = ((pesoHabitual - pesoActual) / pesoHabitual) * 100;
-      let pesoIdeal = calcularPesoIdeal(tallaCM, genero);
-      let pesoAjustado = calcularPesoAjustado(pesoActual, tallaCM, genero);
-
-      if (imc >= imcCorte) {
-        pesoCalculo = pesoAjustado;
-      } else {
-        pesoCalculo = pesoActual;
-      }
-
-      const requerimientosEnergeticos = {
-        kcal20: 20 * pesoCalculo,
-        kcal25: 25 * pesoCalculo,
-        kcal30: 30 * pesoCalculo
-      };
-
-      const requerimientosProteicos = {
-        proteina1_2: 1.2 * pesoCalculo,
-        proteina1_3: 1.3 * pesoCalculo,
-        proteina1_5: 1.5 * pesoCalculo
-      };
-
-      duraciones.forEach(duracion => {
-        tasasGlucosa.forEach(tasa => {
-          let aporteGlucosa = calcularAporteMaximo(pesoActual, tasa, duracion, true);
-          resultadoAporte += `<p>Glucosa ${tasa} mg/kg/min, ${duracion}h: ${aporteGlucosa.toFixed(2)} g</p>`;
-        });
-        let aporteLipidos = calcularAporteMaximo(pesoActual, tasaLipidos, duracion, false);
-        resultadoAporte += `<p>Lípidos ${tasaLipidos} g/kg/h, ${duracion}h: ${aporteLipidos.toFixed(2)} g</p><hr>`;
-      });
-
-      const resultadosDiv = document.getElementById('resultados');
-      resultadosDiv.innerHTML = `
-        <h3>Resultados:</h3>
-        <p><strong>IMC:</strong> ${imc.toFixed(2)} kg/m²</p>
-        <p><strong>% pérdida peso:</strong> ${perdidaPeso.toFixed(2)}%</p>
-        <p><strong>Requerimientos energéticos:</strong></p>
-        <ul>
-          <li>25 kcal/kg: ${requerimientosEnergeticos.kcal25.toFixed(0)} kcal</li>
-          <li>30 kcal/kg: ${requerimientosEnergeticos.kcal30.toFixed(0)} kcal</li>
-        </ul>
-        <p><strong>Requerimientos proteicos:</strong></p>
-        <ul>
-          <li>1.2 g/kg: ${requerimientosProteicos.proteina1_2.toFixed(1)} g</li>
-          <li>1.5 g/kg: ${requerimientosProteicos.proteina1_5.toFixed(1)} g</li>
-        </ul>
-        <h4>Tasas máximas de infusión:</h4>
-        ${resultadoAporte}
-      `;
-    }
-
-    function calcularAporteMaximo(pesoKg, tasa, duracionHoras, esGlucosa) {
-      let tasaPorHora = esGlucosa ? tasa * 60 : tasa;
-      let totalEnMg = tasaPorHora * pesoKg * duracionHoras;
-      return esGlucosa ? totalEnMg / 1000 : totalEnMg;
-    }
-
-    function calcularPesoIdeal(tallaCM, genero) {
-      if (genero === 'hombre') {
-        return 50 + 2.3 * ((tallaCM / 2.54) - 60);
-      } else {
-        return 45.5 + 2.3 * ((tallaCM / 2.54) - 60);
-      }
-    }
-
-    function calcularPesoAjustado(pesoActual, tallaCM, genero) {
-      let pesoIdeal = calcularPesoIdeal(tallaCM, genero);
-      return pesoIdeal + 0.25 * (pesoActual - pesoIdeal);
-    }
-  </script>
-
   </main>
 </body>
 </html>
