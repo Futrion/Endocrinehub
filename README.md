@@ -1,2 +1,2 @@
 # Endocrinehub
-A website to encorauge all endocrines become better
+A website to encorauge all endocrines to become better
