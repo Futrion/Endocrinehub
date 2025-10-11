@@ -63,6 +63,36 @@ section {
   margin-bottom: 2em;
 }
 
+.main-button-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2em;
+}
+
+.main-button-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #f1f8ff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,119,182,0.07);
+  padding: 1.5em 1em;
+  text-align: center;
+  flex: 1;
+}
+
+.main-button-icon {
+  width: 128px;
+  height: 128px;
+  margin-bottom: 1em;
+}
+
+.block-link {
+  text-decoration: none;
+  display: flex;
+}
+
 /* Typography
 ----------------------------------------*/
 h1, h2, h3 {

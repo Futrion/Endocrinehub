@@ -4,383 +4,44 @@
   <meta charset="UTF-8">
   <title>Herramientas - EndocrineHub</title>
   <link rel="stylesheet" href="../assets/css/style.css">
-  <script src="../assets/js/scripts.js" defer></script>
+  <script src="../assets/js/calculadoras.js" defer></script>
+  <script src="../assets/js/supplementos.js" defer></script>
+  <script src="../assets/js/enterales.js" defer></script>
 </head>
 <body>
   <nav>
     <a href="index.html">Inicio</a>
     <a href="herramientas.html">Herramientas</a>
     <a href="calculators.html">Calculadoras</a>
-    <a href="apuntes/index.html">Apuntes</a>
+    <a href="apuntes/apuntes.html">Apuntes</a>
     <a href="prueba.html">Calculadora osmolaridad</a>
   </nav>
 
   <main>
-    
-    <div class="calculators-grid">
-      <div class="calculator-section">
-        <h2>Calculadora de IMC</h2>
-        <form id="imcForm">
-          <label>Peso (kg): <input type="number" id="peso" required></label>
-          <label>Altura (cm): <input type="number" id="altura" required></label>
-          <button type="submit" class="btn btn-primary">Calcular IMC</button>
-        </form>
-        <p id="resultadoIMC"></p>
-      </div>
+    <div class="main-button-grid">
 
-      <div class="calculator-section">
-        <h2>Gasto Energético Total</h2>
-        <form id="getForm">
-          <label>Peso (kg): <input type="number" id="pesoGET" required></label>
-          <label>Altura (cm): <input type="number" id="alturaGET" required></label>
-          <label>Edad (años): <input type="number" id="edadGET" required></label>
-          <label>Sexo:
-            <select id="sexoGET">
-              <option value="hombre">Hombre</option>
-              <option value="mujer">Mujer</option>
-            </select>
-          </label>
-          <button type="submit" class="btn btn-primary">Calcular GET</button>
-        </form>
-        <p id="resultadoGET"></p>
-      </div>
-    </div>
-
-    <div class="calculators-grid">
-      <div class="calculator-section">
-        <h2>Calculadora de Nutrición Parenteral</h2>
-        <form id="nptForm">
-          <label>Peso (kg): <input type="number" id="pesoNPT" required></label>
-          <label>Calorías por kg: <input type="number" id="calorias" required></label>
-          <label>Proteínas por kg: <input type="number" id="proteinas" required></label>
-          <button type="submit" class="btn btn-primary">Calcular NPT</button>
-        </form>
-        <p id="resultadoNPT"></p>
-      </div>
-
-      <div class="calculator-section">
-        <h2>Requerimientos Nutricionales</h2>
-        <form id="calculatorForm">
-          <label>Género:
-            <select id="genero">
-              <option value="mujer">Mujer</option>
-              <option value="hombre">Hombre</option>
-            </select>
-          </label>
-          <label>Edad: <input type="number" id="edad" required></label>
-          <label>Peso habitual (kg): <input type="number" id="pesoHabitual" required></label>
-          <label>Peso actual (kg): <input type="number" id="pesoActual" required></label>
-          <label>Talla (cm): <input type="number" id="talla" required></label>
-          <label>Servicio: <input type="text" id="servicio" placeholder="ej: UCI" required></label>
-          <button type="button" class="btn btn-primary" onclick="calcular()">Calcular</button>
-        </form>
-        <div id="resultados"></div>
-      </div>
-    </div>
-
-    <!-- ======================= RECOMENDADOR + CATÁLOGO ======================= -->
-    <div class="calculator-section">
-      <h2>Recomendador de suplementos orales nutricionales</h2>
-      <p class="small">Cubre objetivos de <b>kcal</b> y <b>proteína</b> según <b>patología</b> y <b>fibra</b>. Gestiona tu <b>catálogo</b> (añadir/quitar/importar/exportar). Los datos se guardan en <code>localStorage</code>.</p>
-
-      <div class="card">
-        <h3 style="margin-top:0;">Perfil clínico</h3>
-        <label>Patología / perfil:
-          <select id="perfil">
-            <option value="general">General</option>
-            <option value="diabetes">Diabetes</option>
-            <option value="renal">Renal</option>
-            <option value="hepatico">Hepatopatía</option>
-            <option value="disfagia">Disfagia</option>
-            <option value="ventilacion">Ventilación mecánica</option>
-            <option value="bariatrica">Bariátrica (alta proteína)</option>
-          </select>
-        </label>
-        <label>Fibra:
-          <select id="perfilFibra">
-            <option value="cualquiera">Cualquiera</option>
-            <option value="sin">Sin fibra</option>
-            <option value="con">Con fibra (cualquiera)</option>
-            <option value="soluble">Fibra soluble</option>
-            <option value="insoluble">Fibra insoluble</option>
-            <option value="mixta">Fibra mixta</option>
-            <option value="alta">Alta en fibra (≥5 g/envase)</option>
-          </select>
-        </label>
-        <label class="row">
-          <input type="checkbox" id="soloCompatibles" checked>
-          <span>Usar solo productos compatibles con el perfil</span>
-        </label>
-      </div>
-
-      <div class="grid">
-        <div class="card">
-          <h3 style="margin-top:0;">Objetivo por kg/día</h3>
-          <form id="supp_perkg_form">
-            <label>Peso (kg)
-              <input type="number" id="supp_peso" min="1" step="0.1" placeholder="70">
-            </label>
-            <label>Kcal/kg
-              <input type="number" id="supp_kcal_kg" min="0" step="1" placeholder="25">
-            </label>
-            <label>Proteína (g)/kg
-              <input type="number" id="supp_prot_kg" min="0" step="0.1" placeholder="1.2">
-            </label>
-          </form>
-          <button type="submit" class="btn btn-primary" id="supp_from_perkg">Usar estos objetivos</button>
+      <a href="calculators/genericas.html" class="block-link">
+        <div class="main-button-card">
+          <img src="../assets/icons/calcular.png" alt="Calculadoras genéricas" class="main-button-icon">
+          <h3>Calculadoras genéricas</h3>
         </div>
-
-        <div class="card">
-          <h3 style="margin-top:0;">Objetivo total diario</h3>
-          <form id="supp_total_form">
-            <label>Kcal/día
-              <input type="number" id="supp_kcal_total" min="0" step="1" placeholder="1800">
-            </label>
-            <label>Proteína (g)/día
-              <input type="number" id="supp_prot_total" min="0" step="0.1" placeholder="100">
-            </label>
-            <label>Máx. envases por producto
-              <input type="number" id="supp_max_units" min="1" step="1" value="4">
-            </label>
-          </form>
-          <button class="btn btn-primary" id="supp_calc">Calcular recomendación</button>
+      </a>
+      
+      <a href="calculators/suplementos.html" class="block-link">
+        <div class="main-button-card" href="calculators/suplementos.html">
+          <img src="../assets/icons/suplemento.png" alt="Recomendador de suplementos orales" class="main-button-icon">
+          <h3>Recomendador de suplementos orales</h3>
         </div>
-      </div>
+      </a>
 
-      <div class="card">
-        <h3 style="margin-top:0;">Catálogo usado</h3>
-        <p class="small" id="supp_cat_status">Catálogo DEMO cargado (<span id="supp_count">0</span> productos).</p>
-        <details>
-          <summary>Ver catálogo</summary>
-          <div class="table-scroll">
-            <div id="supp_catalogo"></div>
-          </div>
-        </details>
-      </div>
-
-      <div id="supp_results" style="display:none; margin-top:1rem;">
-        <h3 style="margin:.25rem 0;">Propuesta</h3>
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Producto</th>
-                <th>Unidades</th>
-                <th>kcal</th>
-                <th>Proteína (g)</th>
-                <th>HC (g)</th>
-                <th>Lípidos (g)</th>
-              </tr>
-            </thead>
-            <tbody id="supp_table"></tbody>
-            <tfoot>
-              <tr>
-                <th>Total</th>
-                <th id="supp_sum_units">—</th>
-                <th id="supp_sum_kcal">—</th>
-                <th id="supp_sum_prot">—</th>
-                <th id="supp_sum_hc">—</th>
-                <th id="supp_sum_lip">—</th>
-              </tr>
-            </tfoot>
-          </table>
+      <a href="calculators/enterales.html" class="block-link">
+        <div class="main-button-card">
+          <img src="../assets/icons/goteo.png" alt="Fórmulas enterales" class="main-button-icon">
+          <h3>Fórmulas enterales</h3>
         </div>
-        <p class="small" id="supp_deficit"></p>
-      </div>
-
-      <hr>
-
-      <h3>Catálogo de productos</h3>
-      <div class="grid grid-1col">
-        <div class="card">
-          <h4 style="margin-top:0;">Listado</h4>
-          <div class="table-scroll">
-            <div id="catalogoWrap"></div>
-          </div>
-          <div class="row" style="margin-top:.5rem;">
-            <button class="btn btn-primary" id="exportBtn">Exportar JSON</button>
-            <label class="btn btn-secondary">
-              Importar JSON <input id="importFile" type="file" accept=".json" hidden>
-            </label>
-            <button class="btn btn-danger" id="resetBtn">Restaurar catálogo demo</button>
-          </div>
-          <p class="small muted">Sugerencia: exporta a JSON para versionar en GitHub.</p>
-        </div>
-
-        <div class="card" style="margin-bottom: 0;">
-          <h4 style="margin-top:0;">Añadir producto</h4>
-          <form id="addProductForm-Name">
-            <label>Nombre <input id="p_name" placeholder="Fortimel..." style="width: 100%;"/></label>
-          </form>
-          <div class="grid">
-            <form class="grid-3cols" id="addProductForm">
-              <label>Formato (ej: 200 ml) <input id="p_format" placeholder="200 ml" /></label>
-              <label>Volumen ml <input id="p_vol" type="number" min="1" /></label>
-              <label>kcal/envase <input id="p_kcal" type="number" min="0" step="1" /></label>
-              <label>Proteína g/envase <input id="p_prot" type="number" min="0" step="0.1" /></label>
-              <label>HC g/envase <input id="p_hc" type="number" min="0" step="0.1" /></label>
-              <label>Lípidos g/envase <input id="p_lip" type="number" min="0" step="0.1" /></label>
-              <label>Fibra g/envase <input id="p_fiber_g" type="number" min="0" step="0.1" /></label>
-              <label>Tipo fibra
-                <select id="p_fiber_type">
-                  <option value="desconocida">Desconocida</option>
-                  <option value="sin">Sin fibra</option>
-                  <option value="soluble">Soluble</option>
-                  <option value="insoluble">Insoluble</option>
-                  <option value="mixta">Mixta</option>
-                </select>
-              </label>
-              <label>Tags (coma) <input id="p_tags" placeholder="diabetes, renal" /></label>
-            </form>
-          </div>
-          <button class="btn btn-primary" id="addBtn">Añadir al catálogo</button>
-          <p class="small muted">Tags disponibles: <span class="tag">general</span><span class="tag">diabetes</span><span class="tag">renal</span><span class="tag">hepatico</span><span class="tag">disfagia</span><span class="tag">ventilacion</span><span class="tag">bariatrica</span></p>
-        </div>
-      </div>
-    </div>
-    <!-- =================== /RECOMENDADOR + CATÁLOGO =================== -->
-
-    <!-- ============== FÓRMULAS ENTERALES (con ml/h) ============== -->
-  <div class="calculator-section">
-    <h2>Fórmulas enterales</h2>
-    <p class="small">Filtra por perfil clínico y fibra. Calcula propuesta para cubrir objetivos con envases de fórmula enteral y obtén la velocidad (ml/h) según horas de perfusión.</p>
-
-      <div class="card">
-        <h3 style="margin-top:0;">Perfil y fibra</h3>
-        <label>Patología / perfil:
-          <select id="ent_perfil">
-            <option value="general">General</option>
-            <option value="diabetes">Diabetes</option>
-            <option value="renal">Renal</option>
-            <option value="hepatico">Hepatopatía</option>
-            <option value="ventilacion">Ventilación mecánica</option>
-            <option value="oligomerica">Oligomérica/peptídica</option>
-          </select>
-        </label>
-        <label>Fibra:
-          <select id="ent_fibra">
-            <option value="cualquiera">Cualquiera</option>
-            <option value="sin">Sin fibra</option>
-            <option value="con">Con fibra</option>
-            <option value="soluble">Soluble</option>
-            <option value="insoluble">Insoluble</option>
-            <option value="mixta">Mixta</option>
-            <option value="alta">Alta (≥5 g/envase)</option>
-          </select>
-        </label>
-        <label class="row"><input type="checkbox" id="ent_soloCompatibles" checked> <span>Solo productos del perfil</span></label>
-      </div>
-
-
-      <div class="grid">
-        <div class="card">
-          <h3 style="margin-top:0;">Objetivo por kg/día</h3>
-          <form id="ent_perkg_form">
-            <label>Peso (kg)
-              <input type="number" id="ent_peso" min="1" step="0.1" placeholder="70">
-            </label>
-            <label>Kcal/kg
-              <input type="number" id="ent_kcalkg" min="0" step="1" placeholder="25">
-            </label>
-            <label>Proteína (g)/kg
-              <input type="number" id="ent_prokg" min="0" step="0.1" placeholder="1.2">
-            </label>
-          </form>
-          <button type="submit" class="btn btn-primary" id="ent_from_perkg">Usar estos objetivos</button>
-        </div>
-
-        <div class="card">
-          <h3 style="margin-top:0;">Objetivo total diario</h3>
-          <form id="ent_total_form">
-            <label>Kcal/día
-              <input type="number" id="ent_kcal_total" min="0" step="1" placeholder="1800">
-            </label>
-            <label>Proteína (g)/día
-              <input type="number" id="ent_prot_total" min="0" step="0.1" placeholder="100">
-            </label>
-            <label>Máx. envases por producto
-              <input type="number" id="ent_max_units" value="4" min="1" step="1">
-            </label>
-            <label>Horas de perfusión
-              <input type="number" id="ent_hours" value="20" min="1" max="24" step="0.5">
-            </label>
-          </form>
-          <button class="btn btn-primary" id="ent_calc">Calcular</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3 style="margin-top:0;">Catálogo usado</h3>
-        <p class="small" id="ent_cat_status">Catálogo DEMO cargado (<span id="ent_count">0</span> productos).</p>
-        <details><summary>Ver catálogo</summary>
-          <div class="table-scroll"><div id="ent_catalogo"></div></div>
-        </details>
-      </div>
-
-    <div id="ent_results" style="display:none; margin-top:1rem;">
-      <h3 style="margin:.25rem 0;">Propuesta</h3>
-      <div class="table-scroll">
-        <table>
-          <thead><tr>
-            <th>Producto</th><th>Unidades</th><th>kcal</th><th>Proteína (g)</th><th>Volumen (ml)</th>
-          </tr></thead>
-          <tbody id="ent_table"></tbody>
-          <tfoot><tr>
-            <th>Total</th><th id="ent_sum_units">—</th>
-            <th id="ent_sum_kcal">—</th><th id="ent_sum_prot">—</th><th id="ent_sum_vol">—</th>
-          </tr></tfoot>
-        </table>
-      </div>
-      <p class="small" id="ent_rate"></p>
-      <p class="small" id="ent_deficit"></p>
-    </div>
-
-    <hr>
-    <h3>Catálogo de fórmulas</h3>
-    <div class="grid grid-1col">
-      <div class="card">
-        <h4 style="margin-top:0;">Listado</h4>
-        <div class="table-scroll"><div id="ent_catalogo_admin"></div></div>
-        <div class="row admin-only" style="margin-top:.5rem;">
-          <button class="btn btn-primary" id="ent_export">Exportar JSON</button>
-          <label class="btn btn-secondary">Importar JSON <input id="ent_import" type="file" accept=".json" hidden></label>
-          <button class="btn btn-danger" id="ent_reset">Restaurar demo</button>
-        </div>
-      </div>
-
-      <div class="card admin-only">
-        <h4 style="margin-top:0;">Añadir fórmula</h4>
-        <form id="addEnteralForm-Name">
-          <label>Nombre <input id="ent_name" placeholder="Fresubin Original" style="width: 100%;"/></label>
-        </form>
-        <div class="grid">
-          <form class="grid-3cols" id="addEnteralForm">
-            <label>Formato (ej: 500 ml) <input id="ent_format" placeholder="500 ml" /></label>
-            <label>Volumen ml <input id="ent_vol" type="number" min="1" /></label>
-            <label>kcal/envase <input id="ent_kcal" type="number" min="0" step="1" /></label>
-            <label>Proteína g/envase <input id="ent_prot" type="number" min="0" step="0.1" /></label>
-            <label>Fibra g/envase <input id="ent_fiber_g" type="number" min="0" step="0.1" /></label>
-            <label>Tipo fibra
-              <select id="ent_fiber_type">
-                <option value="desconocida">Desconocida</option>
-                <option value="sin">Sin fibra</option>
-                <option value="soluble">Soluble</option>
-                <option value="insoluble">Insoluble</option>
-                <option value="mixta">Mixta</option>
-              </select>
-            </label>
-            <label>Tags (coma)
-              <input id="ent_tags" placeholder="general, diabetes, renal, hepatico, ventilacion, oligomerica" />
-            </label>
-          </form>
-        </div>
-        <button class="btn btn-primary" id="ent_add">Añadir fórmula</button>
-      </div>
-    </div>
-  </div>
-
+      </a>
+        
   </main>
-<!-- ============ /FÓRMULAS ENTERALES ============ -->
 </body>
 </html>
 
