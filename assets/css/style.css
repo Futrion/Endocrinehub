@@ -1,0 +1,316 @@
+/* Base styles
+----------------------------------------*/
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
+  margin: 0;
+  color: #222;
+}
+
+/* Navigation
+----------------------------------------*/
+nav {
+  background: #0077b6;
+  padding: 1em 2em;
+  display: flex;
+  gap: 2em;
+  border-bottom: 2px solid #90e0ef;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
+}
+
+nav a:hover {
+  color: #90e0ef;
+}
+
+/* Layout & Containers
+----------------------------------------*/
+main {
+  max-width: 800px;
+  margin: 2em auto;
+  background: #fff;
+  padding: 2.5em 2em;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+
+.contenedor {
+  display: flex;
+  align-items: center;
+  gap: 2em;
+}
+
+.texto {
+  flex: 1;
+}
+
+.imagen {
+  flex: 1;
+}
+
+section {
+  background: #f1f8ff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,119,182,0.07);
+  padding: 1.5em 1em;
+  margin-bottom: 2em;
+}
+
+.main-button-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2em;
+}
+
+.main-button-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #f1f8ff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,119,182,0.07);
+  padding: 1.5em 1em;
+  text-align: center;
+  flex: 1;
+}
+
+.main-button-icon {
+  width: 128px;
+  height: 128px;
+  margin-bottom: 1em;
+}
+
+.block-link {
+  text-decoration: none;
+  display: flex;
+}
+
+/* Typography
+----------------------------------------*/
+h1, h2, h3 {
+  color: #0077b6;
+  margin-top: 0.5em;
+}
+
+ul, ol {
+  margin-left: 1.5em;
+}
+
+.small { 
+  font-size: .9rem; 
+  color: #666; 
+}
+
+.muted { 
+  color: #777; 
+}
+
+/* Forms & Buttons
+----------------------------------------*/
+form label {
+  display: block;
+  margin: 1em 0 0.5em;
+}
+
+form label select{
+  width: 100%;
+  margin: 0;
+}
+.grid-3cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1em;
+}
+
+input, select {
+  padding: 0.5em;
+  border-radius: 6px;
+  border: 1px solid #90e0ef;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+input:focus, select:focus {
+  outline: 2px solid #0077b6;
+}
+
+input[type="number"], input[type="text"] { 
+  width: 100%; 
+  margin-right: 0;
+}
+
+.btn { 
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
+  padding: .6rem .9rem; 
+  border-radius: 8px; 
+  border: 1px solid #ccc; 
+  background: #f7f7f7;
+  transition: box-shadow 0.2s ease;
+}
+
+.btn:hover { 
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.btn-danger { 
+  border-color: #c62828; 
+  color: #c62828; 
+  background: #fdecea; 
+}
+
+.btn-primary { 
+  border-color: #28527a; 
+  color: #fff; 
+  background: #28527a; 
+}
+
+/* Grid System
+----------------------------------------*/
+.grid { 
+  display: grid; 
+  gap: 1rem; 
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.grid-1col { 
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.calculators-grid { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 2em; 
+  margin-bottom: 2em; 
+}
+
+/*
+Specific instruction to compensate grid separations with form label margins
+*/
+.grid form label {
+  margin-top: 0;
+}
+
+/* Components
+----------------------------------------*/
+.card { 
+  border: 1px solid #ddd; 
+  border-radius: 10px; 
+  padding: 1rem;
+  margin-bottom: 1em;
+}
+
+.calculator-section { 
+  background: #f1f8ff; 
+  padding: 1.5em; 
+  border-radius: 12px; 
+  box-shadow: 0 2px 8px rgba(0,119,182,.07);
+  margin-bottom: 2em;
+}
+
+.tag { 
+  display: inline-block; 
+  padding: .1rem .45rem; 
+  margin: .05rem; 
+  border-radius: 999px; 
+  font-size: .78rem; 
+  background: #eef; 
+  border: 1px solid #cde; 
+}
+
+/* Tables
+----------------------------------------*/
+table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  margin-top: .5rem; 
+}
+
+th, td { 
+  border: 1px solid #eee; 
+  padding: .5rem; 
+  text-align: right; 
+}
+
+th { 
+  background: #fafafa; 
+  text-align: left; 
+}
+
+.table-scroll { 
+  overflow-x: auto; 
+  -webkit-overflow-scrolling: touch; 
+}
+
+.table-scroll table { 
+  width: 100%;
+  border-collapse: collapse; 
+}
+
+/* Utilities
+----------------------------------------*/
+.row { 
+  display: flex; 
+  gap: .5rem; 
+  flex-wrap: wrap; 
+  align-items: center; 
+}
+
+details > summary { 
+  cursor: pointer; 
+}
+
+/* Nested Lists
+----------------------------------------*/
+ul ul {
+  background: #e0eafc;
+  border-radius: 8px;
+  margin-top: 0.5em;
+  padding: 0.5em 1em;
+  box-shadow: 0 1px 4px rgba(0,119,182,0.04);
+}
+
+ul li {
+  margin-bottom: 0.7em;
+}
+
+/* Media Queries
+----------------------------------------*/
+@media (max-width: 1100px) { 
+  .catalogo-grid { 
+    grid-template-columns: 1fr !important; 
+  } 
+}
+
+@media (max-width: 768px) { 
+  .calculators-grid { 
+    grid-template-columns: 1fr; 
+  } 
+}
+
+@media (max-width: 600px) {
+  nav {
+    flex-direction: column;
+    gap: 1em;
+    padding: 1em;
+  }
+  
+  main {
+    padding: 1em 0.5em;
+  }
+  
+  .contenedor {
+    flex-direction: column;
+  }
+}
