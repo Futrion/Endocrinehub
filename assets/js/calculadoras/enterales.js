@@ -171,20 +171,26 @@ document.getElementById('ent_calc').addEventListener('click', ()=>{
     prot_per_100kcal: (s.protein_g||0)/((s.kcal||1)/100)
   })).sort((a,b)=> (b.prot_per_100kcal - a.prot_per_100kcal) || (b.kcal_per_ml - a.kcal_per_ml));
 
-  let remK=tgtKcal, remP=tgtProt;
+  // Filter items that fit the requirements
   const picks=[];
   for (const it of items){
-    let u=0;
-    while (u<maxUnits){
-      const needK = tgtKcal>0 && remK>0;
-      const needP = tgtProt>0 && remP>0;
+    // Reset values
+    let units=0;
+    let remK=tgtKcal, remP=tgtProt;
+    // Loop while targets not met and units < maxUnits
+    while (units<maxUnits){
+      const needK = tgtKcal>0 && remK>tgtKcal*0.1;
+      const needP = tgtProt>0 && remP>tgtProt*0.1;
       if (!needK && !needP) break;
-      u++; remK-=it.kcal; remP-=it.protein_g;
+      units++; remK-=it.kcal; remP-=it.protein_g;
     }
-    if (u>0) picks.push({item:it, units:u});
-    if ((tgtKcal>0 && remK<=0) && (tgtProt>0 && remP<=0)) break;
+    // Check if still within 10% of targets
+    const withinK = tgtKcal>0 ? (Math.abs(remK) <= tgtKcal*0.1) : true;
+    const withinP = tgtProt>0 ? (Math.abs(remP) <= tgtProt*0.1) : true;    
+    if (units>0 && withinK && withinP) picks.push({item:it, units});;
   }
 
+  // render
   const tb = document.getElementById('ent_table'); tb.innerHTML='';
   let sumU=0,sumK=0,sumP=0,sumV=0;
   if (!picks.length){
@@ -199,10 +205,7 @@ document.getElementById('ent_calc').addEventListener('click', ()=>{
       tb.appendChild(tr);
     });
   }
-  ent_sum_units.textContent=sumU;
-  ent_sum_kcal.textContent=eFmt0(sumK);
-  ent_sum_prot.textContent=eFmt0(sumP);
-  ent_sum_vol.textContent=eFmt0(sumV);
+
 
   // ml/h global según horas elegidas
   const rate = sumV>0 ? (sumV/horas) : 0;

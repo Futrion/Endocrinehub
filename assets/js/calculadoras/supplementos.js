@@ -211,8 +211,8 @@
 
       // Filter items that fit the requirements
       const picks = [];
-
       for (const it of items){
+        // Reset values
         let units = 0;
         let remK = tgtKcal, remP = tgtProt;
         // Loop while targets not met and units < maxUnits
@@ -222,7 +222,7 @@
           if (!needK && !needP) break;
           units++; remK -= it.kcal; remP -= it.protein_g;
         }
-        // Check if within 10% of targets
+        // Check if still within 10% of targets
         const withinK = tgtKcal>0 ? (Math.abs(remK) <= tgtKcal*0.1) : true;
         const withinP = tgtProt>0 ? (Math.abs(remP) <= tgtProt*0.1) : true;    
         if (units>0 && withinK && withinP) picks.push({item:it, units});
