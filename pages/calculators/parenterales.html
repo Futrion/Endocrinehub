@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora de Fórmulas Nutricionales</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      color-scheme: light dark;
+      --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+      --primary: #6366f1;
+      /* Indigo 500 */
+      --primary-hover: #4f46e5;
+      /* Indigo 600 */
+      --ring: rgba(99, 102, 241, 0.3);
+      --bg-light: #f8fafc;
+      --bg-dark: #0f172a;
+      --card-light: rgba(255, 255, 255, 0.7);
+      --card-dark: rgba(30, 41, 59, 0.7);
+    }
+
+    body {
+      font-family: var(--font-main);
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .value {
+      font-weight: 600;
+    }
+
+    /* Glassmorphism Card */
+    .card {
+      background: var(--card-light);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+      padding: 1.5rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    /*.card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }*/
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        /* Indigo/Slate dark gradient */
+        color: #f1f5f9;
+      }
+
+      .card {
+        background: var(--card-dark);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: #f8fafc;
+      }
+
+      input,
+      select {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #f1f5f9 !important;
+      }
+
+      .tbl th {
+        border-color: #334155 !important;
+        color: #cbd5e1;
+      }
+
+      .tbl td {
+        border-color: #1e293b !important;
+        color: #e2e8f0;
+      }
+    }
+
+    /* Status Colors */
+    .ok {
+      color: #10b981;
+      font-weight: 500;
+    }
+
+    .warn {
+      color: #f59e0b;
+      font-weight: 500;
+    }
+
+    .bad {
+      color: #ef4444;
+      font-weight: 500;
+    }
+
+    /* Grid Layouts */
+    .grid-two {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    .grid-three {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    @media(min-width: 768px) {
+      .grid-two {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .grid-three {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+
+    .muted {
+      font-size: 0.875rem;
+      color: #64748b;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .muted {
+        color: #94a3b8;
+      }
+    }
+
+    .num {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Inputs & Selects */
+    label.label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.35rem;
+      color: #334155;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      label.label {
+        color: #cbd5e1;
+      }
+    }
+
+    input,
+    select {
+      width: 100%;
+      border-radius: 0.5rem;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease-in-out;
+      color: #1e293b;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--ring);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 1.25rem;
+      border-radius: 0.5rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+      color: #ffffff;
+      font-weight: 500;
+      box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 10px -1px rgba(79, 70, 229, 0.4);
+      filter: brightness(1.1);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Tables */
+    .tbl {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+    }
+
+    .tbl th {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: #475569;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .tbl td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #f1f5f9;
+      transition: background-color 0.15s;
+    }
+
+    .tbl tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tbl tr:hover td {
+      background-color: rgba(99, 102, 241, 0.05);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .tbl tr:hover td {
+        background-color: rgba(99, 102, 241, 0.15);
+      }
+    }
+  </style>
+
+  <style>
+    /* Oculta 'Base de comparación' si está presente */
+    #cmp_basis {
+      display: none !important;
+    }
+
+    label:has(+ #cmp_basis) {
+      display: none !important;
+    }
+  </style>
+
+</head>
+
+<body class="min-h-screen bg-gradient-to-b from-slate-100 to-slate-50 text-slate-900 dark:text-zinc-100">
+  <nav>
+    <a href="../../index.html">Inicio</a>
+    <a href="../herramientas.html">Herramientas</a>
+    <a href="../calculators.html">Calculadoras</a>
+    <a href="../apuntes/apuntes.html">Apuntes</a>
+    <a href="../prueba.html">Calculadora osmolaridad</a>
+  </nav>
+
+  <div class="max-w-6xl mx-auto p-6 space-y-6">
+    <header class="flex items-center justify-between">
+      <h1 class="text-2xl md:text-3xl font-bold">Calculadora de Fórmulas Nutricionales</h1>
+    </header>
+
+    <!-- Barra de acciones -->
+    <div class="flex flex-wrap items-center gap-3 -mt-2">
+      <button id="calcNow" class="btn" type="button">Calcular</button>
+      <button id="compareNow" class="btn" type="button">Comparar ahora</button>
+      <span class="muted">También se recalcula al cambiar cualquier campo.</span>
+    </div>
+    <div id="actionStatus" class="muted"></div>
+
+    <!-- Entradas -->
+    <section class="card">
+      <h2 class="text-lg font-semibold mb-4">Entradas</h2>
+      <div class="grid-two">
+        <div>
+          <label class="label">Peso (kg)</label>
+          <input id="peso" type="number" min="0" step="0.1" value="70" />
+        </div>
+        <div>
+          <label class="label">Talla (cm)</label>
+          <input id="talla" type="number" min="0" step="0.1" value="170" />
+        </div>
+        <div>
+          <label class="label">kcal/kg deseadas</label>
+          <input id="kcal_kg" type="number" min="0" step="0.1" value="25" />
+        </div>
+        <div>
+          <label class="label">Proteínas (g/kg) deseadas</label>
+          <input id="prot_kg" type="number" min="0" step="0.01" value="1.2" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Ajustes avanzados -->
+    <section class="card">
+      <h3 class="text-base font-semibold mb-3">Ajustes avanzados</h3>
+      <div class="grid-three">
+        <div>
+          <label class="label">Reparto NP a CHO (%)</label>
+          <input id="carb_npc_pct" type="number" min="0" max="100" step="1" value="50" />
+          <p class="muted">Porcentaje de las kcal no proteicas asignadas a hidratos.</p>
+        </div>
+        <div>
+          <label class="label">Preset NP</label>
+          <select id="npc_preset">
+            <option value="70/30">70/30</option>
+            <option value="60/40">60/40</option>
+            <option value="50/50" selected>50/50</option>
+          </select>
+        </div>
+        <div>
+          <label class="label">GIR máx (mg/kg/min)</label>
+          <input id="gir_max" type="number" min="1" step="0.1" value="5" />
+        </div>
+        <div>
+          <label class="label">Lípidos máx (g/kg/día)</label>
+          <input id="lip_max_day" type="number" min="0.1" step="0.1" value="1" />
+        </div>
+        <div>
+          <label class="label">kcal/g AA</label>
+          <input id="kcalg_aa" type="number" min="1" step="0.1" value="4" />
+        </div>
+        <div>
+          <label class="label">kcal/g CHO</label>
+          <input id="kcalg_cho" type="number" min="1" step="0.1" value="4" />
+        </div>
+        <div>
+          <label class="label">kcal/g Lípidos</label>
+          <input id="kcalg_fat" type="number" min="1" step="0.1" value="10" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Opcional -->
+    <section class="card">
+      <details>
+        <summary class="cursor-pointer text-base font-semibold mb-3">Opcional: volumen y horas de infusión</summary>
+        <div class="grid-two mt-4">
+          <div>
+            <label class="label">Volumen total (ml)</label>
+            <input id="volumen" type="number" min="0" step="1" placeholder="p. ej., 2000" />
+            <p class="muted">No afecta al comparador, solo a información contextual.</p>
+          </div>
+          <div>
+            <label class="label">Horas de infusión</label>
+            <input id="horas" type="number" min="1" step="0.5" placeholder="p. ej., 24" />
+            <p class="muted">Si se deja en blanco, no se calculan tasas de infusión.</p>
+          </div>
+        </div>
+      </details>
+    </section>
+
+
+    <!-- Resultados -->
+    <section class="card">
+      <h2 class="text-lg font-semibold mb-4">Resultados</h2>
+      <div class="grid-three">
+        <div>
+          <div class="label">IMC</div>
+          <div class="value num" id="imc">–</div>
+          <div class="muted" id="imcClas">&nbsp;</div>
+        </div>
+        <div>
+          <div class="label">Proteínas totales (g)</div>
+          <div class="value num" id="prot_g">–</div>
+        </div>
+        <div>
+          <div class="label">Nitrógeno (g)</div>
+          <div class="value num" id="nitrogeno_g">–</div>
+        </div>
+        <div>
+          <div class="label">kcal totales</div>
+          <div class="value num" id="kcal_tot">–</div>
+        </div>
+        <div>
+          <div class="label">kcal proteicas</div>
+          <div class="value num" id="kcal_prot">–</div>
+        </div>
+        <div>
+          <div class="label">kcal no proteicas</div>
+          <div class="value num" id="kcal_np">–</div>
+        </div>
+        <div>
+          <div class="label">kcal NP / g N</div>
+          <div class="value num" id="npc_per_n">–</div>
+        </div>
+      </div>
+
+      <hr class="my-4" />
+
+      <div class="grid-three">
+        <div>
+          <div class="label">% Aminoácidos (kcal)</div>
+          <div class="value num" id="pct_aa">–</div>
+          <div class="muted">Rango óptimo: &gt; 4%</div>
+        </div>
+        <div>
+          <div class="label">% Hidratos de carbono (kcal)</div>
+          <div class="value num" id="pct_cho">–</div>
+          <div class="muted">Rango óptimo: 8–35%</div>
+        </div>
+        <div>
+          <div class="label">% Lípidos (kcal)</div>
+          <div class="value num" id="pct_fat">–</div>
+          <div class="muted">Rango óptimo: 1.5–5%</div>
+        </div>
+      </div>
+
+      <hr class="my-4" />
+
+      <div class="grid-two">
+        <div>
+          <div class="label">Tasa de infusión de glucosa</div>
+          <div class="value num" id="gir">–</div>
+          <div class="muted">mg/kg/min (máx configurable)</div>
+        </div>
+        <div>
+          <div class="label">Tasa de infusión de lípidos</div>
+          <div class="value num" id="lip_rate">–</div>
+          <div class="muted">g/kg/h y g/kg/día</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparador -->
+    <section class="card">
+      <h2 class="text-lg font-semibold mb-2">Comparador de formulaciones</h2>
+
+
+      <div class="grid-two">
+        <div>
+          <label class="label">Porcentaje de similitud (%)</label>
+          <input id="umbral_sim" type="number" min="0" max="100" step="1" value="85" />
+        </div>
+        <div>
+          <label class="label">Base de comparación</label>
+          <select id="cmp_basis">
+            <option value="per100ml">Concentración (g/100 ml)</option>
+            <option value="perbag" selected>Total por bolsa (g)</option>
+          </select>
+
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 my-4">
+        <button id="btnComparar" class="btn" type="button">Comparar</button>
+        <span class="muted">Se mostrará la similitud por macronutriente y la media.</span>
+      </div>
+
+      <div id="cmpInfo" class="muted mb-2">Sin datos cargados.</div>
+      <div class="overflow-auto">
+        <table class="w-full text-sm tbl">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Prot (g/bolsa) · sim%</th>
+              <th>HdC (g/bolsa) · sim%</th>
+              <th>Líp (g/bolsa) · sim%</th>
+              <th>Media sim%</th>
+              <th>Cubre objetivo</th>
+            </tr>
+          </thead>
+          <tbody id="cmpTable"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // ===== dataset embebido (copia del tuyo) =====
+    const EMBEDDED_FORMULACIONES = [{ "Nombre": "PeriOLIMEL N4 E 1500", "Volumen (mL)": 1500.0, "Via de parenteral": "Periferica", "Nitrógeno (g/bolsa)": 6.0, "Glucosa (g/bolsa)": 112.5, "Lípidos (g/bolsa)": 45.0, "Total Kcal/bolsa": 1050.0, "Kcal np/bolsa": 900.0, "Kcal np/gr N": 150.0, "Sodio (mmol/bolsa)": 31.5, "Potasio (mmol/bolsa)": 24.0, "Magnesio (mmol/bolsa)": 3.3, "Calcio (mmol/bolsa)": 3.0, "Cloro (mmol/bolsa)": 37.0, "Fosfato orgánico* (mmol/bolsa)": 12.7, "Acetato (mmol/bolsa)": 41.0, "pH": 6.4, "Osmolaridad (mOsm/L)": 760.0 }, { "Nombre": "PeriOLIMEL N4 E 2000", "Volumen (mL)": 2000.0, "Via de parenteral": "Periferica", "Nitrógeno (g/bolsa)": 8.0, "Glucosa (g/bolsa)": 150.0, "Lípidos (g/bolsa)": 60.0, "Total Kcal/bolsa": 1400.0, "Kcal np/bolsa": 1200.0, "Kcal np/gr N": 150.0, "Sodio (mmol/bolsa)": 42.0, "Potasio (mmol/bolsa)": 32.0, "Magnesio (mmol/bolsa)": 4.4, "Calcio (mmol/bolsa)": 4.0, "Cloro (mmol/bolsa)": 49.0, "Fosfato orgánico* (mmol/bolsa)": 17.0, "Acetato (mmol/bolsa)": 55.0, "pH": 6.4, "Osmolaridad (mOsm/L)": 760.0 }, { "Nombre": "PeriOLIMEL N4 E 2500", "Volumen (mL)": 2500.0, "Via de parenteral": "Periferica", "Nitrógeno (g/bolsa)": 10.0, "Glucosa (g/bolsa)": 187.5, "Lípidos (g/bolsa)": 75.0, "Total Kcal/bolsa": 1750.0, "Kcal np/bolsa": 1500.0, "Kcal np/gr N": 150.0, "Sodio (mmol/bolsa)": 52.5, "Potasio (mmol/bolsa)": 40.0, "Magnesio (mmol/bolsa)": 5.5, "Calcio (mmol/bolsa)": 5.0, "Cloro (mmol/bolsa)": 61.0, "Fosfato orgánico* (mmol/bolsa)": 21.2, "Acetato (mmol/bolsa)": 69.0, "pH": 6.4, "Osmolaridad (mOsm/L)": 760.0 }, { "Nombre": "OLIMEL N7 E 1500", "Volumen (mL)": 1500.0, "Via de parenteral": "Periferica", "Nitrógeno (g/bolsa)": 10.5, "Glucosa (g/bolsa)": 210.0, "Lípidos (g/bolsa)": 60.0, "Total Kcal/bolsa": 1710.0, "Kcal np/bolsa": 1440.0, "Kcal np/gr N": 137.0, "Sodio (mmol/bolsa)": 52.5, "Potasio (mmol/bolsa)": 45.0, "Magnesio (mmol/bolsa)": 6.0, "Calcio (mmol/bolsa)": 5.3, "Cloro (mmol/bolsa)": 68.0, "Fosfato orgánico* (mmol/bolsa)": 22.5, "Acetato (mmol/bolsa)": 67.0, "pH": 6.4, "Osmolaridad (mOsm/L)": 1360.0 }, { "Nombre": "OLIMEL N7 E 2000", "Volumen (mL)": 2000.0, "Via de parenteral": "Periferica", "Nitrógeno (g/bolsa)": 14.0, "Glucosa (g/bolsa)": 280.0, "Lípidos (g/bolsa)": 80.0, "Total Kcal/bolsa": 2270.0, "Kcal np/bolsa": 1920.0, "Kcal np/gr N": 137.0, "Sodio (mmol/bolsa)": 70.0, "Potasio (mmol/bolsa)": 60.0, "Magnesio (mmol/bolsa)": 8.0, "Calcio (mmol/bolsa)": 7.0, "Cloro (mmol/bolsa)": 90.0, "Fosfato orgánico* (mmol/bolsa)": 30.0, "Acetato (mmol/bolsa)": 89.0, "pH": 6.4, "Osmolaridad (mOsm/L)": 1360.0 }, { "Nombre": "OLIMEL N9 Electrolitos 1000", "Volumen (mL)": 1000.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 9.0, "Glucosa (g/bolsa)": 110.0, "Lípidos (g/bolsa)": 40.0, "Total Kcal/bolsa": 1070.0, "Kcal np/bolsa": 840.0, "Kcal np/gr N": 93.0, "Sodio (mmol/bolsa)": 35.0, "Potasio (mmol/bolsa)": 30.0, "Magnesio (mmol/bolsa)": 4.0, "Calcio (mmol/bolsa)": 3.5, "Cloro (mmol/bolsa)": 45.0, "Fosfato orgánico* (mmol/bolsa)": 15.0, "Acetato (mmol/bolsa)": 54.0, "pH": 6.4, "Osmolaridad (mOsm/L)": 1310.0 }, { "Nombre": "OLIMEL N9 Electrolitos 1500", "Volumen (mL)": 1500.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 13.5, "Glucosa (g/bolsa)": 165.0, "Lípidos (g/bolsa)": 60.0, "Total Kcal/bolsa": 1600.0, "Kcal np/bolsa": 1260.0, "Kcal np/gr N": 93.0, "Sodio (mmol/bolsa)": 52.5, "Potasio (mmol/bolsa)": 45.0, "Magnesio (mmol/bolsa)": 6.0, "Calcio (mmol/bolsa)": 5.3, "Cloro (mmol/bolsa)": 68.0, "Fosfato orgánico* (mmol/bolsa)": 22.5, "Acetato (mmol/bolsa)": 80.0, "pH": 6.4, "Osmolaridad (mOsm/L)": 1310.0 }, { "Nombre": "OLIMEL N9 Electrolitos 2000", "Volumen (mL)": 2000.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 18.0, "Glucosa (g/bolsa)": 220.0, "Lípidos (g/bolsa)": 80.0, "Total Kcal/bolsa": 2140.0, "Kcal np/bolsa": 1680.0, "Kcal np/gr N": 93.0, "Sodio (mmol/bolsa)": 70.0, "Potasio (mmol/bolsa)": 60.0, "Magnesio (mmol/bolsa)": 8.0, "Calcio (mmol/bolsa)": 7.0, "Cloro (mmol/bolsa)": 90.0, "Fosfato orgánico* (mmol/bolsa)": 30.0, "Acetato (mmol/bolsa)": 107.0, "pH": 6.4, "Osmolaridad (mOsm/L)": 1310.0 }, { "Nombre": "OLIMEL N9 sin electrolitos 1000", "Volumen (mL)": 1000.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 9.0, "Glucosa (g/bolsa)": 110.0, "Lípidos (g/bolsa)": 40.0, "Total Kcal/bolsa": 1070.0, "Kcal np/bolsa": 840.0, "Kcal np/gr N": 93.0, "Sodio (mmol/bolsa)": 0.0, "Potasio (mmol/bolsa)": 0.0, "Magnesio (mmol/bolsa)": 0.0, "Calcio (mmol/bolsa)": 0.0, "Cloro (mmol/bolsa)": 0.0, "Fosfato orgánico* (mmol/bolsa)": 3.0, "Acetato (mmol/bolsa)": 40.0, "pH": 6.4, "Osmolaridad (mOsm/L)": 1170.0 }, { "Nombre": "OLIMEL N9 sin electrolitos 1500", "Volumen (mL)": 1500.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 13.5, "Glucosa (g/bolsa)": 165.0, "Lípidos (g/bolsa)": 60.0, "Total Kcal/bolsa": 1600.0, "Kcal np/bolsa": 1260.0, "Kcal np/gr N": 93.0, "Sodio (mmol/bolsa)": 0.0, "Potasio (mmol/bolsa)": 0.0, "Magnesio (mmol/bolsa)": 0.0, "Calcio (mmol/bolsa)": 0.0, "Cloro (mmol/bolsa)": 0.0, "Fosfato orgánico* (mmol/bolsa)": 4.5, "Acetato (mmol/bolsa)": 60.0, "pH": 6.4, "Osmolaridad (mOsm/L)": 1170.0 }, { "Nombre": "OLIMEL N9 sin electrolitos 2000", "Volumen (mL)": 2000.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 18.0, "Glucosa (g/bolsa)": 220.0, "Lípidos (g/bolsa)": 80.0, "Total Kcal/bolsa": 2140.0, "Kcal np/bolsa": 1680.0, "Kcal np/gr N": 93.0, "Sodio (mmol/bolsa)": 0.0, "Potasio (mmol/bolsa)": 0.0, "Magnesio (mmol/bolsa)": 0.0, "Calcio (mmol/bolsa)": 0.0, "Cloro (mmol/bolsa)": 0.0, "Fosfato orgánico* (mmol/bolsa)": 6.0, "Acetato (mmol/bolsa)": 80.0, "pH": 6.4, "Osmolaridad (mOsm/L)": 1170.0 }, { "Nombre": "SmofKabiven Central 8 gN CON electrolitos", "Volumen (mL)": 986.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 8.0, "Glucosa (g/bolsa)": 125.0, "Lípidos (g/bolsa)": 38.0, "Total Kcal/bolsa": 1100.0, "Kcal np/bolsa": 900.0, "Kcal np/gr N": 108.0, "Sodio (mmol/bolsa)": 40.0, "Potasio (mmol/bolsa)": 30.0, "Magnesio (mmol/bolsa)": 5.0, "Calcio (mmol/bolsa)": 2.5, "Cloro (mmol/bolsa)": 35.0, "Fosfato orgánico* (mmol/bolsa)": 12.0, "Acetato (mmol/bolsa)": 104.0, "pH": null, "Osmolaridad (mOsm/L)": 1500.0 }, { "Nombre": "SmofKabiven Central 8 gN  SIN electrolitos", "Volumen (mL)": 986.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 8.0, "Glucosa (g/bolsa)": 125.0, "Lípidos (g/bolsa)": 38.0, "Total Kcal/bolsa": 1100.0, "Kcal np/bolsa": 900.0, "Kcal np/gr N": 108.0, "Sodio (mmol/bolsa)": 0.0, "Potasio (mmol/bolsa)": 0.0, "Magnesio (mmol/bolsa)": 0.0, "Calcio (mmol/bolsa)": 0.0, "Cloro (mmol/bolsa)": 0.0, "Fosfato orgánico* (mmol/bolsa)": 2.8, "Acetato (mmol/bolsa)": 73.0, "pH": null, "Osmolaridad (mOsm/L)": 1300.0 }, { "Nombre": "SmofKabiven Central  12 gN CON electrolitos", "Volumen (mL)": 1477.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 12.0, "Glucosa (g/bolsa)": 187.0, "Lípidos (g/bolsa)": 56.0, "Total Kcal/bolsa": 1600.0, "Kcal np/bolsa": 1300.0, "Kcal np/gr N": 108.0, "Sodio (mmol/bolsa)": 60.0, "Potasio (mmol/bolsa)": 45.0, "Magnesio (mmol/bolsa)": 7.5, "Calcio (mmol/bolsa)": 3.8, "Cloro (mmol/bolsa)": 52.0, "Fosfato orgánico* (mmol/bolsa)": 19.0, "Acetato (mmol/bolsa)": 157.0, "pH": null, "Osmolaridad (mOsm/L)": 1500.0 }, { "Nombre": "SmofKabiven Central 12 gN SIN electrolitos", "Volumen (mL)": 1477.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 12.0, "Glucosa (g/bolsa)": 187.0, "Lípidos (g/bolsa)": 56.0, "Total Kcal/bolsa": 1600.0, "Kcal np/bolsa": 1300.0, "Kcal np/gr N": 108.0, "Sodio (mmol/bolsa)": 0.0, "Potasio (mmol/bolsa)": 0.0, "Magnesio (mmol/bolsa)": 0.0, "Calcio (mmol/bolsa)": 0.0, "Cloro (mmol/bolsa)": 0.0, "Fosfato orgánico* (mmol/bolsa)": 4.2, "Acetato (mmol/bolsa)": 110.0, "pH": null, "Osmolaridad (mOsm/L)": 1300.0 }, { "Nombre": "SmofKabiven Central 16 gN CON electrolitos", "Volumen (mL)": 1970.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 16.0, "Glucosa (g/bolsa)": 250.0, "Lípidos (g/bolsa)": 75.0, "Total Kcal/bolsa": 2200.0, "Kcal np/bolsa": 1800.0, "Kcal np/gr N": 108.0, "Sodio (mmol/bolsa)": 80.0, "Potasio (mmol/bolsa)": 60.0, "Magnesio (mmol/bolsa)": 10.0, "Calcio (mmol/bolsa)": 5.0, "Cloro (mmol/bolsa)": 70.0, "Fosfato orgánico* (mmol/bolsa)": 25.0, "Acetato (mmol/bolsa)": 209.0, "pH": null, "Osmolaridad (mOsm/L)": 1500.0 }, { "Nombre": "SmofKabiven Central 16 gN SIN electrolitos", "Volumen (mL)": 1970.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 16.0, "Glucosa (g/bolsa)": 250.0, "Lípidos (g/bolsa)": 75.0, "Total Kcal/bolsa": 2200.0, "Kcal np/bolsa": 1800.0, "Kcal np/gr N": 108.0, "Sodio (mmol/bolsa)": 0.0, "Potasio (mmol/bolsa)": 0.0, "Magnesio (mmol/bolsa)": 0.0, "Calcio (mmol/bolsa)": 0.0, "Cloro (mmol/bolsa)": 0.0, "Fosfato orgánico* (mmol/bolsa)": 5.6, "Acetato (mmol/bolsa)": 147.0, "pH": null, "Osmolaridad (mOsm/L)": 1300.0 }, { "Nombre": "SmofKabiven Central 20 gN CON electrolitos", "Volumen (mL)": 2463.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 20.0, "Glucosa (g/bolsa)": 313.0, "Lípidos (g/bolsa)": 94.0, "Total Kcal/bolsa": 2700.0, "Kcal np/bolsa": 2200.0, "Kcal np/gr N": 108.0, "Sodio (mmol/bolsa)": 100.0, "Potasio (mmol/bolsa)": 74.0, "Magnesio (mmol/bolsa)": 12.0, "Calcio (mmol/bolsa)": 6.2, "Cloro (mmol/bolsa)": 89.0, "Fosfato orgánico* (mmol/bolsa)": 31.0, "Acetato (mmol/bolsa)": 261.0, "pH": null, "Osmolaridad (mOsm/L)": 1500.0 }, { "Nombre": "SmofKabiven Central 20 gN SIN electrolitos", "Volumen (mL)": 2463.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 20.0, "Glucosa (g/bolsa)": 313.0, "Lípidos (g/bolsa)": 94.0, "Total Kcal/bolsa": 2700.0, "Kcal np/bolsa": 2200.0, "Kcal np/gr N": 108.0, "Sodio (mmol/bolsa)": null, "Potasio (mmol/bolsa)": null, "Magnesio (mmol/bolsa)": null, "Calcio (mmol/bolsa)": null, "Cloro (mmol/bolsa)": null, "Fosfato orgánico* (mmol/bolsa)": null, "Acetato (mmol/bolsa)": null, "pH": null, "Osmolaridad (mOsm/L)": null }, { "Nombre": "SmofKabiven extra Nitrogen 10,6 gN CON electrolitos", "Volumen (mL)": 1012.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 10.6, "Glucosa (g/bolsa)": 85.7, "Lípidos (g/bolsa)": 29.2, "Total Kcal/bolsa": 900.0, "Kcal np/bolsa": 635.0, "Kcal np/gr N": 60.0, "Sodio (mmol/bolsa)": 41.3, "Potasio (mmol/bolsa)": 30.9, "Magnesio (mmol/bolsa)": 5.2, "Calcio (mmol/bolsa)": 2.6, "Cloro (mmol/bolsa)": 36.1, "Fosfato orgánico* (mmol/bolsa)": 12.9, "Acetato (mmol/bolsa)": 126.0, "pH": null, "Osmolaridad (mOsm/L)": 1300.0 }, { "Nombre": "SmofKabiven extra Nitrogen 10,6 gN SIN electrolitos", "Volumen (mL)": 1012.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 10.6, "Glucosa (g/bolsa)": 85.7, "Lípidos (g/bolsa)": 29.2, "Total Kcal/bolsa": 900.0, "Kcal np/bolsa": 635.0, "Kcal np/gr N": 60.0, "Sodio (mmol/bolsa)": 0.0, "Potasio (mmol/bolsa)": 0.0, "Magnesio (mmol/bolsa)": 0.0, "Calcio (mmol/bolsa)": 0.0, "Cloro (mmol/bolsa)": 0.0, "Fosfato orgánico* (mmol/bolsa)": 2.2, "Acetato (mmol/bolsa)": 97.2, "pH": null, "Osmolaridad (mOsm/L)": 1200.0 }, { "Nombre": "SmofKabiven extra Nitrogen 15,9 gN CON electrolitos", "Volumen (mL)": 1518.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 15.9, "Glucosa (g/bolsa)": 129.0, "Lípidos (g/bolsa)": 43.8, "Total Kcal/bolsa": 1350.0, "Kcal np/bolsa": 952.0, "Kcal np/gr N": 60.0, "Sodio (mmol/bolsa)": 61.9, "Potasio (mmol/bolsa)": 46.4, "Magnesio (mmol/bolsa)": 7.7, "Calcio (mmol/bolsa)": 3.9, "Cloro (mmol/bolsa)": 54.1, "Fosfato orgánico* (mmol/bolsa)": 19.3, "Acetato (mmol/bolsa)": 189.0, "pH": null, "Osmolaridad (mOsm/L)": 1300.0 }, { "Nombre": "SmofKabiven extra Nitrogen 15,9 gN SIN electrolitos", "Volumen (mL)": 1518.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 15.9, "Glucosa (g/bolsa)": 129.0, "Lípidos (g/bolsa)": 43.8, "Total Kcal/bolsa": 1350.0, "Kcal np/bolsa": 952.0, "Kcal np/gr N": 60.0, "Sodio (mmol/bolsa)": 0.0, "Potasio (mmol/bolsa)": 0.0, "Magnesio (mmol/bolsa)": 0.0, "Calcio (mmol/bolsa)": 0.0, "Cloro (mmol/bolsa)": 0.0, "Fosfato orgánico* (mmol/bolsa)": 3.3, "Acetato (mmol/bolsa)": 146.0, "pH": null, "Osmolaridad (mOsm/L)": 1200.0 }, { "Nombre": "SmofKabiven extra Nitrogen 21,2 gN CON electrolitos", "Volumen (mL)": 2025.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 21.2, "Glucosa (g/bolsa)": 171.0, "Lípidos (g/bolsa)": 58.4, "Total Kcal/bolsa": 1800.0, "Kcal np/bolsa": 1270.0, "Kcal np/gr N": 60.0, "Sodio (mmol/bolsa)": 82.6, "Potasio (mmol/bolsa)": 61.9, "Magnesio (mmol/bolsa)": 10.3, "Calcio (mmol/bolsa)": 5.2, "Cloro (mmol/bolsa)": 72.2, "Fosfato orgánico* (mmol/bolsa)": 25.8, "Acetato (mmol/bolsa)": 253.0, "pH": null, "Osmolaridad (mOsm/L)": 1300.0 }, { "Nombre": "SmofKabiven extra Nitrogen 21,2 gN SIN electrolitos", "Volumen (mL)": 2025.0, "Via de parenteral": "Central", "Nitrógeno (g/bolsa)": 21.2, "Glucosa (g/bolsa)": 171.0, "Lípidos (g/bolsa)": 58.4, "Total Kcal/bolsa": 1800.0, "Kcal np/bolsa": 1270.0, "Kcal np/gr N": 60.0, "Sodio (mmol/bolsa)": 0.0, "Potasio (mmol/bolsa)": 0.0, "Magnesio (mmol/bolsa)": 0.0, "Calcio (mmol/bolsa)": 0.0, "Cloro (mmol/bolsa)": 0.0, "Fosfato orgánico* (mmol/bolsa)": 4.4, "Acetato (mmol/bolsa)": 194.0, "pH": null, "Osmolaridad (mOsm/L)": 1200.0 }];
+
+    // ===== utilidades =====
+    const $ = (id) => document.getElementById(id);
+    const fmt = (x, d = 2) => isFinite(x) ? Number(x).toFixed(d) : '–';
+    const readNum = (id, def = 0) => { const el = $(id); if (!el) return def; const v = parseFloat(el.value); return isFinite(v) ? v : def; };
+    function stripAccents(str) { return (str || '').toString().toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, ''); }
+    function similitud(target, value) { if (!isFinite(target) || target <= 0) return 0; const diff = Math.abs(value - target); return Math.max(0, 1 - (diff / target)) * 100; }
+
+    // ===== cálculos =====
+    function calc() {
+      const peso = readNum("peso", 0);
+      const talla = readNum("talla", 0);
+      const kcal_kg = readNum("kcal_kg", 0);
+      const prot_kg = readNum("prot_kg", 0);
+      const volumen = readNum("volumen", 0);
+      const horasRaw = readNum("horas", NaN);
+      const horas = (isFinite(horasRaw) && horasRaw > 0) ? horasRaw : null;
+
+      const carb_npc_pct = Math.min(100, Math.max(0, readNum("carb_npc_pct", 70)));
+      const kcalg_aa = readNum("kcalg_aa", 4);
+      const kcalg_cho = readNum("kcalg_cho", 4);
+      const kcalg_fat = readNum("kcalg_fat", 10);
+
+      const gir_max = readNum("gir_max", 5);
+      const lip_max_day = readNum("lip_max_day", 1);
+
+      const imc = (talla > 0) ? peso / Math.pow(talla / 100, 2) : NaN;
+      const prot_g = peso * prot_kg;
+      const N_g = prot_g / 6.25;
+
+      const kcal_tot = peso * kcal_kg;
+      const kcal_prot = prot_g * kcalg_aa;
+      const kcal_np = Math.max(0, kcal_tot - kcal_prot);
+
+      const kcal_cho = kcal_np * (carb_npc_pct / 100);
+      const kcal_fat = kcal_np - kcal_cho;
+
+      const pct_aa = 100 * (kcal_prot / Math.max(1, kcal_tot));
+      const pct_cho = 100 * (kcal_cho / Math.max(1, kcal_tot));
+      const pct_fat = 100 * (kcal_fat / Math.max(1, kcal_tot));
+
+      const cho_g = kcal_cho / kcalg_cho;
+      const fat_g = kcal_fat / kcalg_fat;
+
+      let gir_mgkgmin = NaN, fat_gkg_h = NaN, fat_gkg_day_equiv = NaN;
+      if (horas) {
+        const cho_g_h = cho_g / horas;
+        gir_mgkgmin = (cho_g_h * 1000) / (Math.max(1e-6, peso) * 60);
+
+        const fat_g_h = fat_g / horas;
+        fat_gkg_h = fat_g_h / Math.max(1e-6, peso);
+        fat_gkg_day_equiv = (fat_g / Math.max(1e-6, peso)) * (24 / horas);
+      }
+
+      const npc_per_n = kcal_np / Math.max(1e-6, N_g);
+
+      $("imc").textContent = fmt(imc, 1);
+      $("imcClas").textContent = (!isFinite(imc)) ? "" : (imc < 18.5 ? "Bajo peso" : imc < 25 ? "Normopeso" : imc < 30 ? "Sobrepeso" : "Obesidad");
+
+      $("prot_g").textContent = fmt(prot_g);
+      $("nitrogeno_g").textContent = fmt(N_g);
+
+      $("kcal_tot").textContent = fmt(kcal_tot);
+      $("kcal_prot").textContent = fmt(kcal_prot);
+      $("kcal_np").textContent = fmt(kcal_np);
+      $("npc_per_n").textContent = fmt(npc_per_n);
+
+      const setPct = (el, val, goodMin, goodMax) => {
+        const node = $(el);
+        node.textContent = fmt(val) + "%";
+        node.className = 'value num';
+        let cls = "warn";
+        if (val >= goodMin && (goodMax == null || val <= goodMax)) cls = "ok"; else if (goodMax != null && (val > goodMax * 1.5 || val < goodMin / 1.5)) cls = "bad";
+        node.classList.add(cls);
+      };
+
+      setPct("pct_aa", pct_aa, 4, null);
+      setPct("pct_cho", pct_cho, 8, 35);
+      setPct("pct_fat", pct_fat, 1.5, 5);
+
+      const girNode = $("gir");
+      girNode.textContent = isFinite(gir_mgkgmin) ? (fmt(gir_mgkgmin) + ` mg/kg/min`) : '–';
+      girNode.className = 'value num ' + (isFinite(gir_mgkgmin) ? (gir_mgkgmin <= gir_max ? "ok" : "bad") : '');
+
+      const lipNode = $("lip_rate");
+      if (isFinite(fat_gkg_h) && isFinite(fat_gkg_day_equiv)) {
+        lipNode.textContent = `${fmt(fat_gkg_h)} g/kg/h · ${fmt(fat_gkg_day_equiv)} g/kg/día`;
+        lipNode.className = 'value num ' + (fat_gkg_day_equiv <= lip_max_day ? "ok" : "bad");
+      } else {
+        lipNode.textContent = '–';
+        lipNode.className = 'value num';
+      }
+    }
+
+    // eventos
+    document.querySelectorAll("input").forEach(i => i.addEventListener('input', calc));
+    document.querySelectorAll("select").forEach(s => s.addEventListener('change', () => {
+      if (s.id === 'npc_preset') {
+        const map = { '70/30': 70, '60/40': 60, '50/50': 50 };
+        const v = map[s.value] ?? 70;
+        if ($("carb_npc_pct")) $("carb_npc_pct").value = v;
+      }
+      calc();
+    }));
+
+
+    // ===== dataset integrado y normalización =====
+    let formulaciones = [];
+
+    function normalizeFromJSON(rows) {
+      const out = [];
+      for (const r of rows || []) {
+
+        const keys = Object.keys(r || {});
+        const find = (k) => keys.find(kk => stripAccents(kk).includes(stripAccents(k)));
+        const nombreKey = find('Nombre') || find('Producto') || find('Formula') || find('Fórmula') || 'Nombre';
+        const volKey = find('Volumen (mL)') || find('Volumen') || find('Volumen (ml)');
+        const nKey = find('Nitrógeno (g/bolsa)') || find('N (g/bolsa)') || find('N') || find('Nitrogeno');
+        const glucKey = find('Glucosa (g/bolsa)') || find('Hidratos de carbono (g/bolsa)') || find('Carbohidratos (g/bolsa)') || find('Glucosa');
+        const lipKey = find('Lípidos (g/bolsa)') || find('Lipidos (g/bolsa)') || find('Grasa (g/bolsa)') || find('Lípidos');
+
+        const nombre = r[nombreKey];
+        const vol = parseFloat(r[volKey]);
+        const N = parseFloat(r[nKey]);
+        const gluc = parseFloat(r[glucKey]);
+        const lip = parseFloat(r[lipKey]);
+        if (!nombre || !isFinite(vol) || vol <= 0) continue;
+
+        const prot_bolsa = isFinite(N) ? N * 6.25 : NaN;
+        const cho_bolsa = gluc;
+        const lip_bolsa = lip;
+
+        const prot100 = isFinite(prot_bolsa) ? (prot_bolsa / vol) * 100 : NaN;
+        const cho100 = isFinite(cho_bolsa) ? (cho_bolsa / vol) * 100 : NaN;
+        const lip100 = isFinite(lip_bolsa) ? (lip_bolsa / vol) * 100 : NaN;
+
+        out.push({
+          'Producto': nombre,
+          'Volumen (mL)': vol,
+          'Proteínas (g/100 ml)': prot100,
+          'Hidratos de carbono (g/100 ml)': cho100,
+          'Lípidos (g/100 ml)': lip100,
+          'Proteínas (g/bolsa)': isFinite(prot_bolsa) ? prot_bolsa : NaN,
+          'Hidratos de carbono (g/bolsa)': isFinite(cho_bolsa) ? cho_bolsa : NaN,
+          'Lípidos (g/bolsa)': isFinite(lip_bolsa) ? lip_bolsa : NaN,
+          '_fuente': 'json integrado'
+        });
+      }
+      return out;
+    }
+
+    function setFormulaciones(rows) {
+      formulaciones = rows.filter(r => r && isFinite(r['Proteínas (g/bolsa)']) && isFinite(r['Hidratos de carbono (g/bolsa)']) && isFinite(r['Lípidos (g/bolsa)']));
+      $("cmpInfo").textContent = `${formulaciones.length} fórmulas listas para comparar.`;
+    }
+
+    // Cargar inmediatamente el JSON embebido
+    setFormulaciones(normalizeFromJSON(Array.isArray(EMBEDDED_FORMULACIONES) ? EMBEDDED_FORMULACIONES : []));
+
+    // ===== comparador =====
+    function renderComparacion() {
+
+      try {
+        const peso = readNum("peso", 0);
+        const kcal_kg = readNum("kcal_kg", 0);
+        const prot_kg = readNum("prot_kg", 0);
+        const kcalg_aa = readNum("kcalg_aa", 4);
+        const kcalg_cho = readNum("kcalg_cho", 4);
+        const kcalg_fat = readNum("kcalg_fat", 10);
+        const carb_npc_pct = Math.min(100, Math.max(0, readNum("carb_npc_pct", 70)));
+
+        const prot_target = peso * prot_kg;
+        const kcal_tot = peso * kcal_kg;
+        const kcal_prot = prot_target * kcalg_aa;
+        const kcal_np = Math.max(0, kcal_tot - kcal_prot);
+        const kcal_cho = kcal_np * (carb_npc_pct / 100);
+        const kcal_fat = kcal_np - kcal_cho;
+
+        const cho_target = kcal_cho / kcalg_cho;
+        const fat_target = kcal_fat / kcalg_fat;
+
+        const basis = ($("cmp_basis")?.value) || 'per100ml';
+        const umbral = readNum("umbral_sim", 85);
+        const coverThresh = Math.max(0, Math.min(200, readNum("coverage_threshold", 100)));
+
+        const vol_ml = readNum("volumen", 0);
+        const info = `Objetivos: Prot ${fmt(prot_target)} g · HdC ${fmt(cho_target)} g · Líp ${fmt(fat_target)} g` + (vol_ml ? ` (vol objetivo ${fmt(vol_ml, 0)} ml)` : '');
+        $("cmpInfo").textContent = info + (formulaciones.length ? ` · Comparando contra ${formulaciones.length} productos. Base: total por bolsa (g).` : '');
+
+        const tbody = $("cmpTable");
+        tbody.innerHTML = '';
+        if (!formulaciones.length) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td class="py-3" colspan="6">Sin datos.</td>`;
+          tbody.appendChild(tr);
+          return;
+
+        }
+        const resultados = formulaciones.map(r => {
+          const nombre = r['Producto'];
+          const prot100 = parseFloat(r['Proteínas (g/100 ml)']) || 0;
+          const cho100 = parseFloat(r['Hidratos de carbono (g/100 ml)']) || 0;
+          const lip100 = parseFloat(r['Lípidos (g/100 ml)']) || 0;
+
+          const prot_bag = parseFloat(r['Proteínas (g/bolsa)']) || 0;
+          const cho_bag = parseFloat(r['Hidratos de carbono (g/bolsa)']) || 0;
+          const lip_bag = parseFloat(r['Lípidos (g/bolsa)']) || 0;
+
+          if (basis === 'perbag') {
+            const sp = similitud(prot_target, prot_bag);
+            const sc = similitud(cho_target, cho_bag);
+            const sf = similitud(fat_target, lip_bag);
+            const media = (sp + sc + sf) / 3;
+            const ratios = [];
+            if (prot_target > 0) ratios.push((prot_bag / prot_target) * 100);
+            if (cho_target > 0) ratios.push((cho_bag / cho_target) * 100);
+            if (fat_target > 0) ratios.push((lip_bag / fat_target) * 100);
+            const coveragePct = ratios.length ? Math.min(...ratios) : 0;
+            const covered = coveragePct >= coverThresh;
+            return { nombre, prot100, cho100, lip100, prot_bag, cho_bag, lip_bag, sp, sc, sf, media, coveragePct, covered };
+          } else {
+            const kcal_prot_form = prot100 * kcalg_aa;
+            const kcal_cho_form = cho100 * kcalg_cho;
+            const kcal_fat_form = lip100 * kcalg_fat;
+            const kcal_sum_form = Math.max(1e-6, kcal_prot_form + kcal_cho_form + kcal_fat_form);
+            const pct_aa_form = 100 * (kcal_prot_form / kcal_sum_form);
+            const pct_cho_form = 100 * (kcal_cho_form / kcal_sum_form);
+            const pct_fat_form = 100 * (kcal_fat_form / kcal_sum_form);
+
+            const target_pct_aa = (kcal_tot > 0) ? 100 * (kcal_prot / kcal_tot) : 0;
+            const target_pct_cho = (kcal_tot > 0) ? 100 * (kcal_cho / kcal_tot) : 0;
+            const target_pct_fat = (kcal_tot > 0) ? 100 * (kcal_fat / kcal_tot) : 0;
+
+            const sp = similitud(target_pct_aa, pct_aa_form);
+            const sc = similitud(target_pct_cho, pct_cho_form);
+            const sf = similitud(target_pct_fat, pct_fat_form);
+            const media = (sp + sc + sf) / 3;
+            return { nombre, prot100, cho100, lip100, prot_bag, cho_bag, lip_bag, pct_aa_form, pct_cho_form, pct_fat_form, sp, sc, sf, media };
+          }
+        }).filter(x => isFinite(x.media)).sort((a, b) => b.media - a.media);
+
+        const umbral_clamp = Math.max(0, Math.min(100, umbral));
+        const recs = resultados.filter(x => x.media >= umbral_clamp);
+
+        const renderRow = (x) => {
+          const cls = x.media >= umbral_clamp ? 'ok' : x.media >= umbral_clamp - 10 ? 'warn' : 'bad';
+          const tr = document.createElement('tr');
+
+          const tdName = document.createElement('td');
+          tdName.textContent = x.nombre ?? '';
+          const makeCellBoth = (conc100, bagG, pct) => {
+            const td = document.createElement('td');
+            const spanBag = document.createElement('span');
+            spanBag.className = 'num';
+            spanBag.textContent = fmt(bagG) + ' g';
+            const sep2 = document.createTextNode(' · ');
+            const spanPct = document.createElement('span');
+            spanPct.className = cls;
+            spanPct.textContent = fmt(pct, 0) + '%';
+            td.appendChild(spanBag);
+            td.appendChild(sep2);
+            td.appendChild(spanPct);
+            return td;
+          };
+
+          const tdProt = makeCellBoth(x.prot100, x.prot_bag, x.sp);
+          const tdCho = makeCellBoth(x.cho100, x.cho_bag, x.sc);
+          const tdLip = makeCellBoth(x.lip100, x.lip_bag, x.sf);
+
+          const tdCover = document.createElement('td');
+          const isCovered = x.media >= umbral_clamp;
+          tdCover.textContent = isCovered ? 'Sí' : 'No';
+          tdCover.className = isCovered ? 'ok' : 'bad';
+
+          const tdMedia = document.createElement('td');
+          tdMedia.className = 'font-semibold ' + cls;
+          tdMedia.textContent = fmt(x.media, 0) + '%';
+
+          tr.appendChild(tdName);
+          tr.appendChild(tdProt);
+          tr.appendChild(tdCho);
+          tr.appendChild(tdLip);
+          tr.appendChild(tdMedia);
+          tr.appendChild(tdCover);
+          return tr;
+        };
+
+        (recs.length ? recs : resultados.slice(0, 10)).forEach(x => tbody.appendChild(renderRow(x)));
+
+        const a = $("actionStatus");
+        if (a) a.textContent = `Comparación generada ${new Date().toLocaleTimeString()}`;
+        $("cmpTable").scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } catch (err) {
+        const a = $("actionStatus");
+        if (a) a.textContent = `Error al comparar: ${err?.message || err}`;
+      }
+    }
+
+    $("btnComparar").addEventListener('click', renderComparacion);
+    $("calcNow").addEventListener('click', () => { calc(); const a = $("actionStatus"); if (a) a.textContent = `Cálculo actualizado ${new Date().toLocaleTimeString()}`; });
+    $("compareNow").addEventListener('click', renderComparacion);
+
+    // init
+    calc();
+  </script>
+
+
+
+</body>
+
+</html>

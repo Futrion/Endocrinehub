@@ -174,12 +174,14 @@
     });
 
     document.getElementById('supp_calc').addEventListener('click', ()=>{
-      const tgtKcal = parseFloat(document.getElementById('supp_kcal_total').value)||0;
-      const tgtProt = parseFloat(document.getElementById('supp_prot_total').value)||0;
-      const maxUnits = parseInt(document.getElementById('supp_max_units').value)||4;
       const perfil = document.getElementById('perfil').value;
       const perfilFibra = document.getElementById('perfilFibra').value;
       const soloCompatibles = document.getElementById('soloCompatibles').checked;
+
+      const tgtKcal = parseFloat(document.getElementById('supp_kcal_total').value)||0;
+      const tgtProt = parseFloat(document.getElementById('supp_prot_total').value)||0;
+
+      const maxUnits = parseInt(document.getElementById('supp_max_units').value)||4;
 
       if (tgtKcal<=0 && tgtProt<=0){ alert('Indica un objetivo (kcal o proteína)'); return; }
 
@@ -207,29 +209,34 @@
       const items = pool.map(s=>({...s, prot_per_100kcal: s.protein_g/(s.kcal/100)}))
                         .sort((a,b)=> (b.prot_per_100kcal - a.prot_per_100kcal) || (b.kcal - a.kcal));
 
-      let remK = tgtKcal, remP = tgtProt;
+      // Filter items that fit the requirements
       const picks = [];
+
       for (const it of items){
         let units = 0;
+        let remK = tgtKcal, remP = tgtProt;
+        // Loop while targets not met and units < maxUnits
         while (units < maxUnits){
-          const needK = tgtKcal>0 && remK>0;
-          const needP = tgtProt>0 && remP>0;
+          const needK = tgtKcal>0 && remK>tgtKcal*0.1;
+          const needP = tgtProt>0 && remP>tgtProt*0.1;
           if (!needK && !needP) break;
           units++; remK -= it.kcal; remP -= it.protein_g;
         }
-        if (units>0) picks.push({item:it, units});
-        if ((tgtKcal>0 && remK<=0) && (tgtProt>0 && remP<=0)) break;
+        // Check if within 10% of targets
+        const withinK = tgtKcal>0 ? (Math.abs(remK) <= tgtKcal*0.1) : true;
+        const withinP = tgtProt>0 ? (Math.abs(remP) <= tgtProt*0.1) : true;    
+        if (units>0 && withinK && withinP) picks.push({item:it, units});
       }
 
       // render
-      let sumUnits=0,sumK=0,sumP=0,sumHC=0,sumL=0;
+      let sumK=0,sumP=0;
       const tb = document.getElementById('supp_table'); tb.innerHTML='';
       if (picks.length===0){
         tb.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#666">No hay propuesta (ajusta objetivos o catálogo)</td></tr>`;
       }else{
         picks.forEach(p=>{
           const k = p.units*p.item.kcal, pr = p.units*p.item.protein_g, hc = p.units*p.item.carbs_g, li = p.units*p.item.lipids_g;
-          sumUnits += p.units; sumK += k; sumP += pr; sumHC += hc; sumL += li;
+          
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td style="text-align:left">${p.item.name} (${p.item.format})</td>
@@ -241,11 +248,7 @@
           tb.appendChild(tr);
         });
       }
-      document.getElementById('supp_sum_units').textContent = sumUnits;
-      document.getElementById('supp_sum_kcal').textContent = fmt0(sumK);
-      document.getElementById('supp_sum_prot').textContent = fmt1(sumP);
-      document.getElementById('supp_sum_hc').textContent = fmt1(sumHC);
-      document.getElementById('supp_sum_lip').textContent = fmt1(sumL);
+      
 
       const defK = tgtKcal>0 ? Math.max(0, tgtKcal - sumK) : 0;
       const defP = tgtProt>0 ? Math.max(0, tgtProt - sumP) : 0;
