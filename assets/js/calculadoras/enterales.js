@@ -173,20 +173,21 @@ document.getElementById('ent_calc').addEventListener('click', ()=>{
 
   // Filter items that fit the requirements
   const picks=[];
+  const flexMargin = 0.2; // 20% margin
   for (const it of items){
     // Reset values
     let units=0;
     let remK=tgtKcal, remP=tgtProt;
     // Loop while targets not met and units < maxUnits
     while (units<maxUnits){
-      const needK = tgtKcal>0 && remK>tgtKcal*0.1;
-      const needP = tgtProt>0 && remP>tgtProt*0.1;
+      const needK = tgtKcal>0 && remK>tgtKcal*flexMargin;
+      const needP = tgtProt>0 && remP>tgtProt*flexMargin;
       if (!needK && !needP) break;
       units++; remK-=it.kcal; remP-=it.protein_g;
     }
     // Check if still within 10% of targets
-    const withinK = tgtKcal>0 ? (Math.abs(remK) <= tgtKcal*0.1) : true;
-    const withinP = tgtProt>0 ? (Math.abs(remP) <= tgtProt*0.1) : true;    
+    const withinK = tgtKcal>0 ? (Math.abs(remK) <= tgtKcal*flexMargin) : true;
+    const withinP = tgtProt>0 ? (Math.abs(remP) <= tgtProt*flexMargin) : true;    
     if (units>0 && withinK && withinP) picks.push({item:it, units});;
   }
 
