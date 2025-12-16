@@ -271,6 +271,13 @@ details > summary {
   cursor: pointer; 
 }
 
+/* Temporary hide for the presentation */
+#ent_rate,
+#ent_deficit,
+#supp_deficit {
+  display: none;
+}
+
 /* Nested Lists
 ----------------------------------------*/
 ul ul {
