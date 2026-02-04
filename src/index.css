@@ -2,16 +2,19 @@
 
 @theme {
 
-  --color-primary: #3b82f6;
-  --color-primary-bg: #dbeafe;
+  --color-primary: #0077b6;
+  --color-primary-bg: #28527a;
+  --color-primary-border: #90e0ef;
 
-  --color-secondary: #10b981;
-  --color-secondary-bg: #d1fae5;
+  --color-secondary: #d8e4f7;
+  --color-secondary-bg: #f1f8ff;
 
-  --color-danger: #ef4444;
-  --color-danger-bg: #fee2e2;
+  --color-danger: #c62828;
+  --color-danger-bg: #fdecea;
+
+  --color-active: #90e0ef;
+  --color-item-hover: #b0e2eb;
 }
-
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

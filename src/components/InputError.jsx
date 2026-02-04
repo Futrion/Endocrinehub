@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 export function InputError({ message }) {
     return (
         <motion.p
-            className="flex items-center gap-1 px-2 font-semibold text-danger bg-red-100 rounded-md"
+            className="flex items-center ml-2 gap-1 px-1 font-semibold text-xs text-danger rounded-md"
             {...framer_error}
         >
             {message}

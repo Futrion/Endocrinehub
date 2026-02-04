@@ -1,46 +1,23 @@
-import { useForm, FormProvider } from 'react-hook-form';
-import { Input } from './components/Input.jsx';
-
-function Form() {
-    const methods = useForm();
-
-    const onSubmit = methods.handleSubmit(data => {
-        const heightInMeters = parseFloat(data.height) / 100;
-        const calculatedImc = parseFloat(data.weight) / (heightInMeters * heightInMeters);
-        console.log('IMC:', calculatedImc.toFixed(2));
-    });
-
-    return (
-        <FormProvider {...methods}>
-            <form
-            onSubmit={e => e.preventDefault()}
-            noValidate
-            >
-                <div className="grid gap-5 md:grid-cols-2">
-                    <Input label="Peso" type="number" id="weight" placeholder="Introduce tu peso" />
-                    <Input label="Altura" type="number" id="height" placeholder="Introduce tu altura" />
-                </div>
-                <div className="mt-5">
-                    <button 
-                        onClick={onSubmit}
-                        className='flex items-center gap-1 p-5 font-semibold text-white bg-primary rounded-md hover:bg-secondary'
-                    >
-                            Calcular IMC
-                    </button>
-                </div>
-                
-            </form>
-        </FormProvider>
-    );
-}
+import { CalculadoraGET } from './components/pages/Calculadoras.jsx';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Navbar } from './components/Navbar.jsx';
 
 
 export default function App() {
     return (
-        <div>
-            <h1>Formulario de Validación</h1>
-            <Form />
-        </div>
+        <main>
+            <BrowserRouter>
+                <Navbar />
+                <div className='min-h-screen w-full flex items-center justify-center'>
+                    <Routes>
+                        {/* <Route path='/' element={<EndocrineHub />} /> */}
+                        <Route path='/calculadora-imc' element={<CalculadoraGET />} />
+                    </Routes>
+
+                </div>
+            </BrowserRouter>
+                    
+        </main>
     );
 
 }

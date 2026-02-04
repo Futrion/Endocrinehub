@@ -28,7 +28,7 @@ export function Input ({ label, type, id, placeholder }) {
             type={type}
             id={id}
             placeholder={placeholder}
-            className="w-full p-5 font-medium border rounded-md border-slate-300 placeholder:opacity-60"
+            className="w-full py-1 px-3 font-medium border rounded-md border-slate-300 placeholder:opacity-60"
             {...register(id, {
                 required: 'Este campo es obligatorio',
             })} 
