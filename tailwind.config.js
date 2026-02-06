@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,jsx,ts,tsx}",
@@ -8,11 +8,20 @@ export default {
     extend: {
       colors: {
         primary: "#0077b6",      // Dark blue (nav, headings, focus)
+        secondary: "#d8e4f7",
         accent: "#90e0ef",       // Light cyan/turquoise (nav hover, form focus)
         danger: "#c62828",       // Red (danger buttons)
+
+        "primary-bg": "#28527a",
+        "secondary-bg": "#f1f8ff",
+        "danger-bg": "#fdecea",
+        "main-bg": "#dae4f6",
+
+        "primary-border": "#90e0ef",
+        "item-hover": "#b0e2eb",
       },
       fontFamily: {
-        sans: ["'Segoe UI'", 'Arial', 'sans-serif'],
+        sans: ['Inter', 'sans-serif'],
       },
       spacing: {
         // Add custom spacing values here

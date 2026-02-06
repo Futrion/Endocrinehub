@@ -1,20 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
+@config "../tailwind.config.js";
 
-@theme {
-
-  --color-primary: #0077b6;
-  --color-primary-bg: #28527a;
-  --color-primary-border: #90e0ef;
-
-  --color-secondary: #d8e4f7;
-  --color-secondary-bg: #f1f8ff;
-
-  --color-danger: #c62828;
-  --color-danger-bg: #fdecea;
-
-  --color-active: #90e0ef;
-  --color-item-hover: #b0e2eb;
-}
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

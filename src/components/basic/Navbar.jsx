@@ -20,7 +20,7 @@ export function Navbar() {
                             <NavLink
                                 to={link.path}
                                 className={({ isActive }) => `block py-2 px-3 text-heading rounded hover:text-item-hover md:border-0 md:p-0
-                                ${isActive ? 'block py-2 px-3 text-active' : ''}`}
+                                ${isActive ? 'block py-2 px-3 text-accent' : ''}`}
                             >
                                 {link.name}
                             </NavLink>
