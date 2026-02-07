@@ -1,8 +1,20 @@
 import { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Input, CalculatorHeader, SectionHeader, PrimaryButton, DropdownInput } from '../basic/Elements.jsx';
+import { Input, CalculatorHeader, SectionHeader, DropdownInput } from '../basic/Elements.jsx';
 import { CalculatorSection } from '../basic/Layout.jsx';
 import { ResultDisplay } from '../basic/Elements.jsx';
+import Button from '@mui/material/Button';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import { ChevronDown } from 'lucide-react';
 
 export function CalculadoraIMC() {
     const methods = useForm();
@@ -30,9 +42,10 @@ export function CalculadoraIMC() {
                         <Input label="Altura (cm):" type="number" id="height" placeholder="Introduce un número" />
                     </div>
                     <div className="mt-5">
-                        <PrimaryButton onClick={onSubmit} text="Calcular IMC" />
+                        <Button variant="contained" color="primary" className="font-bold" onClick={onSubmit}>
+                            Calcular IMC
+                        </Button>
                     </div>
-                    
                 </form>
             </FormProvider>
             {imc && <ResultDisplay children={<p className="text-lg font-bold">IMC: {imc}</p>} />}
@@ -73,7 +86,9 @@ export function CalculadoraGET() {
                         ]} />
                     </div>
                     <div className="mt-5">
-                        <PrimaryButton onClick={onSubmit} text="Calcular GET" />
+                        <Button variant="contained" color="primary" className="font-bold" onClick={onSubmit}>
+                            Calcular GET
+                        </Button>
                     </div>
                     
                 </form>
@@ -124,7 +139,9 @@ export function CalculadoraNPT() {
                         <Input label="Proteinas por kg (kcal/kg):" type="number" id="proteins" placeholder="Introduce un número" />
                     </div>
                     <div className="mt-5">
-                        <PrimaryButton onClick={onSubmit} text="Calcular NPT" />
+                        <Button variant="contained" color="primary" className="font-bold" onClick={onSubmit}>
+                            Calcular NPT
+                        </Button>
                     </div>
                     
                 </form>
@@ -184,19 +201,22 @@ export function CalculadoraREQ() {
 
         let infusionRates = [];
         durs.forEach(d => {
+            let ratesForDuration = [];
             tasas.forEach(t => {
-                infusionRates.push({
-                    type: 'glucosa',
+                ratesForDuration.push({
+                    type: 'Glucosa',
                     rate: t,
-                    duration: d,
                     amount: (t * 60 * pa * d / 1000).toFixed(2)
                 });
             });
-            infusionRates.push({
-                type: 'lipidos',
+            ratesForDuration.push({
+                type: 'Lípidos',
                 rate: tasaL,
-                duration: d,
                 amount: (tasaL * pa * d).toFixed(2)
+            });
+            infusionRates.push({
+                duration: d,
+                rates: ratesForDuration
             });
         });
 
@@ -230,39 +250,58 @@ export function CalculadoraREQ() {
                         <Input label="Servicio:" type="text" id="service" placeholder="ej: UCI" required={false} />
                     </div>
                     <div className="mt-5">
-                        <PrimaryButton onClick={onSubmit} text="Calcular Requerimientos" />
+                        <Button variant="contained" color="primary" className="font-bold" onClick={onSubmit}>
+                            Calcular Requerimientos
+                        </Button>
                     </div>
-                    
                 </form>
             </FormProvider>
             {req && <ResultDisplay children={
                     <>
                         <SectionHeader title="Resultados" />
                         <div className="grid gap-2 mt-2 ml-4">
-                            <p className="text-m"><strong>IMC:</strong> {req.imc} kg/m²</p>
-                            <p className="text-m"><strong>% pérdida peso:</strong> {req.perd}%</p>
-                            <p className="text-m"><strong>Requerimientos energéticos:</strong></p>
+                            <Typography className="text-m"><strong>IMC:</strong> {req.imc} kg/m²</Typography>
+                            <Typography className="text-m"><strong>% pérdida peso:</strong> {req.perd}%</Typography>
+                            <Typography component="p"><strong>Requerimientos energéticos:</strong></Typography>
                             <ul className="ml-4">
                                 <li className="text-m">25 kcal/kg: {req.reqE.k25.toFixed(0)} kcal</li>
                                 <li className="text-m">30 kcal/kg: {req.reqE.k30.toFixed(0)} kcal</li>
                             </ul>
-                            <p className="text-m"><strong>Requerimientos proteicos:</strong></p>
+                            <Typography component="p"><strong>Requerimientos proteicos:</strong></Typography>
                             <ul className="ml-4">
                                 <li className="text-m">1.2 g/kg: {req.reqP.p12.toFixed(1)} g</li>
                                 <li className="text-m">1.5 g/kg: {req.reqP.p15.toFixed(1)} g</li>
                             </ul>
-                            <p className="text-m mt-4"><strong>Tasas máximas de infusión:</strong></p>
+                            <Typography component="p" ><strong>Tasas máximas de infusión:</strong></Typography>
                             <div>
-                                {req.infusionRates.map((rate, idx) => (
-                                    <div key={idx}>
-                                        <p className="text-m ml-4">
-                                            {rate.type === 'glucosa'
-                                                ? `Glucosa ${rate.rate} mg/kg/min, ${rate.duration}h: ${rate.amount} g`
-                                                : `Lípidos ${rate.rate} g/kg/h, ${rate.duration}h: ${rate.amount} g`
-                                            }
-                                        </p>
-                                        {(idx + 1) % 3 === 0 && <hr className="my-2" />}
-                                    </div>
+                                {req.infusionRates.map((durationGroup, idx) => (
+                                    <Accordion key={idx} className="mb-1 bg-secondary">
+                                        <AccordionSummary expandIcon= {<ChevronDown />}>
+                                            <Typography component="h3">{durationGroup.duration} horas</Typography>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                        {/* <TableContainer key={idx}"> */}
+                                            <Table size="small" padding='none'>
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell>Tipo</TableCell>
+                                                        <TableCell align='right'>Ratio</TableCell>
+                                                        <TableCell align='right'>Cantidad</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {durationGroup.rates.map((rate, rIdx) => (
+                                                        <TableRow key={rIdx}>
+                                                            <TableCell>{rate.type}</TableCell>
+                                                            <TableCell align='right'>{rate.rate} mg/kg/min</TableCell>
+                                                            <TableCell align='right'>{rate.amount} g</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        {/* </TableContainer> */}
+                                        </AccordionDetails>
+                                    </Accordion>
                                 ))}
                             </div>
                         </div>

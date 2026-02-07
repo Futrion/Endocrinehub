@@ -1,8 +1,14 @@
+// import Card from "@mui/material/Card";
+// import Grid from "@mui/material/Grid";
+
 export function CalculatorSection({ children }) {
     return (
-        <div className="bg-secondary-bg rounded-xl p-8 max-w-md">
+        <div className="bg-tertiary rounded-xl p-8 max-w-md">
             {children}
         </div>
+        // <Card className="bg-tertiary rounded-xl p-8 max-w-md">
+        //     {children}
+        // </Card>
     );
 }
 

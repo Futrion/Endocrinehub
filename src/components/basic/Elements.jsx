@@ -3,6 +3,9 @@ import { AnimatePresence } from 'motion/react';
 import { findInputError } from '../../utils/findInputError.js';
 import { isFormInvalid } from '../../utils/isFormInvalid.js';
 import { InputError } from './InputError.jsx';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
 
 export function Input ({ label, type, id, placeholder, required = true }) {
     const { register, formState: { errors } } = useFormContext();
@@ -24,11 +27,14 @@ export function Input ({ label, type, id, placeholder, required = true }) {
                 )}
             </AnimatePresence>
         </div>
-        <input
+        <TextField
+            required={required}
+            error={isInvalid}
+            size='small'
             type={type}
             id={id}
+            // label={placeholder}
             placeholder={placeholder}
-            className="w-full py-1 px-3 border border-primary-border bg-white rounded-md placeholder:opacity-60 focus-visible:border-primary focus-visible:outline-none"
             {...register(id, {
                 required: required ? 'Este campo es obligatorio' : false,
             })} 
@@ -58,44 +64,38 @@ export function DropdownInput({ label, id, options }) {
                     )}
                 </AnimatePresence> */}
             </div>
-            <select
+            <TextField
+                select
+                size='small'
                 id={id}
                 defaultValue={options[0]?.value || ''}
-                className="w-full py-1 px-3 border border-primary-border bg-white rounded-md placeholder:opacity-60 focus-visible:border-primary focus-visible:outline-none"
                 {...register(id, {
                     required: false,
                 })}
             >
                 {options.map((option) => (
-                    <option key={option.value} value={option.value}>
+                    <MenuItem key={option.value} value={option.value}>
                         {option.label}
-                    </option>
+                    </MenuItem>
                 ))}
-            </select>
+            </TextField>
         </div>
     );
 }
 
 export function CalculatorHeader({ title }) {
     return (
-        <h2 className="text-2xl font-bold text-primary mb-4">{title}</h2>
+        <Typography variant="h2" component="h2" className="text-info mb-4">
+            {title}
+        </Typography>
     );
 }
 
 export function SectionHeader({ title }) {
     return (
-        <h3 className="text-xl font-semibold text-primary mb-2">{title}</h3>
-    );
-}
-
-export function PrimaryButton({ onClick, text }) {
-    return (
-        <button 
-            onClick={onClick}
-            className='flex items-center gap-1 py-1 px-4 font-bold text-white bg-primary-bg rounded-md hover:cursor-pointer hover:shadow-md transition-shadow'
-        >
-            {text}
-        </button>
+        <Typography variant="h3" component="h3" className="text-primary mb-2">
+            {title}
+        </Typography>
     );
 }
 

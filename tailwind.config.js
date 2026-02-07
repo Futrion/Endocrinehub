@@ -7,15 +7,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#0077b6",      // Dark blue (nav, headings, focus)
+        primary: "#28527a",      // Dark blue (nav, headings, focus)
         secondary: "#d8e4f7",
+        tertiary: "#f1f8ff",     // Light blue (backgrounds, cards)
         accent: "#90e0ef",       // Light cyan/turquoise (nav hover, form focus)
-        danger: "#c62828",       // Red (danger buttons)
-
-        "primary-bg": "#28527a",
-        "secondary-bg": "#f1f8ff",
-        "danger-bg": "#fdecea",
-        "main-bg": "#dae4f6",
+        error: "#c62828",       // Red (danger buttons)
+        warning: "#ffab00",
+        info: "#0077b6",
+        success: "#66bb6a",
 
         "primary-border": "#90e0ef",
         "item-hover": "#b0e2eb",
