@@ -5,7 +5,7 @@ const colors = {
     primary: {
       main: '#28527a',
       light: '#537494',
-      dark: '#1c3955',
+      dark: '#1F4161',
     },
     secondary: {
       main: '#d8e4f7',
@@ -87,15 +87,30 @@ const theme = createTheme({
     typography: {
         fontFamily: '"Inter", "Helvetica", "Arial", sans-serif',
         fontSize: 16,
+        h1: {
+            fontSize: '2rem',
+            fontWeight: 700,
+            color: colors.info.main,
+        },
         h2: {
             fontSize: '1.5rem',
             fontWeight: 700,
-            color: colors.primary,
+            color: colors.info.main,
         },
         h3: {
             fontSize: '1.25rem',
             fontWeight: 600,
-            color: colors.primary,
+            color: colors.primary.main,
+        },
+        h4: {
+            fontSize: '1.125rem',
+            fontWeight: 600,
+            color: colors.primary.dark,
+        },
+        h5: {
+            fontSize: '1rem',
+            fontWeight: 600,
+            color: colors.primary.dark,
         },
     },
     components: {
@@ -138,6 +153,23 @@ const theme = createTheme({
                 },
             },
         },
+        MuiTableHead: {
+            styleOverrides: {
+                root: {
+                    
+                    '& .MuiTableCell-root': {
+                        fontWeight: 700,
+                    },
+                },
+            },
+        },
+        MuiTableCell: {
+            styleOverrides: {
+                root: {
+                    borderColor: colors.primary.light,
+                },
+            },
+        },
         MuiAccordion: {
             styleOverrides: {
                 root: {
@@ -147,6 +179,16 @@ const theme = createTheme({
                     },
                 }
             }
+        },
+        MuiAccordionSummary: {
+            styleOverrides: {
+                root: {
+                    '& .MuiAccordionSummary-content': {
+                        marginTop: '0',
+                        marginBottom: '0',
+                    },
+                },
+            },
         },
     },
 });

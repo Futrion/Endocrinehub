@@ -85,7 +85,7 @@ export function DropdownInput({ label, id, options }) {
 
 export function CalculatorHeader({ title }) {
     return (
-        <Typography variant="h2" component="h2" className="text-info mb-4">
+        <Typography variant="h2" component="h2" className="mb-4">
             {title}
         </Typography>
     );
@@ -93,7 +93,7 @@ export function CalculatorHeader({ title }) {
 
 export function SectionHeader({ title }) {
     return (
-        <Typography variant="h3" component="h3" className="text-primary mb-2">
+        <Typography variant="h3" component="h3" className="mb-2">
             {title}
         </Typography>
     );

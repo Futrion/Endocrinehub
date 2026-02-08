@@ -149,13 +149,30 @@ export function CalculadoraNPT() {
             {npt && <ResultDisplay children={
                     <>
                         <SectionHeader title="Informe de Formulación NPT" />
-                        <div className="grid gap-2 mt-2 ml-4">
-                            <p className="text-m"><strong>Peso:</strong> {npt.peso} kg</p>
-                            <p className="text-m"><strong>Aminoácidos:</strong> {npt.aminoacidos} g ({npt.nitrogeno} g N2)</p>
-                            <p className="text-m"><strong>Lípidos:</strong> {npt.lipidos} g</p>
-                            <p className="text-m"><strong>Glucosa:</strong> {npt.glucosa} g</p>
-                            <p className="text-m"><strong>Kcal totales:</strong> {npt.total} kcal</p>
-                        </div>
+                        <Table size="small" >
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell><strong>Peso</strong></TableCell>
+                                    <TableCell align='right'>{npt.peso} kg</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell><strong>Aminoácidos </strong></TableCell>
+                                    <TableCell align='right'>{npt.aminoacidos} g ({npt.nitrogeno} g N2)</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell><strong>Lípidos</strong></TableCell>
+                                    <TableCell align='right'>{npt.lipidos} g</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell><strong>Glucosa</strong></TableCell>
+                                    <TableCell align='right'>{npt.glucosa} g</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell><strong>Kcal totales</strong></TableCell>
+                                    <TableCell align='right'>{npt.total} kcal</TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
                     </>
                     } 
                 />}
@@ -262,22 +279,22 @@ export function CalculadoraREQ() {
                         <div className="grid gap-2 mt-2 ml-4">
                             <Typography className="text-m"><strong>IMC:</strong> {req.imc} kg/m²</Typography>
                             <Typography className="text-m"><strong>% pérdida peso:</strong> {req.perd}%</Typography>
-                            <Typography component="p"><strong>Requerimientos energéticos:</strong></Typography>
+                            <Typography variant="h4">Requerimientos energéticos:</Typography>
                             <ul className="ml-4">
-                                <li className="text-m">25 kcal/kg: {req.reqE.k25.toFixed(0)} kcal</li>
-                                <li className="text-m">30 kcal/kg: {req.reqE.k30.toFixed(0)} kcal</li>
+                                <li className="text-m"><strong className='font-semibold'>25 kcal/kg:</strong> {req.reqE.k25.toFixed(0)} kcal</li>
+                                <li className="text-m"><strong className='font-semibold'>30 kcal/kg:</strong> {req.reqE.k30.toFixed(0)} kcal</li>
                             </ul>
-                            <Typography component="p"><strong>Requerimientos proteicos:</strong></Typography>
+                            <Typography variant='h4'>Requerimientos proteicos:</Typography>
                             <ul className="ml-4">
-                                <li className="text-m">1.2 g/kg: {req.reqP.p12.toFixed(1)} g</li>
-                                <li className="text-m">1.5 g/kg: {req.reqP.p15.toFixed(1)} g</li>
+                                <li className="text-m"><strong className='font-semibold'>1.2 g/kg:</strong> {req.reqP.p12.toFixed(1)} g</li>
+                                <li className="text-m"><strong className='font-semibold'>1.5 g/kg:</strong> {req.reqP.p15.toFixed(1)} g</li>
                             </ul>
-                            <Typography component="p" ><strong>Tasas máximas de infusión:</strong></Typography>
+                            <Typography variant='h4'>Tasas máximas de infusión:</Typography>
                             <div>
                                 {req.infusionRates.map((durationGroup, idx) => (
                                     <Accordion key={idx} className="mb-1 bg-secondary">
                                         <AccordionSummary expandIcon= {<ChevronDown />}>
-                                            <Typography component="h3">{durationGroup.duration} horas</Typography>
+                                            <Typography component="h3" className='font-bold'>{durationGroup.duration} horas</Typography>
                                         </AccordionSummary>
                                         <AccordionDetails>
                                         {/* <TableContainer key={idx}"> */}

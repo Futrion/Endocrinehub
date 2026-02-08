@@ -1,14 +1,14 @@
-// import Card from "@mui/material/Card";
-// import Grid from "@mui/material/Grid";
+import Card from "@mui/material/Card";
+import Grid from "@mui/material/Grid";
 
 export function CalculatorSection({ children }) {
     return (
-        <div className="bg-tertiary rounded-xl p-8 max-w-md">
-            {children}
-        </div>
-        // <Card className="bg-tertiary rounded-xl p-8 max-w-md">
+        // <div className="bg-tertiary rounded-xl p-8 max-w-md">
         //     {children}
-        // </Card>
+        // </div>
+        <Card className="bg-tertiary rounded-xl p-8 max-w-md">
+            {children}
+        </Card>
     );
 }
 
@@ -23,8 +23,11 @@ export function CalculatorGrid({ children, cols = 2 }) {
     };
 
     return (
-        <div className={`grid gap-8 p-8 rounded-xl bg-white ${colsMap[cols] || colsMap[2]}`}>
+        // <div className={`grid gap-8 p-8 rounded-xl bg-white ${colsMap[cols] || colsMap[2]}`}>
+        //     {children}
+        // </div>
+        <Card className={`grid gap-8 p-8 rounded-xl bg-white ${colsMap[cols] || colsMap[2]}`}>
             {children}
-        </div>
+        </Card>
     );
 }
