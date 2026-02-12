@@ -10,7 +10,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 
 export const navLinks = [
   { name: 'Inicio', path: '/', icon: House },
-  { name: 'Calculadora IMC', path: '/calculadoras', icon: Calculator },
+  { name: 'Calculadoras', path: '/calculadoras', icon: Calculator },
 ];
 
 export function Navbar() {

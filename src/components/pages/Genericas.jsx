@@ -1,31 +1,33 @@
 import { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Input, CalculatorHeader, SectionHeader, DropdownInput } from '../basic/Elements.jsx';
-import { CalculatorSection } from '../basic/Layout.jsx';
-import { ResultDisplay } from '../basic/Elements.jsx';
-import Button from '@mui/material/Button';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
+import { Input, CalculatorHeader, SectionHeader, DropdownInput, ResultDisplay } from '../basic/Elements.jsx';
+import { CalculatorGrid, CalculatorSection } from '../basic/Layout.jsx';
+import { Button, Table, TableBody, TableCell, TableHead, TableRow, Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
 import { ChevronDown } from 'lucide-react';
+import { calcularIMC, calcularGET, calcularNPT, calcularREQ } from '../../utils/calculatorLogic/genericas.js';
 
-export function CalculadoraIMC() {
+export function Genericas() {
+    return (
+        <CalculatorGrid cols={2} 
+            children={
+                <>
+                <CalculadoraIMC />
+                <CalculadoraGET />
+                <CalculadoraNPT />
+                <CalculadoraREQ />
+                </>
+            }>
+        </CalculatorGrid>
+    );
+}
+
+
+function CalculadoraIMC() {
     const methods = useForm();
     const [imc, setImc] = useState(null);
 
     const onSubmit = methods.handleSubmit(data => {
-        const heightInMeters = parseFloat(data.height) / 100;
-        const calculatedImc = parseFloat(data.weight) / (heightInMeters * heightInMeters);
-        const imc = calculatedImc.toFixed(2);
-        setImc(imc);
-        
+        setImc(calcularIMC(data));
     });
 
     return (
@@ -55,16 +57,12 @@ export function CalculadoraIMC() {
     );
 }
 
-export function CalculadoraGET() {
+function CalculadoraGET() {
     const methods = useForm();
     const [get, setGet] = useState(null);
 
     const onSubmit = methods.handleSubmit(data => {
-        const result = data.gender === 'hombre' ? 
-            10*data.weight + 6.25*data.height - 5*data.age + 5
-            :
-            10*data.weight + 6.25*data.height - 5*data.age - 161;
-        setGet(result.toFixed(0));
+        setGet(calcularGET(data));
     });
 
     return (
@@ -99,29 +97,12 @@ export function CalculadoraGET() {
     );
 }
 
-export function CalculadoraNPT() {
+function CalculadoraNPT() {
     const methods = useForm();
     const [npt, setNpt] = useState(null);
 
     const onSubmit = methods.handleSubmit(data => {
-        const peso = parseFloat(data.weight);
-        const kcalkg = parseFloat(data.calories);
-        const prokg = parseFloat(data.proteins);
-
-        const kcalTot = peso * kcalkg, gAA = peso * prokg, gN2 = gAA / 6.25;
-        const kcalAA = gAA * 4, kcalNoProt = Math.max(0, kcalTot - kcalAA);
-        const kcalLip = kcalNoProt * 0.4, kcalGlu = kcalNoProt * 0.6;
-        const gramosLipidos = Math.round(kcalLip / 10);
-        const gramosGlucosa = Math.round(kcalGlu / 4);
-        
-        setNpt({
-            peso: peso,
-            aminoacidos: gAA.toFixed(0),
-            nitrogeno: gN2.toFixed(0),
-            lipidos: gramosLipidos,
-            glucosa: gramosGlucosa,
-            total: kcalTot.toFixed(0)
-        });
+        setNpt(calcularNPT(data));
     });
 
     return (
@@ -181,69 +162,12 @@ export function CalculadoraNPT() {
     );
 }
 
-export function CalculadoraREQ() {
+function CalculadoraREQ() {
     const methods = useForm();
     const [req, setReq] = useState(null);
 
-    const calcularPesoIdeal = (tCM, gen) => {
-        return (gen === 'hombre')
-            ? 50 + 2.3 * ((tCM / 2.54) - 60)
-            : 45.5 + 2.3 * ((tCM / 2.54) - 60);
-    };
-
     const onSubmit = methods.handleSubmit(data => {
-        let durs = [12, 16, 20], tasas = [5, 6], tasaL = 0.11;
-        const imcCorte = 30;
-        const gen = data.gender;
-        const ed = +data.age;
-        const serv = data.service;
-        const ph = +data.normalWeight;
-        const pa = +data.currentWeight;
-        const tM = +data.height / 100;
-        const tCM = +data.height;
-
-        if (!pa) {
-            alert('Peso actual inválido');
-            return;
-        }
-
-        let imc = pa / (tM * tM);
-        let perd = ((ph - pa) / ph) * 100;
-        let pi = calcularPesoIdeal(tCM, gen);
-        let paj = pi + 0.25 * (pa - pi);
-        let pcalc = (imc >= imcCorte) ? paj : pa;
-
-        const reqE = { k25: 25 * pcalc, k30: 30 * pcalc };
-        const reqP = { p12: 1.2 * pcalc, p15: 1.5 * pcalc };
-
-        let infusionRates = [];
-        durs.forEach(d => {
-            let ratesForDuration = [];
-            tasas.forEach(t => {
-                ratesForDuration.push({
-                    type: 'Glucosa',
-                    rate: t,
-                    amount: (t * 60 * pa * d / 1000).toFixed(2)
-                });
-            });
-            ratesForDuration.push({
-                type: 'Lípidos',
-                rate: tasaL,
-                amount: (tasaL * pa * d).toFixed(2)
-            });
-            infusionRates.push({
-                duration: d,
-                rates: ratesForDuration
-            });
-        });
-
-        setReq({
-            imc: imc.toFixed(2),
-            perd: perd.toFixed(2),
-            reqE,
-            reqP,
-            infusionRates
-        });
+        setReq(calcularREQ(data));
     });
 
     return (

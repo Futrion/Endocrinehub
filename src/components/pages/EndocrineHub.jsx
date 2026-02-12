@@ -21,7 +21,7 @@ export function EndocrineHub() {
             />
             <CardActions className="mt-4">
                 <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                    <Button color="primary" href="/calculadoras" endIcon={<Forward size={16} />}>
+                    <Button color="primary" href="/calculadoras" className="hover:scale-105" endIcon={<Forward size={16} />}>
                         Explorar calculadoras
                     </Button>
                 </Box>

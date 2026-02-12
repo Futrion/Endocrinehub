@@ -6,6 +6,7 @@ import { InputError } from './InputError.jsx';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
+import { FormControlLabel, Checkbox } from '@mui/material';
 
 export function Input ({ label, type, id, placeholder, required = true }) {
     const { register, formState: { errors } } = useFormContext();
@@ -83,6 +84,15 @@ export function DropdownInput({ label, id, options }) {
     );
 }
 
+export function CheckboxInput({ label, id, defaultChecked = false }) {
+    const { register } = useFormContext();
+
+    return (
+        <FormControlLabel control={<Checkbox defaultChecked={defaultChecked} {...register(id, {required: false})} />} label={label} />
+    );
+}
+
+
 export function CalculatorHeader({ title }) {
     return (
         <Typography variant="h2" component="h2" className="mb-4">
@@ -93,7 +103,7 @@ export function CalculatorHeader({ title }) {
 
 export function SectionHeader({ title }) {
     return (
-        <Typography variant="h3" component="h3" className="mb-2">
+        <Typography variant="h3" component="h3" className="mb-4">
             {title}
         </Typography>
     );
