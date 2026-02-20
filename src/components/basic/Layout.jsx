@@ -13,7 +13,7 @@ export function CalculatorSection({ children, className = '' }) {
 
 export function CalculatorInnerDivider({ children, className = '' }) {
     return (
-        <Box className={`border border-gray-300 rounded-lg grow p-4 mt-4${className}`}>
+        <Box className={`border border-gray-300 rounded-lg grow p-4 mt-4 ${className}`}>
             {children}
         </Box>
     );

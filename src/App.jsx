@@ -17,8 +17,8 @@ export default function App() {
             <BrowserRouter>
                 <div className='flex flex-col h-screen'>
                     <Navbar />
-                    <main className='bg-secondary grow overflow-y-auto'>
-                        <div className='w-full flex items-center justify-center p-8 h-full'>
+                    <main className='bg-secondary grow'>
+                        <div className='w-full flex items-center justify-center p-8 h-full overflow-auto'>
                             <Routes>
                                 <Route path='/' element={<EndocrineHub />} />
                                 <Route path='/calculadoras' element={<Calculadoras />} />

@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material/styles';
+import { wrap } from 'motion';
 
 // Direct color mapping from Tailwind config
 const colors = {
@@ -11,6 +12,11 @@ const colors = {
       main: '#d8e4f7',
       light: '#dfe9f8',
       dark: '#979fac',
+    },
+    tertiary: {
+      main: '#f1f8ff',
+      light: '#f8fcff',
+      dark: '#c5d3e8',
     },
     error: {
       main: '#c62828',
@@ -80,9 +86,7 @@ const theme = createTheme({
             dark: colors.success.dark,
         },
         divider: colors.divider,
-        background: {
-            default: colors['main-bg'],
-        },
+        
     },
     typography: {
         fontFamily: '"Inter", "Helvetica", "Arial", sans-serif',
@@ -129,7 +133,6 @@ const theme = createTheme({
                 outlinedError: {
                     borderColor: colors.error.main,
                     color: colors.error.main,
-                    backgroundColor: colors.error.background,
                 },
         
             },
@@ -190,6 +193,21 @@ const theme = createTheme({
                 },
             },
         },
+        MuiDataGrid: {
+            styleOverrides: {
+                root: {
+                    '& .MuiDataGrid-columnHeader': {
+                        backgroundColor: colors.secondary.light,
+                    },
+                    '& .MuiDataGrid-cell': {
+                        border: `1px solid ${colors.secondary.light}`,
+                        wrap: 'wrap',
+                        padding: '2px',
+                        alignContent: 'center',
+                    },
+                },
+            },
+        }
     },
 });
 
