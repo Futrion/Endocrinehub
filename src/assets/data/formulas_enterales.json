@@ -1,0 +1,134 @@
+[
+  {
+    "id": 1,
+    "name": "Fresubin Original",
+    "format": "500 ml",
+    "volume": 500,
+    "kcal": 500,
+    "protein_g": 19,
+    "fiber_g": 0,
+    "fiber_type": "sin",
+    "tags": ["general"]
+  },
+  {
+    "id": 2,
+    "name": "Fresubin Energy",
+    "format": "500 ml",
+    "volume": 500,
+    "kcal": 750,
+    "protein_g": 28,
+    "fiber_g": 0,
+    "fiber_type": "sin",
+    "tags": ["general"]
+  },
+  {
+    "id": 3,
+    "name": "Nutrison Protein Plus",
+    "format": "500 ml",
+    "volume": 500,
+    "kcal": 625,
+    "protein_g": 31.5,
+    "fiber_g": 0,
+    "fiber_type": "sin",
+    "tags": ["general"]
+  },
+  {
+    "id": 4,
+    "name": "Novasource GI Protein",
+    "format": "500 ml",
+    "volume": 500,
+    "kcal": 587,
+    "protein_g": 30.5,
+    "fiber_g": 5,
+    "fiber_type": "mixta",
+    "tags": ["general"]
+  },
+  {
+    "id": 5,
+    "name": "Nutrison Advanced Diason",
+    "format": "500 ml",
+    "volume": 500,
+    "kcal": 515,
+    "protein_g": 21.5,
+    "fiber_g": 0,
+    "fiber_type": "desconocida",
+    "tags": ["diabetes"]
+  },
+  {
+    "id": 6,
+    "name": "Diaba Plus",
+    "format": "500 ml",
+    "volume": 500,
+    "kcal": 705,
+    "protein_g": 37,
+    "fiber_g": 0,
+    "fiber_type": "desconocida",
+    "tags": ["diabetes"]
+  },
+  {
+    "id": 7,
+    "name": "Fresubin Renal",
+    "format": "200 ml",
+    "volume": 200,
+    "kcal": 400,
+    "protein_g": 6,
+    "fiber_g": 0,
+    "fiber_type": "sin",
+    "tags": ["renal"]
+  },
+  {
+    "id": 8,
+    "name": "Nepro HP",
+    "format": "220 ml",
+    "volume": 220,
+    "kcal": 396,
+    "protein_g": 17.82,
+    "fiber_g": 3.3,
+    "fiber_type": "mixta",
+    "tags": ["renal"]
+  },
+  {
+    "id": 9,
+    "name": "Nutricomp Hepa",
+    "format": "500 ml",
+    "volume": 500,
+    "kcal": 660,
+    "protein_g": 20,
+    "fiber_g": 8,
+    "fiber_type": "mixta",
+    "tags": ["hepatico"]
+  },
+  {
+    "id": 10,
+    "name": "Oxepa",
+    "format": "500 ml",
+    "volume": 500,
+    "kcal": 759,
+    "protein_g": 31.25,
+    "fiber_g": 0,
+    "fiber_type": "sin",
+    "tags": ["ventilacion"]
+  },
+  {
+    "id": 11,
+    "name": "Peptamen 2.0 Enteral",
+    "format": "500 ml",
+    "volume": 500,
+    "kcal": 1000,
+    "protein_g": 46,
+    "fiber_g": 0,
+    "fiber_type": "sin",
+    "tags": ["oligomerica"]
+  },
+  {
+    "id": 12,
+    "name": "Fresubin Intensive",
+    "format": "500 ml",
+    "volume": 500,
+    "kcal": 610,
+    "protein_g": 50,
+    "fiber_g": 0,
+    "fiber_type": "sin",
+    "tags": ["oligomerica"]
+  }
+]

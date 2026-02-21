@@ -1,4 +1,4 @@
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, Controller } from 'react-hook-form';
 import { AnimatePresence } from 'motion/react';
 import { findInputError } from '../../utils/findInputError.js';
 import { isFormInvalid } from '../../utils/isFormInvalid.js';
@@ -86,44 +86,54 @@ export function DropdownInput({ label, id, options }) {
     );
 }
 
-export function MultiSelectInput({ controllerField, label, id, options, placeholder, required = true, labelOnTop = true }) {
+export function MultiSelectInput({ controlMethod, label, id, options, placeholder, required = true, labelOnTop = true }) {
     const { register } = useFormContext();
 
     // const inputError = findInputError(errors, id);
     // const isInvalid = isFormInvalid(inputError);
 
     return (
-        <div className='flex flex-col w-full gap-2'>
-            <div className='flex justify-between'>
-                {labelOnTop && 
-                <label htmlFor={id} className='font-semibold capitalize'>
-                    {label}
+      <Controller
+        name={id}
+        control={controlMethod}
+        rules={{
+          required: required ? 'Seleccione al menos una etiqueta' : false,
+          validate: (value) => value.length > 0 || "Seleccione al menos una etiqueta",
+        }}
+        render={({ field }) => (
+          <div className="flex flex-col w-full gap-2">
+            <div className="flex justify-between">
+              {labelOnTop && (
+                <label htmlFor={id} className="font-semibold capitalize">
+                  {label}
                 </label>
-                }
+              )}
             </div>
             <Autocomplete
-                {...controllerField}
-                multiple
-                size='small'
-                id={id}
-                options={options}
-                getOptionLabel={(option) => option.label}
-                label = {labelOnTop === false ? label : ''}
-                filterSelectedOptions
-                onChange={(_, value) => controllerField.onChange(value)}
-                value={controllerField.value || []}
-                isOptionEqualToValue={(option, selected) => option.value === selected.value}
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        label={label}
-                        placeholder={placeholder}
-                    />
-                )}
+              {...field}
+              multiple
+              size="small"
+              id={id}
+              options={options}
+              getOptionLabel={(option) => option.label}
+              label={labelOnTop === false ? label : ""}
+              filterSelectedOptions
+              onChange={(_, value) => field.onChange(value)}
+              value={field.value || []}
+              isOptionEqualToValue={(option, selected) =>
+                option.value === selected.value
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={label}
+                  placeholder={placeholder}
+                />
+              )}
             />
-
-            
-        </div>
+          </div>
+        )}
+      />
     );
 }
 

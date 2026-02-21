@@ -1,6 +1,5 @@
-import { CalculatorGrid, CalculatorSection } from "../basic/Layout";
+import { CalculatorGrid } from "../basic/Layout";
 import { LinkMediaCard } from "../basic/Layout";
-import { Genericas } from "./Genericas";
 
 export function Calculadoras() {
     return (
@@ -16,6 +15,12 @@ export function Calculadoras() {
                 icon="/src/assets/icons/yogurt.png"
                 title="Recomendador de suplementos orales"
                 link="/suplementos"
+                >
+                </LinkMediaCard>
+                <LinkMediaCard 
+                icon="/src/assets/icons/probiotic.png"
+                title="Fórmulas enterales"
+                link="/enterales"
                 >
                 </LinkMediaCard>
             </>

@@ -1,16 +1,13 @@
-import { Box, Button, Divider, Chip, Stack, Typography, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Tooltip, Fab, Grid } from "@mui/material";
-import { DataGrid, GridActionsCell, GridActionsCellItem, gridClasses } from '@mui/x-data-grid';
+import { Box, Button, Divider, Chip, Stack, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Tooltip, Fab, Grid } from "@mui/material";
 import { CalculatorGrid, CalculatorSection, CalculatorInnerDivider } from "../basic/Layout";
 import { CalculatorHeader, DropdownInput, CheckboxInput, SectionHeader, Input, MultiSelectInput } from "../basic/Elements";
-import { useForm, FormProvider, Controller } from 'react-hook-form';
-import { ArrowRight, ArrowDown, Calculator, Trash2, Plus, Download, FileUp, RotateCcw } from "lucide-react";
-import suplementos_data from '../../assets/data/suplementos_orales.json'
-import { esES } from "@mui/x-data-grid/locales";
-import { recomendarSuplementos } from "../../utils/calculatorLogic/suplementos.js";
-import { useState, useCallback, createContext, useContext } from "react";
+import { useForm, FormProvider } from 'react-hook-form';
+import { ArrowRight, ArrowDown, Calculator } from "lucide-react";
+import enterales_data from '../../assets/data/formulas_enterales.json'
+import { recomendarEnterales } from "../../utils/calculatorLogic/enterales.js";
+import { useState, useCallback } from "react";
 import { z } from 'zod';
 import { importToJSON, exportToJSON } from "../../utils/fileOperations.js";
-import { styled } from '@mui/material/styles';
 import { DeleteActionsCellItem, CatalogGridActions, CatalogDataGrid } from "../basic/DataGridElements.jsx";
 
 const JSONSchemaObject = z.object({
@@ -19,8 +16,6 @@ const JSONSchemaObject = z.object({
     "volume": z.number(),
     "kcal": z.number(),
     "protein_g": z.number(),
-    "carbs_g": z.number(),
-    "lipids_g": z.number(),
     "fiber_g": z.number(),
     "fiber_type": z.string(),
     "tags": z.array(z.string())
@@ -56,14 +51,8 @@ const columns_proposal = [
         editable: false,
     },
     {
-        field: 'carbs_g_total',
-        headerName: 'HC (g)',
-        type: 'number',
-        editable: false,
-    },
-    {
-        field: 'lipids_g_total',
-        headerName: 'Lípidos (g)',
+        field: 'volume_ml_total',
+        headerName: 'Volumen (ml)',
         type: 'number',
         editable: false,
     },
@@ -75,9 +64,10 @@ const available_tags= [
     {value: 'diabetes', label: 'Diabetes'},
     {value: 'renal', label: 'Renal'},
     {value: 'hepatopatia', label: 'Hepatopatía'},
-    {value: 'disfagia', label: 'Disfagia'},
+    // {value: 'disfagia', label: 'Disfagia'},
     {value: 'ventilacion', label: 'Ventilación mecánica'},
-    {value: 'bariatrica', label: 'Bariátrica (alta proteína)'},
+    // {value: 'bariatrica', label: 'Bariátrica (alta proteína)'},
+    {value: 'oligomerica', label: 'Oligomérica/peptídica'},
 ]
 
 const available_fiber_types= [
@@ -90,15 +80,16 @@ const available_fiber_types= [
     {value: 'alta', label: 'Alta en fibra (>5g/envase)'},
 ]
 
-function AddProductDialog(props){
-    const { openAddDialog, setOpenAddDialog, suplementos, setSuplementos } = props;
+
+function AddFormulaDialog(props){
+    const { openAddDialog, setOpenAddDialog, formulas, setFormulas } = props;
     const methods = useForm();
 
     const onSubmit = methods.handleSubmit(data => {
         const formattedTags = data.tags.map(t => t.value);
-        const id = suplementos.length + 1;
+        const id = formulas.length + 1;
         const newProduct = {id: id, ...data, tags: formattedTags};
-        setSuplementos(prevSuplementos => [...prevSuplementos, newProduct]);
+        setFormulas(prevSuplementos => [...prevSuplementos, newProduct]);
         setOpenAddDialog(false);
     });
 
@@ -107,7 +98,7 @@ function AddProductDialog(props){
             open={openAddDialog !== false}
             onClose={() => setOpenAddDialog(false)}
         >
-            <DialogTitle id="add-product-title">Añadir producto</DialogTitle>
+            <DialogTitle id="add-product-title">Añadir fórmula</DialogTitle>
             <DialogContent className="w-full">
                 <FormProvider {...methods}>
                     <form
@@ -120,12 +111,9 @@ function AddProductDialog(props){
                             <Input label="Volumen" type="number" id="volume" placeholder="Introduce un número" labelOnTop={false}/>
                             <Input label="Kcal" type="number" id="kcal" placeholder="Introduce un número" labelOnTop={false}/>
                             <Input label="Proteína (g)" type="number" id="protein" placeholder="Introduce un número" labelOnTop={false}/>
-                            <Input label="Carbohidratos (g)" type="number" id="carbs" placeholder="Introduce un número" labelOnTop={false}/>
-                            <Input label="Lípidos (g)" type="number" id="lipids" placeholder="Introduce un número" labelOnTop={false}/>
                             <Input label="Fibra (g)" type="number" id="fiber" placeholder="Introduce un número" labelOnTop={false}/>
                             <Input label="Tipo de fibra" type="text" id="fiber_type" placeholder="Introduce un número" labelOnTop={false}/>
-                            <MultiSelectInput controlMethod={methods.control} label="Tags" id="tags" options={available_tags} placeholder="Selecciona las categorías" labelOnTop={false}/>    
-                            
+                            <MultiSelectInput controlMethod={methods.control} label="Etiquetas" id="tags" options={available_tags} placeholder="Selecciona las categorías" labelOnTop={false}/>
                         </Grid>                       
                     </form>
                 </FormProvider>
@@ -139,22 +127,23 @@ function AddProductDialog(props){
 }
 
 
-export function Suplementos() {
+
+export function Enterales() {
     const methods = useForm();
 
-    const [suplementos, setSuplementos] = useState(suplementos_data);   // Stores the state of suplementos that will be used as reference for recommendation
+    const [formulas, setFormulas] = useState(enterales_data);           // Stores the state of suplementos that will be used as reference for recommendation
     const [actionRowId, setActionRowId] = useState(null);               // Stores the id of the row that is being edited
     const [openAddDialog, setOpenAddDialog] = useState(false);          // Stores the state of the add product dialog
 
     const [proposal, setProposal] = useState(null);                     // Stores the recommended suplementos
 
     const onSubmit = methods.handleSubmit(data => {
-        setProposal(recomendarSuplementos(data, suplementos));
+        setProposal(recomendarEnterales(data, formulas));
     });
 
     const deleteActiveRow = useCallback((rowId) => {
         // Set the suplementos array to all the elements with id !== rowId
-        setSuplementos((prevSuplementos) => prevSuplementos.filter(s => s.id !== rowId));
+        setFormulas((prevFormulas) => prevFormulas.filter(s => s.id !== rowId));
     }, []);
 
     const handleCloseDialog = useCallback(() => {
@@ -188,11 +177,11 @@ export function Suplementos() {
     }
 
     const reloadCatalogue = () => {
-        setSuplementos(suplementos_data);
+        setFormulas(enterales_data);
     }
 
     const exportCatalogue = () => {
-        exportToJSON(suplementos, 'suplementos_orales.json');
+        exportToJSON(formulas, 'formulas_enterales.json');
     }
 
     async function importCatalogue(event) {
@@ -203,7 +192,7 @@ export function Suplementos() {
             console.log(newCatalogue);
     
             if (newCatalogue !== false){
-                setSuplementos(newCatalogue);
+                setFormulas(newCatalogue);
             }
         } catch (error) {
             alert(error);
@@ -244,18 +233,6 @@ export function Suplementos() {
             editable: false,
         },
         {
-            field: 'carbs_g',
-            headerName: 'Carbohidratos (g)',
-            type: 'number',
-            editable: false,
-        },
-        {
-            field: 'lipids_g',
-            headerName: 'Lípidos (g)',
-            type: 'number',
-            editable: false,
-        },
-        {
             field: 'fiber_g',
             headerName: 'Fibra (g)',
             type: 'number',
@@ -269,7 +246,7 @@ export function Suplementos() {
         },
         {
             field: 'tags',
-            headerName: 'Tags',
+            headerName: 'Etiquetas',
             editable: false,
             renderCell: (params) => (
                 <div>
@@ -289,7 +266,7 @@ export function Suplementos() {
                 />
             ]
         },
-]
+    ]
 
     return (
         <CalculatorGrid cols={1} className="w-lvh" children={
@@ -300,6 +277,7 @@ export function Suplementos() {
                     onSubmit={e => e.preventDefault()}
                     noValidate
                     >
+
                         <CalculatorInnerDivider>
                             <SectionHeader title="Perfil clínico" />
                             <Box className="flex gap-4 md:flex-row flex-col">
@@ -308,9 +286,9 @@ export function Suplementos() {
                             </Box>
                             <CheckboxInput label="Usar solo productos compatibles con el perfil" id="compatible_only" defaultChecked={true} />
                         </CalculatorInnerDivider>
-
-
-
+                        
+                        
+                        
                         <Box className="flex gap-4 md:flex-row flex-col">
                             <CalculatorInnerDivider>
                                 <SectionHeader title="Objetivo por kg/día" />
@@ -329,19 +307,20 @@ export function Suplementos() {
                                     <Input label="Kcal/día:" type="number" id="kcal_day" placeholder="Introduce un número"/>
                                     <Input label="Proteína (g)/día:" type="number" id="protein_day" placeholder="Introduce un número"/>
                                     <Input label="Máx. envases por producto:" type="number" id="max_containers_per_product" placeholder="Introduce un número"/>
+                                    <Input label="Horas de perfusión:" type="number" id="perfusion_hours" placeholder="Introduce un número"/>
                                 </Box>
                                 <Box className="flex justify-center">
                                     <Button variant="contained" color="primary" onClick={onSubmit} className="mt-4" endIcon={<Calculator size={16} />}>Calcular recomendación</Button>
                                 </Box>
                             </CalculatorInnerDivider>
                         </Box>
-
-
-
+                        
+                        
+                        
                         {proposal &&
                             <CalculatorInnerDivider className="border-info bg-blue-100 border-2 shadow-xl">
                                 <SectionHeader title="Propuesta" />
-                                <CatalogDataGrid rows={proposal} columns={columns_proposal} hideFooter={true}/>
+                                <CatalogDataGrid rows={proposal} columns={columns_proposal} hideFooter/>
                             </CalculatorInnerDivider>
                         }
                         <Divider className="mt-4" variant="middle"/>
@@ -350,18 +329,16 @@ export function Suplementos() {
                         
                         <CalculatorInnerDivider>
                             <Stack direction="row" justifyContent="space-between" className="items-center">
-                                <SectionHeader title="Catálogo de productos" />
-                                <CatalogGridActions setOpenAddDialog={setOpenAddDialog } importCatalogue={importCatalogue} exportCatalogue={exportCatalogue} reloadCatalogue={reloadCatalogue}/>
+                                <SectionHeader title="Catálogo de fórmulas" />
+                                <CatalogGridActions setOpenAddDialog={setOpenAddDialog} importCatalogue={importCatalogue} exportCatalogue={exportCatalogue} reloadCatalogue={reloadCatalogue}/>
                             </Stack>
-                            <DeleteActionHandlerContext.Provider value={setActionRowId}>
-                                <CatalogDataGrid rows={suplementos} columns={columns_catalog}/>
-                            </DeleteActionHandlerContext.Provider>
-                            <AddProductDialog openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog} suplementos={suplementos} setSuplementos={setSuplementos}/>
+                            <CatalogDataGrid rows={formulas} columns={columns_catalog}/>
+                            <AddFormulaDialog openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog} suplementos={formulas} setSuplementos={setFormulas}/>
                             <Dialog
                                 open={actionRowId !== null}
                                 onClose={() => setActionRowId(null)}
                             >
-                                <DialogTitle id="alert-dialog-title">¿Eliminar este suplemento?</DialogTitle>
+                                <DialogTitle id="alert-dialog-title">¿Eliminar esta fórmula?</DialogTitle>
                                 <DialogContent>
                                     <DialogContentText id="alert-dialog-description">
                                         Está acción no se puede deshacer
@@ -375,7 +352,7 @@ export function Suplementos() {
                                 </DialogActions>
                             </Dialog>
                         </CalculatorInnerDivider>
-                        
+                    
                     </form>
                 </FormProvider>
             </CalculatorSection>

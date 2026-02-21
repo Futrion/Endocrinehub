@@ -1,7 +1,7 @@
 export function recomendarSuplementos(data, catalog){
     const perfil = data.patology;
     const perfilFibra = data.fiber;
-    const soloCompatibles = data.compatibleOnly;
+    const soloCompatibles = data.compatible_only;
 
     const tgtKcal = data.kcal_day;
     const tgtProt = data.protein_day;
@@ -18,12 +18,12 @@ export function recomendarSuplementos(data, catalog){
     const g = Number(p.fiber_g || 0);
     const t = (p.fiber_type || 'desconocida').toLowerCase();
     switch (perfilFibra) {
-        case 'sin':  return g === 0 || t === 'sin';
-        case 'con':  return g > 0 || (t !== 'sin' && t !== 'desconocida');
-        case 'soluble':   return t === 'soluble';
-        case 'insoluble': return t === 'insoluble';
-        case 'mixta':     return t === 'mixta';
-        case 'alta':      return g >= 5;
+        case 'sin_fibra':   return g === 0 || t === 'sin';
+        case 'con_fibra':   return g > 0 || (t !== 'sin' && t !== 'desconocida');
+        case 'soluble':     return t === 'soluble';
+        case 'insoluble':   return t === 'insoluble';
+        case 'mixta':       return t === 'mixta';
+        case 'alta':        return g >= 5;
         default: return true;
     }
     });

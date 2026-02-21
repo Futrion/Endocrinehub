@@ -1,5 +1,6 @@
 import { Calculadoras } from './components/pages/Calculadoras.jsx';
 import { EndocrineHub } from './components/pages/EndocrineHub.jsx';
+import { Enterales } from './components/pages/Enterales.jsx';
 import { Suplementos } from './components/pages/Suplementos.jsx';
 import { Genericas } from './components/pages/Genericas.jsx';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -24,6 +25,7 @@ export default function App() {
                                 <Route path='/calculadoras' element={<Calculadoras />} />
                                 <Route path='/genericas' element={<Genericas />} />
                                 <Route path='/suplementos' element={<Suplementos />} />
+                                <Route path='/enterales' element={<Enterales />} />
                             </Routes>
                         </div>
                     </main>
