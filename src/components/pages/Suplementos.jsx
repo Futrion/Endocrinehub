@@ -353,9 +353,7 @@ export function Suplementos() {
                                 <SectionHeader title="Catálogo de productos" />
                                 <CatalogGridActions setOpenAddDialog={setOpenAddDialog } importCatalogue={importCatalogue} exportCatalogue={exportCatalogue} reloadCatalogue={reloadCatalogue}/>
                             </Stack>
-                            <DeleteActionHandlerContext.Provider value={setActionRowId}>
-                                <CatalogDataGrid rows={suplementos} columns={columns_catalog}/>
-                            </DeleteActionHandlerContext.Provider>
+                            <CatalogDataGrid rows={suplementos} columns={columns_catalog}/>
                             <AddProductDialog openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog} suplementos={suplementos} setSuplementos={setSuplementos}/>
                             <Dialog
                                 open={actionRowId !== null}
