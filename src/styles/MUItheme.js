@@ -25,7 +25,7 @@ const colors = {
       background: '#fdecea',
     },
     warning: {
-      main: '#ffab00',
+      main: '#d78f00ff',
       light: '#ffbb33',
       dark: '#b27700',
     },
@@ -126,7 +126,7 @@ const theme = createTheme({
                     transition: 'all 0.3s ease',
                 },
                 outlinedSecondary: {
-                    borderColor: colors['primary-border'],
+                    borderColor: colors.primary.main,
                     color: colors.primary.main,
                     backgroundColor: colors.secondary.main,    
                 },
@@ -141,8 +141,8 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     backgroundColor: "#fff",
+                    borderRadius: '6px',
                     '& .MuiOutlinedInput-root': {
-                        borderRadius: '6px',
                         '& fieldset': {
                             borderColor: colors.accent.main,
                         },

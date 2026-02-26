@@ -12,7 +12,7 @@ module.exports = {
         tertiary: "#f1f8ff",     // Light blue (backgrounds, cards)
         accent: "#90e0ef",       // Light cyan/turquoise (nav hover, form focus)
         error: "#c62828",       // Red (danger buttons)
-        warning: "#ffab00",
+        warning: "#d78f00ff",
         info: "#0077b6",
         success: "#66bb6a",
 

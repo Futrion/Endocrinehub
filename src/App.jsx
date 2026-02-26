@@ -1,5 +1,6 @@
 import { Calculadoras } from './components/pages/Calculadoras.jsx';
 import { EndocrineHub } from './components/pages/EndocrineHub.jsx';
+import { Parenterales } from './components/pages/Parenterales.jsx';
 import { Enterales } from './components/pages/Enterales.jsx';
 import { Suplementos } from './components/pages/Suplementos.jsx';
 import { Genericas } from './components/pages/Genericas.jsx';
@@ -26,6 +27,7 @@ export default function App() {
                                 <Route path='/genericas' element={<Genericas />} />
                                 <Route path='/suplementos' element={<Suplementos />} />
                                 <Route path='/enterales' element={<Enterales />} />
+                                <Route path='/parenterales' element={<Parenterales />} />
                             </Routes>
                         </div>
                     </main>
