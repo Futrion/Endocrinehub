@@ -16,7 +16,7 @@ export default function App() {
     <ThemeProvider theme={theme}>
         
     
-            <BrowserRouter>
+            <BrowserRouter basename={import.meta.env.BASE_URL}>
                 <div className='flex flex-col h-screen'>
                     <Navbar />
                     <main className='bg-secondary grow'>

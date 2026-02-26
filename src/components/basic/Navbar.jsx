@@ -13,6 +13,14 @@ export const navLinks = [
   { name: 'Calculadoras', path: '/calculadoras', icon: Calculator },
 ];
 
+function AppVersion() {
+    return (
+        <div className="text-sm text-white hidden md:block opacity-50">
+            Version: {__APP_VERSION__}
+        </div>
+    );
+}
+
 export function Navbar() {
     const [ isMenuOpen, setIsMenuOpen ] = useState(false);
 
@@ -47,6 +55,7 @@ export function Navbar() {
                     ))}
                 </ul>
                 {/* Logo */}
+                <AppVersion />
                 <NavLink to="/" className="text-xl md:text-2xl font-bold mr-6 md:mr-0">
                     EndocrineHub
                 </NavLink>

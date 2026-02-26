@@ -5,5 +5,10 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: '/',
+  base: '/Endocrinehub/',
+  define: {
+    __APP_VERSION__: JSON.stringify(
+      new Date().toISOString()
+    ),
+  },
 })

@@ -1,4 +1,5 @@
 import { Card, CardActionArea, CardMedia, CardContent, Typography, Box } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 
 export function CalculatorSection({ children, className = '' }) {
     return (
@@ -22,7 +23,7 @@ export function CalculatorInnerDivider({ children, className = '' }) {
 export function LinkMediaCard({ icon, title, link }) {
     return (    
         <Card className="bg-tertiary rounded-xl max-w-md h-full">
-            <CardActionArea component="a" href={link} className="p-8 flex flex-col items-center h-full">
+            <CardActionArea component={RouterLink} to={link} className="p-8 flex flex-col items-center h-full">
                 <CardMedia
                     component="img"
                     image={icon}

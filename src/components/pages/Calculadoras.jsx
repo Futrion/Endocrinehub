@@ -1,30 +1,34 @@
 import { CalculatorGrid } from "../basic/Layout";
 import { LinkMediaCard } from "../basic/Layout";
+import calculatorIcon from "../../assets/icons/calcular.png";
+import suplementosIcon from "../../assets/icons/yogurt.png";
+import enteralesIcon from "../../assets/icons/probiotic.png";
+import parenteralesIcon from "../../assets/icons/saline.png";
 
 export function Calculadoras() {
     return (
         <CalculatorGrid cols={3} children={
             <>
                 <LinkMediaCard 
-                    icon="/src/assets/icons/calcular.png"
+                    icon={calculatorIcon}
                     title="Calculadoras Genéricas"
                     link="/genericas"
                 >
                 </LinkMediaCard>
                 <LinkMediaCard 
-                    icon="/src/assets/icons/yogurt.png"
+                    icon={suplementosIcon}
                     title="Recomendador de suplementos orales"
                     link="/suplementos"
                 >
                 </LinkMediaCard>
                 <LinkMediaCard 
-                    icon="/src/assets/icons/probiotic.png"
+                    icon={enteralesIcon}
                     title="Fórmulas enterales"
                     link="/enterales"
                 >
                 </LinkMediaCard>
                 <LinkMediaCard 
-                    icon="/src/assets/icons/saline.png"
+                    icon={parenteralesIcon}
                     title="Comparador de nutrición parenteral tricameral"
                     link="/parenterales"
                 >
