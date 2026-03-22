@@ -12,6 +12,7 @@ import { z } from 'zod';
 import { importToJSON, exportToJSON } from "../../utils/fileOperations.js";
 import { styled } from '@mui/material/styles';
 import { DeleteActionsCellItem, CatalogGridActions, CatalogDataGrid } from "../basic/DataGridElements.jsx";
+import { useIsMobile } from "../../utils/useIsMobile.js";
 
 const JSONSchemaObject = z.object({
     "name": z.string(),
@@ -29,13 +30,13 @@ const JSONSchemaObject = z.object({
 const JSONSchemaArray = z.array(JSONSchemaObject);
 
 
-const columns_proposal = [
+const columns_proposal_fn = (isMobile) => [
     {
         field: 'name',
         headerName: 'Nombre',
         type: 'string',
         editable: false,
-        width: 250
+        width: isMobile ? 100 : 250
     },
     {
         field: 'units',
@@ -140,6 +141,8 @@ function AddProductDialog(props){
 
 
 export function Suplementos() {
+    const isMobile = useIsMobile();
+    const columns_proposal = columns_proposal_fn(isMobile);
     const methods = useForm();
 
     const [suplementos, setSuplementos] = useState(suplementos_data);   // Stores the state of suplementos that will be used as reference for recommendation
@@ -217,7 +220,7 @@ export function Suplementos() {
             headerName: 'Nombre',
             type: 'string',
             editable: false,
-            width: 250
+            width: isMobile ? 150 : 250
         },
         {
             field: 'format',
@@ -292,7 +295,7 @@ export function Suplementos() {
 ]
 
     return (
-        <CalculatorGrid cols={1} className="w-lvh" children={
+        <CalculatorGrid cols={1} className="w-full" children={
             <CalculatorSection>
                 <CalculatorHeader title="Recomendador de suplementos orales nutricionales"/>
                 <FormProvider {...methods}>

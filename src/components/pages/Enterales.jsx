@@ -9,6 +9,7 @@ import { useState, useCallback } from "react";
 import { z } from 'zod';
 import { importToJSON, exportToJSON } from "../../utils/fileOperations.js";
 import { DeleteActionsCellItem, CatalogGridActions, CatalogDataGrid } from "../basic/DataGridElements.jsx";
+import { useIsMobile } from "../../utils/useIsMobile.js";
 
 const JSONSchemaObject = z.object({
     "name": z.string(),
@@ -24,13 +25,13 @@ const JSONSchemaObject = z.object({
 const JSONSchemaArray = z.array(JSONSchemaObject);
 
 
-const columns_proposal = [
+const columns_proposal_fn = (isMobile) => [
     {
         field: 'name',
         headerName: 'Nombre',
         type: 'string',
         editable: false,
-        width: 250
+        width: isMobile ? 150 : 250
     },
     {
         field: 'units',
@@ -129,6 +130,8 @@ function AddFormulaDialog(props){
 
 
 export function Enterales() {
+    const isMobile = useIsMobile();
+    const columns_proposal = columns_proposal_fn(isMobile);
     const methods = useForm();
 
     const [formulas, setFormulas] = useState(enterales_data);           // Stores the state of suplementos that will be used as reference for recommendation
@@ -206,7 +209,7 @@ export function Enterales() {
             headerName: 'Nombre',
             type: 'string',
             editable: false,
-            width: 250
+            width: isMobile ? 150 : 250
         },
         {
             field: 'format',
@@ -269,7 +272,7 @@ export function Enterales() {
     ]
 
     return (
-        <CalculatorGrid cols={1} className="w-lvh" children={
+        <CalculatorGrid cols={1} className="w-full" children={
             <CalculatorSection>
                 <CalculatorHeader title="Recomendador de suplementos orales nutricionales"/>
                 <FormProvider {...methods}>

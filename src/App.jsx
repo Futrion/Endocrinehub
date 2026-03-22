@@ -20,7 +20,7 @@ export default function App() {
                 <div className='flex flex-col h-screen'>
                     <Navbar />
                     <main className='bg-secondary grow'>
-                        <div className='w-full flex items-center justify-center p-8 h-full overflow-auto'>
+                        <div className='w-full flex items-start md:items-center justify-center p-2 sm:p-4 md:p-8 h-full overflow-auto'>
                             <Routes>
                                 <Route path='/' element={<EndocrineHub />} />
                                 <Route path='/calculadoras' element={<Calculadoras />} />

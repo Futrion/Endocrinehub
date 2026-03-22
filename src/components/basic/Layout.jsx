@@ -6,7 +6,7 @@ export function CalculatorSection({ children, className = '' }) {
         // <div className="bg-tertiary rounded-xl p-8 max-w-md">
         //     {children}
         // </div>
-        <Card className={`bg-tertiary rounded-xl p-8 ${className}`}>
+        <Card className={`bg-tertiary rounded-xl p-3 sm:p-4 md:p-8 ${className}`}>
             {children}
         </Card>
     );
@@ -23,7 +23,7 @@ export function CalculatorInnerDivider({ children, className = '' }) {
 export function LinkMediaCard({ icon, title, link }) {
     return (    
         <Card className="bg-tertiary rounded-xl max-w-md h-full">
-            <CardActionArea component={RouterLink} to={link} className="p-8 flex flex-col items-center h-full">
+            <CardActionArea component={RouterLink} to={link} className="p-4 md:p-6 flex flex-col items-center h-full">
                 <CardMedia
                     component="img"
                     image={icon}
@@ -58,7 +58,7 @@ export function CalculatorGrid({ children, cols = 2, className = '' }) {
         // <div className={`grid gap-8 p-8 rounded-xl bg-white ${colsMap[cols] || colsMap[2]}`}>
         //     {children}
         // </div>
-        <Card className={`grid gap-8 p-8 rounded-xl bg-white items-stretch ${className} ${colsMap[cols] || colsMap[2]}`}>
+        <Card className={`grid gap-4 md:gap-6 p-2 sm:p-4 md:p-6 rounded-xl bg-white items-stretch ${className} ${colsMap[cols] || colsMap[2]}`}>
             {children}
         </Card>
     );

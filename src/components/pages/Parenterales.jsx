@@ -6,6 +6,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { Box, Typography, Accordion, AccordionSummary, AccordionDetails, Divider, Button, Stack } from "@mui/material";
 import { ChevronDown, ChartNoAxesColumn, Calculator } from "lucide-react";
 import { calcularResultadosParenterales, compararFormulas } from "../../utils/calculatorLogic/parenterales.js";
+import { useIsMobile } from "../../utils/useIsMobile.js";
 import { CatalogDataGrid } from '../basic/DataGridElements.jsx';
 import formulaciones_data from '../../assets/data/formulaciones_parenterales.json';
 
@@ -47,13 +48,13 @@ function renderPCTcell(value, pct){
     );
 }
 
-const comparison_columns = [
+const comparison_columns_fn = (isMobile) => [
     {
         field: 'nombre',
         headerName: 'Producto',
         type: 'string',
         editable: false,
-        width: 250
+        width: isMobile ? 150 : 250
     },
     {
         field: 'sp',
@@ -128,6 +129,8 @@ const comparison_columns = [
 ]
 
 export function Parenterales() {
+    const isMobile = useIsMobile();
+    const comparison_columns = comparison_columns_fn(isMobile);
     const methods = useForm();
 
     const [results, setResults] = useState(null);
@@ -148,7 +151,7 @@ export function Parenterales() {
     };
 
     return (
-        <CalculatorGrid cols={1} className="w-lvh" children={
+        <CalculatorGrid cols={1} className="w-full" children={
             <CalculatorSection>
                 <CalculatorHeader title="Calculadora de Fórmulas Nutricionales"/>
                 <FormProvider {...methods}>
@@ -158,7 +161,7 @@ export function Parenterales() {
                     >
                         <CalculatorInnerDivider>
                              <SectionHeader title="Entradas" />
-                             <Box className="grid gap-4 grid-cols-2">
+                             <Box className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                                 <Input label="Peso (kg)" type="number" id="weight" placeholder="Introduce un número"/>
                                 <Input label="Talla (cm)" type="number" id="height" placeholder="Introduce un número"/>
                                 <Input label="Kcal/Kg deseadas" type="number" id="kcal_kg_desired" placeholder="Introduce un número"/>
@@ -169,7 +172,7 @@ export function Parenterales() {
 
                         <CalculatorInnerDivider>
                              <SectionHeader title="Ajustes avanzados" />
-                             <Box className="grid gap-4 grid-cols-3">
+                             <Box className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
                                 <Input label="Reparto NP a CHO (%)" type="number" id="carb_npc_pct" placeholder="Introduce un número"/>
                                 <DropdownInput label="Preset NP" type="number" id="np_preset" options={[
                                     {value: "50_50", label: "50/50"},
@@ -188,7 +191,7 @@ export function Parenterales() {
                                     <Typography component="h3" className='font-bold'>Opcional: volumen y horas de infusión</Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    <Box className="grid gap-4 grid-cols-2">
+                                    <Box className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                                         <Input label="Volumen total (ml)" type="number" id="volume_total_ml" placeholder="Introduce un número" required={false}/>
                                         <Input label="Horas de infusión" type="number" id="infusion_hours" placeholder="Introduce un número" required={false}/>
                                         <Typography variant="subtitle"><i>No afecta al comparador, solo a información contextual.</i></Typography>
@@ -205,7 +208,7 @@ export function Parenterales() {
                         {results &&
                         <CalculatorInnerDivider className="border-info bg-blue-100 border-2 shadow-xl">
                             <SectionHeader title="Resultados" />
-                            <Box className="grid gap-4 grid-cols-4 mb-4">
+                            <Box className="grid gap-4 grid-cols-2 sm:grid-cols-4 mb-4">
                                 <ResultGridElement label="IMC" value={results.imc ? results.imc.toFixed(2) : null} subtitle={isFinite(results.imc) ? results.imc < 18.5 ? "Bajo peso" : results.imc < 25 ? "Normopeso" : results.imc < 30 ? "Sobrepeso" : "Obesidad" : null} />
                                 <ResultGridElement label="Proteínas totales (g)" value={results.prot_g_total ? results.prot_g_total.toFixed(2) : null} />
                                 <ResultGridElement label="Nitrógeno (g)" value={results.nitrogen_g_total ? results.nitrogen_g_total.toFixed(2) : null} />
@@ -215,13 +218,13 @@ export function Parenterales() {
                                 <ResultGridElement label="Kcal NP / g N" value={results.kcal_npc ? results.kcal_npc.toFixed(2) : null} />
                             </Box>
                             <Divider className='mb-4'/>
-                            <Box className="grid gap-4 grid-cols-3 mb-4">
+                            <Box className="grid gap-4 grid-cols-1 sm:grid-cols-3 mb-4">
                                 <ResultGridElement label="% Aminoácidos (kcal)" value={`${results.pct_aa ? results.pct_aa.toFixed(2) : null}%`} subtitle='Rango óptimo: > 4%' valueClassName={results.pct_aa_class}/>
                                 <ResultGridElement label="% Hidratos de carbono (kcal)" value={`${results.pct_cho ? results.pct_cho.toFixed(2) : null}%`} subtitle='Rango óptimo: 8–35%' valueClassName={results.pct_cho_class}/>
                                 <ResultGridElement label="% Lípidos (kcal)" value={`${results.pct_fat ? results.pct_fat.toFixed(2) : null}%`} subtitle='Rango óptimo: 1.5–5%' valueClassName={results.pct_fat_class}/>
                             </Box>
                             <Divider className='mb-4'/>
-                            <Box className="grid gap-4 grid-cols-2">
+                            <Box className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                                 <ResultGridElement label="Tasa de infusión de glucosa" value={results.gir_mgkgmin ? results.gir_mgkgmin.toFixed(2) : '-'} subtitle='mg/kg/min (máx configurable)' valueClassName={results.gir_mgkgmin_class}/>
                                 <ResultGridElement label="Tasa de infusión de lípidos" value={results.fat_gkg_h && results.fat_gkg_day_equiv ? `${results.fat_gkg_h.toFixed(2)} · ${results.fat_gkg_day_equiv.toFixed(2)}` : '-'} subtitle='g/kg/h y g/kg/día' valueClassName={results.fat_gkg_day_equiv_class}/>
                             </Box>
@@ -233,7 +236,7 @@ export function Parenterales() {
                         
                         <CalculatorInnerDivider>
                             <SectionHeader title="Comparador de formulaciones" />
-                            <Stack direction="row" spacing={2} className="w-1/2 items-end">
+                            <Stack direction="row" spacing={2} className="w-full md:w-1/2 items-end">
                                 <Input label="Porcentaje de similitud (%)" type="number" id="umbral_sim" defaultValue="85" ></Input>
                                 <Button onClick={handleCompare} variant='outlined' color='secondary' size='large' className='w-2xs' endIcon={<ChartNoAxesColumn />} >Comparar</Button>
                             </Stack>
