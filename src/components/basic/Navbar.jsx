@@ -1,92 +1,192 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { Menu, XIcon, House, Calculator } from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Menu as MenuIcon, XIcon, House, Calculator, LogOut, User } from "lucide-react";
 import IconButton from "@mui/material/IconButton";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
+import MuiMenu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Divider from "@mui/material/Divider";
+import Avatar from "@mui/material/Avatar";
+import { useAuth } from "../../contexts/AuthContext";
 
 export const navLinks = [
   { name: 'Inicio', path: '/', icon: House },
   { name: 'Calculadoras', path: '/calculadoras', icon: Calculator },
 ];
 
-function AppVersion() {
-    return (
-        <div className="text-sm text-white hidden md:block opacity-50">
-            Version: {__APP_VERSION__}
-        </div>
-    );
-}
-
 export function Navbar() {
-    const [ isMenuOpen, setIsMenuOpen ] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [userMenuAnchor, setUserMenuAnchor] = useState(null);
+    const { session, role, signOut } = useAuth();
+    const navigate = useNavigate();
+
+    const userEmail = session?.user?.email ?? '';
+    const userInitial = userEmail.charAt(0).toUpperCase();
+
+    function openUserMenu(e) { setUserMenuAnchor(e.currentTarget); }
+    function closeUserMenu() { setUserMenuAnchor(null); }
+
+    async function handleSignOut() {
+        closeUserMenu();
+        await signOut();
+        navigate('/login', { replace: true });
+    }
 
     const toggleDrawer = (open) => (event) => {
-        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-            return;
-        }
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) return;
         setIsMenuOpen(open);
-        console.log('Drawer state:', open);
-    }
-
-
-    function handleClick() {
-        setIsMenuOpen(!isMenuOpen);
-    }
+    };
 
     return (
         <header className="bg-primary text-white p-3 border-b-2 border-primary-border">
-            <nav className="flex items-center justify-between">
-                {/* Navigation Links Container */}
-                <ul className="hidden font-medium md:flex flex-col ml-6 md:p-0 rounded-base md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0">
+            <nav className="relative flex items-center justify-between">
+
+                {/* Logo */}
+                <NavLink to="/" className="text-xl md:text-2xl font-bold shrink-0">
+                    EndocrineHub
+                </NavLink>
+
+                {/* Desktop: nav links centered */}
+                <ul className={`hidden md:flex items-center gap-6 absolute left-1/2 -translate-x-1/2 ${!session ? 'invisible' : ''}`}>
                     {navLinks.map((link) => (
-                        <li key={link.name} className="flex font-bold">
+                        <li key={link.name} className="font-bold">
                             <NavLink
                                 to={link.path}
-                                className={({ isActive }) => `block py-2 px-3 text-heading rounded hover:text-item-hover md:border-0 md:p-0
-                                ${isActive ? 'block py-2 px-3 text-accent' : ''}`}
+                                className={({ isActive }) =>
+                                    `py-2 px-1 text-white hover:text-accent transition-colors
+                                    ${isActive ? 'text-accent border-b-2 border-accent' : ''}`
+                                }
                             >
                                 {link.name}
                             </NavLink>
                         </li>
                     ))}
                 </ul>
-                {/* Logo */}
-                <AppVersion />
-                <NavLink to="/" className="text-xl md:text-2xl font-bold mr-6 md:mr-0">
-                    EndocrineHub
-                </NavLink>
-                {/* Mobile Menu Button */}
-                <IconButton 
-                    className="md:hidden text-white"
-                    onClick={handleClick}
-                >
-                    {isMenuOpen ? <XIcon size={24} /> : <Menu size={24} />}
-                </IconButton>
+
+                {/* Desktop: user avatar */}
+                <div className="hidden md:flex items-center">
+                    {session && (
+                        <>
+                            <IconButton onClick={openUserMenu} size="small" sx={{ p: 0 }}>
+                                <Avatar
+                                    sx={{
+                                        width: 34,
+                                        height: 34,
+                                        bgcolor: 'primary.light',
+                                        fontSize: '0.9rem',
+                                        fontWeight: 700,
+                                        border: '2px solid rgba(255,255,255,0.4)',
+                                        cursor: 'pointer',
+                                        '&:hover': { borderColor: 'white' },
+                                    }}
+                                >
+                                    {userInitial}
+                                </Avatar>
+                            </IconButton>
+
+                            <MuiMenu
+                                anchorEl={userMenuAnchor}
+                                open={Boolean(userMenuAnchor)}
+                                onClose={closeUserMenu}
+                                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                                slotProps={{
+                                    paper: { sx: { mt: 1, minWidth: 220 } }
+                                }}
+                            >
+                                <div className="px-4 py-3">
+                                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-0.5">Sesión iniciada como</p>
+                                    <p className="text-sm font-semibold text-gray-800 truncate">{userEmail}</p>
+                                    {role && (
+                                        <span className={`inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded-full ${role === 'admin' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
+                                            {role === 'admin' ? 'Administrador' : 'Usuario'}
+                                        </span>
+                                    )}
+                                </div>
+                                <Divider />
+                                <MenuItem onClick={handleSignOut} sx={{ gap: 1.5, color: 'error.main', py: 1.5 }}>
+                                    <LogOut size={16} />
+                                    <span>Cerrar sesión</span>
+                                </MenuItem>
+                            </MuiMenu>
+                        </>
+                    )}
+                </div>
+
+                {/* Mobile: user avatar + hamburger */}
+                <div className="flex md:hidden items-center gap-1">
+                    {session && (
+                        <>
+                            <IconButton onClick={openUserMenu} size="small" sx={{ p: 0.5 }}>
+                                <Avatar
+                                    sx={{
+                                        width: 30,
+                                        height: 30,
+                                        bgcolor: 'primary.light',
+                                        fontSize: '0.85rem',
+                                        fontWeight: 700,
+                                        border: '2px solid rgba(255,255,255,0.4)',
+                                    }}
+                                >
+                                    {userInitial}
+                                </Avatar>
+                            </IconButton>
+
+                            <MuiMenu
+                                anchorEl={userMenuAnchor}
+                                open={Boolean(userMenuAnchor)}
+                                onClose={closeUserMenu}
+                                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                                slotProps={{
+                                    paper: { sx: { mt: 1, minWidth: 200 } }
+                                }}
+                            >
+                                <div className="px-4 py-3">
+                                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-0.5">Sesión iniciada como</p>
+                                    <p className="text-sm font-semibold text-gray-800 truncate">{userEmail}</p>
+                                    {role && (
+                                        <span className={`inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded-full ${role === 'admin' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
+                                            {role === 'admin' ? 'Administrador' : 'Usuario'}
+                                        </span>
+                                    )}
+                                </div>
+                                <Divider />
+                                <MenuItem onClick={handleSignOut} sx={{ gap: 1.5, color: 'error.main', py: 1.5 }}>
+                                    <LogOut size={16} />
+                                    <span>Cerrar sesión</span>
+                                </MenuItem>
+                            </MuiMenu>
+                        </>
+                    )}
+
+                    {session && (
+                        <IconButton onClick={() => setIsMenuOpen(o => !o)} sx={{ color: 'white' }}>
+                            {isMenuOpen ? <XIcon size={24} /> : <MenuIcon size={24} />}
+                        </IconButton>
+                    )}
+                </div>
             </nav>
+
             {/* Mobile Drawer */}
-            <Drawer
-                anchor="top"
-                open={isMenuOpen}
-                onClose={toggleDrawer(false)}
-            >
+            <Drawer anchor="top" open={isMenuOpen} onClose={toggleDrawer(false)}>
                 <List className="p-4 bg-primary text-white">
                     {navLinks.map((link) => (
                         <ListItem disablePadding key={link.name} className="py-2">
                             <ListItemButton
                                 component={NavLink}
                                 to={link.path}
-                                size="large"
-                                className="flex items-center py-2 px-3 text-heading rounded text-white hover:text-item-hover"
+                                className="flex items-center py-2 px-3 rounded text-white hover:text-accent"
                                 onClick={() => setIsMenuOpen(false)}
                             >
                                 <ListItemIcon className="text-inherit flex items-center mr-3" sx={{ minWidth: 0 }}>
                                     <link.icon size={20} />
                                 </ListItemIcon>
-                                <span className="align-middle">{link.name}</span>
+                                <span className="font-bold">{link.name}</span>
                             </ListItemButton>
                         </ListItem>
                     ))}

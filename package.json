@@ -17,6 +17,7 @@
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^7.3.7",
     "@mui/x-data-grid": "^8.27.0",
+    "@supabase/supabase-js": "^2.103.2",
     "@tailwindcss/vite": "^4.1.18",
     "json-structure-validator": "^1.2.1",
     "lucide-react": "^0.563.0",
