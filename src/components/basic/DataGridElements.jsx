@@ -1,8 +1,9 @@
-import { DataGrid, GridActionsCellItem, gridClasses } from "@mui/x-data-grid";
+import { DataGrid, GridActionsCellItem, gridClasses, useGridApiRef } from "@mui/x-data-grid";
 import { Stack, Typography, Tooltip, Fab } from "@mui/material";
 import { Trash2, Plus, Download, FileUp, RotateCcw } from "lucide-react";
 import { esES } from "@mui/x-data-grid/locales";
 import { styled } from '@mui/material/styles';
+import { useEffect, useRef, useMemo } from 'react';
 
 
 export function DeleteActionsCellItem({id, onDelete}) {
@@ -70,22 +71,52 @@ export function CatalogGridActions(props){
     );
 }
 
-export function CatalogDataGrid({ rows, columns, hideFooter = false }) {8
+// Añade flex:1 a columnas sin ancho fijo para que rellenen el espacio disponible
+function withFlex(columns) {
+    const hasFixed = columns.some(c => c.width != null || c.flex != null);
+    if (hasFixed) return columns;
+    return columns.map((col, i) =>
+        i === 0 ? { ...col, flex: 2 } : { ...col, flex: 1 }
+    );
+}
+
+export function CatalogDataGrid({ rows, columns, hideFooter = false }) {
+    const apiRef = useGridApiRef();
+    const containerRef = useRef(null);
+
+    const resolvedColumns = useMemo(() => {
+        // Si alguna columna tiene width explícito, usamos autosize; si no, flex
+        const hasExplicitWidth = columns.some(c => c.width != null);
+        if (hasExplicitWidth) return columns;
+        return columns.map((col, i) =>
+            col.flex != null ? col : { ...col, flex: i === 0 ? 2 : 1 }
+        );
+    }, [columns]);
+
+    useEffect(() => {
+        const autosize = () => {
+            if (columns.some(c => c.width != null)) {
+                apiRef.current?.autosizeColumns({ expand: true });
+            }
+        };
+        autosize();
+        const observer = new ResizeObserver(autosize);
+        if (containerRef.current) observer.observe(containerRef.current);
+        return () => observer.disconnect();
+    }, [rows, columns]);
+
     return (
+        <div ref={containerRef} style={{ width: '100%' }}>
         <DataGrid
+            apiRef={apiRef}
             className="shadow"
             rows={rows}
-            columns={columns}
+            columns={resolvedColumns}
             localeText={esES.components.MuiDataGrid.defaultProps.localeText}
             density="compact"
-            // showToolbar
             getRowHeight={() => 'auto'}
             disableRowSelectionOnClick
-            autosizeOnMount
-            autosizeOptions={{
-                expand: true,
-            }}
-            hideFooter = {hideFooter}
+            hideFooter={hideFooter}
             initialState={
                 {pagination:{
                     paginationModel: { pageSize: 15 }
@@ -111,6 +142,7 @@ export function CatalogDataGrid({ rows, columns, hideFooter = false }) {8
                     },
                 }}
         />
+        </div>
     );
 
 }
