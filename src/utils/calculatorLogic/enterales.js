@@ -1,15 +1,14 @@
 export function recomendarEnterales(data, catalog) {
 
-    const tgtKcal = parseFloat(data.kcal_day);
-    const tgtProt = parseFloat(data.protein_day);
+    const tgtKcal = parseFloat(data.kcal_day) || 0;
+    const tgtProt = parseFloat(data.protein_day) || 0;
     const maxUnits= parseInt(data.max_containers_per_product);
-    const horas   = parseFloat(data.perfusion_hours);
     const perfil  = data.patology;
     const fsel    = data.fiber;
     const solo    = data.compatible_only;
+    const hasTargets = tgtKcal > 0 || tgtProt > 0;
 
-    if (tgtKcal<=0 && tgtProt<=0) return alert('Indica objetivo (kcal o proteína)');
-    if (!(horas>0)) return alert('Indica horas de perfusión (>0)');
+    if (!maxUnits || maxUnits <= 0) { return []; }
 
     // filtro por perfil
     let pool = catalog;
@@ -43,11 +42,15 @@ export function recomendarEnterales(data, catalog) {
         let units=0;
         let remK=tgtKcal, remP=tgtProt;
         // Loop while targets not met and units < maxUnits
-        while (units<maxUnits){
-            const needK = tgtKcal>0 && remK>tgtKcal*flexMargin;
-            const needP = tgtProt>0 && remP>tgtProt*flexMargin;
-            if (!needK && !needP) break;
-            units++; remK-=it.kcal; remP-=it.protein_g;
+        if (!hasTargets) {
+            units = maxUnits;
+        } else {
+            while (units<maxUnits){
+                const needK = tgtKcal>0 && remK>tgtKcal*flexMargin;
+                const needP = tgtProt>0 && remP>tgtProt*flexMargin;
+                if (!needK && !needP) break;
+                units++; remK-=it.kcal; remP-=it.protein_g;
+            }
         }
         // Check if still within 10% of targets
         const withinK = tgtKcal>0 ? (Math.abs(remK) <= tgtKcal*flexMargin) : true;

@@ -307,10 +307,10 @@ export function Enterales() {
                             <CalculatorInnerDivider>
                                 <SectionHeader title="Objetivo total diario" />
                                 <Box className="grid gap-4">
-                                    <Input label="Kcal/día:" type="number" id="kcal_day" placeholder="Introduce un número"/>
-                                    <Input label="Proteína (g)/día:" type="number" id="protein_day" placeholder="Introduce un número"/>
+                                    <Input label="Kcal/día:" type="number" id="kcal_day" placeholder="Introduce un número" required={false}/>
+                                    <Input label="Proteína (g)/día:" type="number" id="protein_day" placeholder="Introduce un número" required={false}/>
                                     <Input label="Máx. envases por producto:" type="number" id="max_containers_per_product" placeholder="Introduce un número"/>
-                                    <Input label="Horas de perfusión:" type="number" id="perfusion_hours" placeholder="Introduce un número"/>
+                                    <Input label="Horas de perfusión:" type="number" id="perfusion_hours" placeholder="Introduce un número" required={false}/>
                                 </Box>
                                 <Box className="flex justify-center">
                                     <Button variant="contained" color="primary" onClick={onSubmit} className="mt-4" endIcon={<Calculator size={16} />}>Calcular recomendación</Button>

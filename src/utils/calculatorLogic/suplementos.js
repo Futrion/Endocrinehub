@@ -3,12 +3,12 @@ export function recomendarSuplementos(data, catalog){
     const perfilFibra = data.fiber;
     const soloCompatibles = data.compatible_only;
 
-    const tgtKcal = data.kcal_day;
-    const tgtProt = data.protein_day;
+    const tgtKcal = parseFloat(data.kcal_day) || 0;
+    const tgtProt = parseFloat(data.protein_day) || 0;
+    const maxUnits = parseInt(data.max_containers_per_product);
+    const hasTargets = tgtKcal > 0 || tgtProt > 0;
 
-    const maxUnits = data.max_containers_per_product;
-
-    if (tgtKcal<=0 && tgtProt<=0){ return []; }
+    if (!maxUnits || maxUnits <= 0) { return []; }
 
     // filtrar por perfil
     let pool = catalog;
@@ -42,11 +42,15 @@ export function recomendarSuplementos(data, catalog){
     let units = 0;
     let remK = tgtKcal, remP = tgtProt;
     // Loop while targets not met and units < maxUnits
-    while (units < maxUnits){
-        const needK = tgtKcal>0 && remK>tgtKcal*flexMargin;
-        const needP = tgtProt>0 && remP>tgtProt*flexMargin;
-        if (!needK && !needP) break;
-        units++; remK -= it.kcal; remP -= it.protein_g;
+    if (!hasTargets) {
+        units = maxUnits;
+    } else {
+        while (units < maxUnits){
+            const needK = tgtKcal>0 && remK>tgtKcal*flexMargin;
+            const needP = tgtProt>0 && remP>tgtProt*flexMargin;
+            if (!needK && !needP) break;
+            units++; remK -= it.kcal; remP -= it.protein_g;
+        }
     }
     // Check if still within 10% of targets
     const withinK = tgtKcal>0 ? (Math.abs(remK) <= tgtKcal*flexMargin) : true;
