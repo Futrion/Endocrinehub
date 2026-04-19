@@ -6,7 +6,10 @@ import { InputError } from './InputError.jsx';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
-import { FormControlLabel, Checkbox, Autocomplete, Stack } from '@mui/material';
+import { FormControlLabel, Checkbox, Autocomplete, Stack, Tooltip, Button, Box } from '@mui/material';
+import { Copy, Check } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { CalculatorInnerDivider } from './Layout.jsx';
 
 export function Input ({ label, type, id, placeholder, defaultValue, required = true, labelOnTop = true }) {
     const { register, formState: { errors } } = useFormContext();
@@ -174,5 +177,48 @@ export function ResultGridElement( { label, subtitle = '', value, valueClassName
             <Typography variant='body1' className={`font-bold font-mono ${valueClassName}`}>{value}</Typography>
             <Typography variant='subtitle2' className='text-gray-500'><i>{subtitle}</i></Typography>
         </Stack>
+    );
+}
+
+export function CopyableSummary({ title = 'Resumen para historia clínica', text }) {
+    const [copied, setCopied] = useState(false);
+    const timeoutRef = useRef(null);
+
+    useEffect(() => {
+        return () => clearTimeout(timeoutRef.current);
+    }, []);
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(text).then(() => {
+            setCopied(true);
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = setTimeout(() => setCopied(false), 2000);
+        }).catch(() => {});
+    };
+
+    return (
+        <CalculatorInnerDivider className="mt-4">
+            <SectionHeader title={title} />
+            <Typography variant="body2" className="whitespace-pre-line font-mono text-sm bg-gray-50 rounded p-3 border">
+                {text}
+            </Typography>
+            <Box className="flex justify-end mt-2">
+                <span aria-live="polite" className="sr-only">
+                    {copied ? 'Copiado al portapapeles' : ''}
+                </span>
+                <Tooltip title={copied ? '¡Copiado!' : 'Copiar al portapapeles'} placement="top">
+                    <Button
+                        variant="outlined"
+                        color={copied ? 'success' : 'secondary'}
+                        size="small"
+                        onClick={handleCopy}
+                        startIcon={copied ? <Check size={16} /> : <Copy size={16} />}
+                        className="motion-reduce:transition-none"
+                    >
+                        {copied ? 'Copiado' : 'Copiar'}
+                    </Button>
+                </Tooltip>
+            </Box>
+        </CalculatorInnerDivider>
     );
 }

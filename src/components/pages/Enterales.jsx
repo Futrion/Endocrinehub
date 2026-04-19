@@ -5,10 +5,11 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { ArrowRight, ArrowDown, Calculator, RotateCcw } from "lucide-react";
 import enterales_data from '../../assets/data/formulas_enterales.json'
 import { recomendarEnterales } from "../../utils/calculatorLogic/enterales.js";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { z } from 'zod';
 import { importToJSON, exportToJSON } from "../../utils/fileOperations.js";
 import { DeleteActionsCellItem, CatalogGridActions, CatalogDataGrid } from "../basic/DataGridElements.jsx";
+import { CopyableSummary } from "../basic/Elements.jsx";
 import { useIsMobile } from "../../utils/useIsMobile.js";
 
 const JSONSchemaObject = z.object({
@@ -53,7 +54,7 @@ const columns_proposal_fn = (isMobile) => [
     },
     {
         field: 'volume_ml_total',
-        headerName: 'Volumen (ml)',
+        headerName: 'Volumen total (ml)',
         type: 'number',
         editable: false,
     },
@@ -129,6 +130,32 @@ function AddFormulaDialog(props){
 
 
 
+function buildResumenEnterales(snapshot, proposal) {
+    const patologyLabel = available_tags.find(t => t.value === snapshot.patology)?.label ?? snapshot.patology;
+    const fiberLabel = available_fiber_types.find(t => t.value === snapshot.fiber)?.label ?? snapshot.fiber;
+
+    const lines = [
+        `Perfil clínico: ${patologyLabel} · Fibra: ${fiberLabel}`,
+    ];
+
+    const objetivos = [];
+    if (snapshot.kcal_day) objetivos.push(`${snapshot.kcal_day} kcal/día`);
+    if (snapshot.protein_day) objetivos.push(`${snapshot.protein_day} g prot/día`);
+    if (snapshot.max_containers_per_product) objetivos.push(`máx. ${snapshot.max_containers_per_product} env/producto`);
+    if (snapshot.perfusion_hours) objetivos.push(`${snapshot.perfusion_hours} h perfusión`);
+    if (objetivos.length) lines.push(`Objetivos: ${objetivos.join(' · ')}`);
+
+    const top3 = proposal.slice(0, 3);
+    if (top3.length) {
+        lines.push(`\nRecomendación (${proposal.length} fórmula${proposal.length !== 1 ? 's' : ''}${proposal.length > 3 ? ', mostrando top 3' : ''}):`);
+        top3.forEach(p => {
+            lines.push(`  - ${p.name}: ${p.units} env · ${p.kcal_total} kcal · ${p.protein_g_total} g prot · ${p.volume_ml_total} ml`);
+        });
+    }
+
+    return lines.join('\n');
+}
+
 export function Enterales() {
     const isMobile = useIsMobile();
     const columns_proposal = columns_proposal_fn(isMobile);
@@ -140,16 +167,24 @@ export function Enterales() {
     const [resetOpen, setResetOpen] = useState(false);
 
     const [proposal, setProposal] = useState(null);                     // Stores the recommended suplementos
+    const [formSnapshot, setFormSnapshot] = useState(null);
 
     const onSubmit = methods.handleSubmit(data => {
+        setFormSnapshot(data);
         setProposal(recomendarEnterales(data, formulas));
     });
 
     const handleReset = () => {
         methods.reset();
         setProposal(null);
+        setFormSnapshot(null);
         setResetOpen(false);
     };
+
+    const resumen = useMemo(
+        () => (proposal && formSnapshot) ? buildResumenEnterales(formSnapshot, proposal) : '',
+        [proposal, formSnapshot]
+    );
 
     const deleteActiveRow = useCallback((rowId) => {
         // Set the suplementos array to all the elements with id !== rowId
@@ -336,6 +371,7 @@ export function Enterales() {
                                 <CatalogDataGrid rows={proposal} columns={columns_proposal} hideFooter/>
                             </CalculatorInnerDivider>
                         }
+                        {resumen && <CopyableSummary text={resumen} />}
                         <Divider className="mt-4" variant="middle"/>
                         
                         

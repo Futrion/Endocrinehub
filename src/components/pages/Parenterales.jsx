@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { CalculatorGrid, CalculatorInnerDivider } from "../basic/Layout";
 import { CalculatorSection } from "../basic/Layout";
 import { CalculatorHeader, DropdownInput, Input, SectionHeader, ResultGridElement } from "../basic/Elements";
@@ -8,6 +8,7 @@ import { ChevronDown, ChartNoAxesColumn, Calculator, RotateCcw } from "lucide-re
 import { calcularResultadosParenterales, compararFormulas } from "../../utils/calculatorLogic/parenterales.js";
 import { useIsMobile } from "../../utils/useIsMobile.js";
 import { CatalogDataGrid } from '../basic/DataGridElements.jsx';
+import { CopyableSummary } from '../basic/Elements.jsx';
 import formulaciones_data from '../../assets/data/formulaciones_parenterales.json';
 
 
@@ -128,18 +129,67 @@ const comparison_columns_fn = (isMobile) => [
     
 ]
 
+function imcEstado(imc) {
+    if (!isFinite(imc)) return '';
+    if (imc < 18.5) return 'Bajo peso';
+    if (imc < 25) return 'Normopeso';
+    if (imc < 30) return 'Sobrepeso';
+    return 'Obesidad';
+}
+
+function fmt(v, d = 2) {
+    return (v != null && isFinite(v)) ? Number(v).toFixed(d) : '-';
+}
+
+function buildResumenParenterales(snapshot, r) {
+    const lines = [];
+
+    lines.push(
+        `Entradas: Peso ${fmt(snapshot.weight, 1)} kg · Talla ${fmt(snapshot.height, 0)} cm · ` +
+        `${fmt(snapshot.kcal_kg_desired, 1)} kcal/kg · ${fmt(snapshot.prot_kg_desired, 2)} g prot/kg`
+    );
+
+    if (r.imc != null) {
+        lines.push(`IMC: ${fmt(r.imc)} kg/m² (${imcEstado(r.imc)})`);
+    }
+
+    lines.push(
+        `\nMacros totales:\n` +
+        `  Proteínas: ${fmt(r.prot_g_total)} g · Nitrógeno: ${fmt(r.nitrogen_g_total)} g\n` +
+        `  Kcal totales: ${fmt(r.kcal_total)} · Kcal proteicas: ${fmt(r.kcal_prot)} · Kcal no proteicas: ${fmt(r.kcal_np)}\n` +
+        `  Kcal NP/g N: ${fmt(r.kcal_npc)}`
+    );
+
+    lines.push(
+        `\nReparto calórico (rango óptimo):\n` +
+        `  AA: ${fmt(r.pct_aa)}% (>4%) · CHO: ${fmt(r.pct_cho)}% (8–35%) · Líp: ${fmt(r.pct_fat)}% (1,5–5%)`
+    );
+
+    if (isFinite(r.gir_mgkgmin)) {
+        lines.push(
+            `\nTasas de infusión:\n` +
+            `  GIR glucosa: ${fmt(r.gir_mgkgmin)} mg/kg/min\n` +
+            `  Lípidos: ${fmt(r.fat_gkg_h)} g/kg/h · ${fmt(r.fat_gkg_day_equiv)} g/kg/día`
+        );
+    }
+
+    return lines.join('\n');
+}
+
 export function Parenterales() {
     const isMobile = useIsMobile();
     const comparison_columns = comparison_columns_fn(isMobile);
     const methods = useForm({ defaultValues: { np_preset: '50_50' } });
 
     const [results, setResults] = useState(null);
+    const [formSnapshot, setFormSnapshot] = useState(null);
     const [resetOpen, setResetOpen] = useState(false);
 
     const [comparison, setComparison] = useState(null);
     const [cmpInfo, setCmpInfo] = useState(null);
 
     const onSubmit = methods.handleSubmit(data => {
+        setFormSnapshot(data);
         setResults(calcularResultadosParenterales(data));
     });
 
@@ -148,10 +198,16 @@ export function Parenterales() {
         methods.reset();
         methods.setValue('umbral_sim', umbralVal);
         setResults(null);
+        setFormSnapshot(null);
         setComparison(null);
         setCmpInfo(null);
         setResetOpen(false);
     };
+
+    const resumen = useMemo(
+        () => (results && formSnapshot) ? buildResumenParenterales(formSnapshot, results) : '',
+        [results, formSnapshot]
+    );
 
     const handleCompare = () => {
         const data = methods.getValues();
@@ -253,9 +309,9 @@ export function Parenterales() {
                                 <ResultGridElement label="Tasa de infusión de lípidos" value={results.fat_gkg_h && results.fat_gkg_day_equiv ? `${results.fat_gkg_h.toFixed(2)} · ${results.fat_gkg_day_equiv.toFixed(2)}` : '-'} subtitle='g/kg/h y g/kg/día' valueClassName={results.fat_gkg_day_equiv_class}/>
                             </Box>
 
-
                         </CalculatorInnerDivider>
                         }
+                        {resumen && <CopyableSummary text={resumen} />}
 
                         
                         <CalculatorInnerDivider>
