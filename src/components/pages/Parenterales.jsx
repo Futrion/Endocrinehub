@@ -3,8 +3,8 @@ import { CalculatorGrid, CalculatorInnerDivider } from "../basic/Layout";
 import { CalculatorSection } from "../basic/Layout";
 import { CalculatorHeader, DropdownInput, Input, SectionHeader, ResultGridElement } from "../basic/Elements";
 import { useForm, FormProvider } from "react-hook-form";
-import { Box, Typography, Accordion, AccordionSummary, AccordionDetails, Divider, Button, Stack } from "@mui/material";
-import { ChevronDown, ChartNoAxesColumn, Calculator } from "lucide-react";
+import { Box, Typography, Accordion, AccordionSummary, AccordionDetails, Divider, Button, Stack, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } from "@mui/material";
+import { ChevronDown, ChartNoAxesColumn, Calculator, RotateCcw } from "lucide-react";
 import { calcularResultadosParenterales, compararFormulas } from "../../utils/calculatorLogic/parenterales.js";
 import { useIsMobile } from "../../utils/useIsMobile.js";
 import { CatalogDataGrid } from '../basic/DataGridElements.jsx';
@@ -131,9 +131,10 @@ const comparison_columns_fn = (isMobile) => [
 export function Parenterales() {
     const isMobile = useIsMobile();
     const comparison_columns = comparison_columns_fn(isMobile);
-    const methods = useForm();
+    const methods = useForm({ defaultValues: { np_preset: '50_50' } });
 
     const [results, setResults] = useState(null);
+    const [resetOpen, setResetOpen] = useState(false);
 
     const [comparison, setComparison] = useState(null);
     const [cmpInfo, setCmpInfo] = useState(null);
@@ -141,6 +142,16 @@ export function Parenterales() {
     const onSubmit = methods.handleSubmit(data => {
         setResults(calcularResultadosParenterales(data));
     });
+
+    const handleReset = () => {
+        const umbralVal = methods.getValues('umbral_sim');
+        methods.reset();
+        methods.setValue('umbral_sim', umbralVal);
+        setResults(null);
+        setComparison(null);
+        setCmpInfo(null);
+        setResetOpen(false);
+    };
 
     const handleCompare = () => {
         const data = methods.getValues();
@@ -153,7 +164,10 @@ export function Parenterales() {
     return (
         <CalculatorGrid cols={1} className="w-full" children={
             <CalculatorSection>
-                <CalculatorHeader title="Calculadora de Fórmulas Nutricionales"/>
+                <Box className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
+                    <Typography variant="h2" component="h2">Calculadora de Fórmulas Nutricionales</Typography>
+                    <Button variant='outlined' color="error" onClick={() => setResetOpen(true)} startIcon={<RotateCcw size={16} />} className="self-end sm:self-auto shrink-0">Reiniciar Campos</Button>
+                </Box>
                 <FormProvider {...methods}>
                     <form
                     onSubmit={e => e.preventDefault()}
@@ -203,6 +217,16 @@ export function Parenterales() {
                             <Box className="flex justify-center">
                                 <Button variant="contained" type="submit" size="large" onClick={onSubmit} endIcon={<Calculator />}>Calcular Resultados</Button>
                             </Box>
+                            <Dialog open={resetOpen} onClose={() => setResetOpen(false)}>
+                                <DialogTitle>¿Borrar todos los datos?</DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText>Se eliminarán los campos de entrada y los resultados. El comparador de formulaciones no se verá afectado. Esta acción no se puede deshacer.</DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={() => setResetOpen(false)}>Cancelar</Button>
+                                    <Button onClick={handleReset} color="error" variant="contained">Borrar</Button>
+                                </DialogActions>
+                            </Dialog>
                         </CalculatorInnerDivider>
 
                         {results &&

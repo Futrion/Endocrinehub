@@ -1,8 +1,8 @@
-import { Box, Button, Divider, Chip, Stack, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Tooltip, Fab, Grid } from "@mui/material";
+import { Box, Button, Divider, Chip, Stack, Typography, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Tooltip, Fab, Grid } from "@mui/material";
 import { CalculatorGrid, CalculatorSection, CalculatorInnerDivider } from "../basic/Layout";
 import { CalculatorHeader, DropdownInput, CheckboxInput, SectionHeader, Input, MultiSelectInput } from "../basic/Elements";
 import { useForm, FormProvider } from 'react-hook-form';
-import { ArrowRight, ArrowDown, Calculator } from "lucide-react";
+import { ArrowRight, ArrowDown, Calculator, RotateCcw } from "lucide-react";
 import enterales_data from '../../assets/data/formulas_enterales.json'
 import { recomendarEnterales } from "../../utils/calculatorLogic/enterales.js";
 import { useState, useCallback } from "react";
@@ -132,17 +132,24 @@ function AddFormulaDialog(props){
 export function Enterales() {
     const isMobile = useIsMobile();
     const columns_proposal = columns_proposal_fn(isMobile);
-    const methods = useForm();
+    const methods = useForm({ defaultValues: { patology: 'general', fiber: 'cualquiera', compatible_only: true } });
 
     const [formulas, setFormulas] = useState(enterales_data);           // Stores the state of suplementos that will be used as reference for recommendation
     const [actionRowId, setActionRowId] = useState(null);               // Stores the id of the row that is being edited
     const [openAddDialog, setOpenAddDialog] = useState(false);          // Stores the state of the add product dialog
+    const [resetOpen, setResetOpen] = useState(false);
 
     const [proposal, setProposal] = useState(null);                     // Stores the recommended suplementos
 
     const onSubmit = methods.handleSubmit(data => {
         setProposal(recomendarEnterales(data, formulas));
     });
+
+    const handleReset = () => {
+        methods.reset();
+        setProposal(null);
+        setResetOpen(false);
+    };
 
     const deleteActiveRow = useCallback((rowId) => {
         // Set the suplementos array to all the elements with id !== rowId
@@ -274,7 +281,10 @@ export function Enterales() {
     return (
         <CalculatorGrid cols={1} className="w-full" children={
             <CalculatorSection>
-                <CalculatorHeader title="Recomendador de suplementos orales nutricionales"/>
+                <Box className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
+                    <Typography variant="h2" component="h2">Recomendador de fórmulas enterales</Typography>
+                    <Button variant="outlined" color="error" onClick={() => setResetOpen(true)} startIcon={<RotateCcw size={16} />} className="self-end sm:self-auto shrink-0">Reiniciar Campos</Button>
+                </Box>
                 <FormProvider {...methods}>
                     <form
                     onSubmit={e => e.preventDefault()}
@@ -337,6 +347,16 @@ export function Enterales() {
                             </Stack>
                             <CatalogDataGrid rows={formulas} columns={columns_catalog}/>
                             <AddFormulaDialog openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog} suplementos={formulas} setSuplementos={setFormulas}/>
+                            <Dialog open={resetOpen} onClose={() => setResetOpen(false)}>
+                                <DialogTitle>¿Borrar todos los datos?</DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText>Se eliminarán todos los campos introducidos y la propuesta actual. Esta acción no se puede deshacer.</DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={() => setResetOpen(false)}>Cancelar</Button>
+                                    <Button onClick={handleReset} color="error" variant="contained">Borrar</Button>
+                                </DialogActions>
+                            </Dialog>
                             <Dialog
                                 open={actionRowId !== null}
                                 onClose={() => setActionRowId(null)}

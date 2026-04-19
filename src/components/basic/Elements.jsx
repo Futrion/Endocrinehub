@@ -49,10 +49,8 @@ export function Input ({ label, type, id, placeholder, defaultValue, required = 
 }
 
 export function DropdownInput({ label, id, options }) {
-    const { register, formState: { errors } } = useFormContext();
-
-    // const inputError = findInputError(errors, id);
-    // const isInvalid = isFormInvalid(inputError);
+    const { control } = useFormContext();
+    const defaultVal = options[0]?.value ?? '';
 
     return (
         <div className='flex flex-col w-full gap-2'>
@@ -60,29 +58,27 @@ export function DropdownInput({ label, id, options }) {
                 <label htmlFor={id} className='font-semibold'>
                     {label}
                 </label>
-                {/* <AnimatePresence mode='wait' initial={false}>
-                    {isInvalid && (
-                        <InputError
-                            message={inputError.error.message}  
-                        />
-                    )}
-                </AnimatePresence> */}
             </div>
-            <TextField
-                select
-                size='small'
-                id={id}
-                defaultValue={options[0]?.value || ''}
-                {...register(id, {
-                    required: false,
-                })}
-            >
-                {options.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                    </MenuItem>
-                ))}
-            </TextField>
+            <Controller
+                name={id}
+                control={control}
+                defaultValue={defaultVal}
+                render={({ field }) => (
+                    <TextField
+                        select
+                        size='small'
+                        id={id}
+                        {...field}
+                        value={field.value ?? defaultVal}
+                    >
+                        {options.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                )}
+            />
         </div>
     );
 }

@@ -143,17 +143,24 @@ function AddProductDialog(props){
 export function Suplementos() {
     const isMobile = useIsMobile();
     const columns_proposal = columns_proposal_fn(isMobile);
-    const methods = useForm();
+    const methods = useForm({ defaultValues: { patology: 'general', fiber: 'cualquiera', compatible_only: true } });
 
     const [suplementos, setSuplementos] = useState(suplementos_data);   // Stores the state of suplementos that will be used as reference for recommendation
     const [actionRowId, setActionRowId] = useState(null);               // Stores the id of the row that is being edited
     const [openAddDialog, setOpenAddDialog] = useState(false);          // Stores the state of the add product dialog
+    const [resetOpen, setResetOpen] = useState(false);
 
     const [proposal, setProposal] = useState(null);                     // Stores the recommended suplementos
 
     const onSubmit = methods.handleSubmit(data => {
         setProposal(recomendarSuplementos(data, suplementos));
     });
+
+    const handleReset = () => {
+        methods.reset();
+        setProposal(null);
+        setResetOpen(false);
+    };
 
     const deleteActiveRow = useCallback((rowId) => {
         // Set the suplementos array to all the elements with id !== rowId
@@ -297,7 +304,10 @@ export function Suplementos() {
     return (
         <CalculatorGrid cols={1} className="w-full" children={
             <CalculatorSection>
-                <CalculatorHeader title="Recomendador de suplementos orales nutricionales"/>
+                <Box className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
+                    <Typography variant="h2" component="h2">Recomendador de suplementos orales nutricionales</Typography>
+                    <Button variant="outlined" color="error" onClick={() => setResetOpen(true)} startIcon={<RotateCcw size={16} />} className="self-end sm:self-auto shrink-0">Reiniciar Campos</Button>
+                </Box>
                 <FormProvider {...methods}>
                     <form
                     onSubmit={e => e.preventDefault()}
@@ -358,6 +368,16 @@ export function Suplementos() {
                             </Stack>
                             <CatalogDataGrid rows={suplementos} columns={columns_catalog}/>
                             <AddProductDialog openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog} suplementos={suplementos} setSuplementos={setSuplementos}/>
+                            <Dialog open={resetOpen} onClose={() => setResetOpen(false)}>
+                                <DialogTitle>¿Borrar todos los datos?</DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText>Se eliminarán todos los campos introducidos y la propuesta actual. Esta acción no se puede deshacer.</DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={() => setResetOpen(false)}>Cancelar</Button>
+                                    <Button onClick={handleReset} color="error" variant="contained">Borrar</Button>
+                                </DialogActions>
+                            </Dialog>
                             <Dialog
                                 open={actionRowId !== null}
                                 onClose={() => setActionRowId(null)}
