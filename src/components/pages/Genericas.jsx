@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { Input, CalculatorHeader, SectionHeader, DropdownInput, ResultDisplay } from '../basic/Elements.jsx';
-import { CalculatorGrid, CalculatorSection } from '../basic/Layout.jsx';
-import { Button, Table, TableBody, TableCell, TableHead, TableRow, Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
-import { ChevronDown } from 'lucide-react';
+import { CalculatorGrid, CalculatorSection, CalculatorInnerDivider } from '../basic/Layout.jsx';
+import { Button, Box, Table, TableBody, TableCell, TableHead, TableRow, Accordion, AccordionSummary, AccordionDetails, Typography, Tooltip } from '@mui/material';
+import { ChevronDown, Copy, Check } from 'lucide-react';
 import { calcularIMC, calcularGET, calcularNPT, calcularREQ } from '../../utils/calculatorLogic/genericas.js';
 
 export function Genericas() {
@@ -165,10 +165,31 @@ function CalculadoraNPT() {
 function CalculadoraREQ() {
     const methods = useForm();
     const [req, setReq] = useState(null);
+    const [copied, setCopied] = useState(false);
 
     const onSubmit = methods.handleSubmit(data => {
         setReq(calcularREQ(data));
     });
+
+    const buildResumen = (r) => {
+        const infusionLines = r.infusionRates.map(group => {
+            const rates = group.rates.map(rt => `${rt.type} ${rt.rate} mg/kg/min → ${rt.amount} g`).join(' | ');
+            return `  ${group.duration} h: ${rates}`;
+        });
+        return [
+            `IMC: ${r.imc} kg/m². Pérdida de peso: ${r.perd}%.`,
+            `Requerimientos energéticos: 25 kcal/kg → ${r.reqE.k25.toFixed(0)} kcal/día | 30 kcal/kg → ${r.reqE.k30.toFixed(0)} kcal/día.`,
+            `Requerimientos proteicos: 1,2 g/kg → ${r.reqP.p12.toFixed(1)} g/día | 1,5 g/kg → ${r.reqP.p15.toFixed(1)} g/día.`,
+            `Tasas máximas de infusión:`,
+            infusionLines.join('\n'),
+        ].join('\n\n');
+    };
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(buildResumen(req));
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
 
     return (
         <CalculatorSection children={
@@ -246,8 +267,27 @@ function CalculadoraREQ() {
                                 ))}
                             </div>
                         </div>
+                        <CalculatorInnerDivider className="mt-4">
+                            <SectionHeader title="Resumen para historia clínica" />
+                            <Typography variant="body2" className="whitespace-pre-line font-mono text-sm bg-gray-50 rounded p-3 border">
+                                {buildResumen(req)}
+                            </Typography>
+                            <Box className="flex justify-end mt-2">
+                                <Tooltip title={copied ? '¡Copiado!' : 'Copiar al portapapeles'} placement="top">
+                                    <Button
+                                        variant="outlined"
+                                        color={copied ? 'success' : 'secondary'}
+                                        size="small"
+                                        onClick={handleCopy}
+                                        startIcon={copied ? <Check size={16} /> : <Copy size={16} />}
+                                    >
+                                        {copied ? 'Copiado' : 'Copiar'}
+                                    </Button>
+                                </Tooltip>
+                            </Box>
+                        </CalculatorInnerDivider>
                     </>
-                    } 
+                    }
                 />}
             </>
         }/>
