@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { CalculatorGrid, CalculatorInnerDivider } from "../basic/Layout";
 import { CalculatorSection } from "../basic/Layout";
-import { CalculatorHeader, DropdownInput, Input, SectionHeader, ResultGridElement } from "../basic/Elements";
+import { CalculatorHeader, DropdownInput, Input, SectionHeader, ResultGridElement, SimilitudCell } from "../basic/Elements";
 import { useForm, FormProvider } from "react-hook-form";
 import { Box, Typography, Accordion, AccordionSummary, AccordionDetails, Divider, Button, Stack, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } from "@mui/material";
 import { ChevronDown, ChartNoAxesColumn, Calculator, RotateCcw } from "lucide-react";
@@ -33,22 +33,6 @@ import formulaciones_data from '../../assets/data/formulaciones_parenterales.jso
 //     "Osmolaridad (mOsm/L)": 760.0
 //   },
 
-function renderPCTcell(value, pct){
-    return (
-        <Typography component="span">
-            <Box component="span" className='font-mono'>
-                {value} g ·{" "}
-            </Box>
-            <Box
-                component="span"
-                className='text-success text-base'
-            >
-                {pct}%
-            </Box>
-        </Typography>
-    );
-}
-
 const comparison_columns_fn = (isMobile) => [
     {
         field: 'nombre',
@@ -58,75 +42,63 @@ const comparison_columns_fn = (isMobile) => [
         width: isMobile ? 150 : 250
     },
     {
-        field: 'sp',
-        headerName: 'Prot (g/bolsa) · sim%',
+        field: 'sim_prot',
+        headerName: 'Prot (g/bolsa)',
         type: 'number',
         editable: false,
-        renderCell: (params) => {
-            const prot_bag = params.row.prot_bag.toFixed(2);
-            const sp = params.row.sp.toFixed(0);
-
-            return (
-               renderPCTcell(prot_bag, sp)
-            );
-        }
+        renderCell: (params) => (
+            <SimilitudCell
+                value={`${params.row.prot_bag.toFixed(2)} g`}
+                similitud={params.row.sim_prot}
+            />
+        )
     },
     {
-        field: 'sc',
-        headerName: 'HdC (g/bolsa) · sim%',
+        field: 'sim_cho',
+        headerName: 'HdC (g/bolsa)',
         type: 'number',
         editable: false,
-        renderCell: (params) => {
-            const cho_bag = params.row.cho_bag.toFixed(2);
-            const sc = params.row.sc.toFixed(0);
-
-            return (
-                renderPCTcell(cho_bag, sc)
-            );
-        }
+        renderCell: (params) => (
+            <SimilitudCell
+                value={`${params.row.cho_bag.toFixed(2)} g`}
+                similitud={params.row.sim_cho}
+            />
+        )
     },
     {
-        field: 'sf',
-        headerName: 'Líp (g/bolsa) · sim%',
+        field: 'sim_lip',
+        headerName: 'Líp (g/bolsa)',
         type: 'number',
         editable: false,
-        renderCell: (params) => {
-            const lip_bag = params.row.lip_bag.toFixed(2);
-            const sf = params.row.sf.toFixed(0);
-
-            return (
-                renderPCTcell(lip_bag, sf)
-            );
-        }
+        renderCell: (params) => (
+            <SimilitudCell
+                value={`${params.row.lip_bag.toFixed(2)} g`}
+                similitud={params.row.sim_lip}
+            />
+        )
     },
     {
         field: 'media',
         headerName: 'Media sim%',
         type: 'number',
         editable: false,
-        renderCell: (params) => {
-            const media = params.row.media.toFixed(0);
-            return (
-                <Typography className='text-base font-semibold'>
-                    {media}%
-                </Typography>
-            );
-        }
+        renderCell: (params) => (
+            <Typography className='text-base font-semibold'>
+                {params.row.media.toFixed(0)}%
+            </Typography>
+        )
     },
     {
         field: 'covered',
         headerName: 'Cubre objetivo',
         type: 'boolean',
         editable: false,
-        renderCell: (params) => {
-            return (
-                <Typography className='text-base font-semibold'>
-                    Sí
-                </Typography>
-            );
-        }
+        renderCell: () => (
+            <Typography className='text-base font-semibold'>
+                Sí
+            </Typography>
+        )
     },
-    
 ]
 
 function imcEstado(imc) {

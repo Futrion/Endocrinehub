@@ -180,6 +180,26 @@ export function ResultGridElement( { label, subtitle = '', value, valueClassName
     );
 }
 
+export function SimilitudCell({ value, similitud }) {
+    if (!similitud) {
+        return (
+            <Typography component="span" className="font-mono">
+                {value}
+            </Typography>
+        );
+    }
+    const colorClass = similitud.inRange ? 'text-success' : 'text-warning';
+    const label = similitud.direction
+        ? `${similitud.deviationPct.toFixed(0)}% ${similitud.direction}`
+        : 'en objetivo';
+    return (
+        <Typography component="span">
+            <Box component="span" className="font-mono">{value} · </Box>
+            <Box component="span" className={`${colorClass} text-base`}>{label}</Box>
+        </Typography>
+    );
+}
+
 export function CopyableSummary({ title = 'Resumen para historia clínica', text }) {
     const [copied, setCopied] = useState(false);
     const timeoutRef = useRef(null);

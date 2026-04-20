@@ -1,3 +1,5 @@
+import { computeSimilitud } from '../similitud.js';
+
 export function recomendarSuplementos(data, catalog){
     const perfil = data.patology;
     const perfilFibra = data.fiber;
@@ -56,18 +58,32 @@ export function recomendarSuplementos(data, catalog){
     const withinK = tgtKcal>0 ? (Math.abs(remK) <= tgtKcal*flexMargin) : true;
     const withinP = tgtProt>0 ? (Math.abs(remP) <= tgtProt*flexMargin) : true;    
     if (units>0 && withinK && withinP) {
-            picks.push(
-                {
-                    id: it.id,
-                    name: it.name,
-                    units: units,
-                    kcal_total: units*it.kcal,
-                    protein_g_total: units*it.protein_g,
-                    carbs_g_total: units*it.carbs_g,
-                    lipids_g_total: units*it.lipids_g,
-                }
-            );
+            const sim_kcal = computeSimilitud(tgtKcal, units*it.kcal);
+            const sim_protein = computeSimilitud(tgtProt, units*it.protein_g);
+            const toSim = s => s ? Math.max(0, 100 - s.deviationPct) : null;
+            const simVals = [toSim(sim_kcal), toSim(sim_protein)].filter(x => x !== null);
+            const media = simVals.length ? simVals.reduce((a, b) => a + b, 0) / simVals.length : null;
+            picks.push({
+                id: it.id,
+                name: it.name,
+                units,
+                kcal_total: units*it.kcal,
+                protein_g_total: units*it.protein_g,
+                carbs_g_total: units*it.carbs_g,
+                lipids_g_total: units*it.lipids_g,
+                sim_kcal,
+                sim_protein,
+                media,
+            });
         }
+    }
+
+    if (hasTargets) {
+        const avgDev = p => {
+            const sims = [p.sim_kcal, p.sim_protein].filter(Boolean);
+            return sims.length ? sims.reduce((s, x) => s + x.deviationPct, 0) / sims.length : Infinity;
+        };
+        picks.sort((a, b) => avgDev(a) - avgDev(b));
     }
 
     // let sumK=0,sumP=0;

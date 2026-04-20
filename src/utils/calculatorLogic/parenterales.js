@@ -1,3 +1,5 @@
+import { computeSimilitud } from '../similitud.js';
+
 export function calcularResultadosParenterales(data) {
     const peso = data.weight;
     const talla = data.height;
@@ -121,14 +123,6 @@ export function compararFormulas(data, formulaciones) {
     const vol_ml = data.volume_total_ml;
     const info = `Objetivos: Prot ${fmt(prot_target)} g · HdC ${fmt(cho_target)} g · Líp ${fmt(fat_target)} g` + (vol_ml ? ` (vol objetivo ${fmt(vol_ml, 0)} ml)` : '');
  
-    function similitud(target, value) { 
-        if (!isFinite(target) || target <= 0) 
-            return 0;
-        
-        const diff = Math.abs(value - target);
-        return Math.max(0, 1 - (diff / target)) * 100;
-    }
-
     const resultados = formulaciones.map(r => {
         const nombre = r.product_name;
         const prot100 = parseFloat((r.nitrogen_g * 6.25) / r.volume_ml * 100);
@@ -141,19 +135,20 @@ export function compararFormulas(data, formulaciones) {
 
 
         if (basis === 'perbag') {
-            const sp = similitud(prot_target, prot_bag);
-            const sc = similitud(cho_target, cho_bag);
-            const sf = similitud(fat_target, lip_bag);
-            const media = (sp + sc + sf) / 3;
+            const sim_prot = computeSimilitud(prot_target, prot_bag);
+            const sim_cho = computeSimilitud(cho_target, cho_bag);
+            const sim_lip = computeSimilitud(fat_target, lip_bag);
+            const toSim = s => s ? Math.max(0, 100 - s.deviationPct) : 0;
+            const media = (toSim(sim_prot) + toSim(sim_cho) + toSim(sim_lip)) / 3;
             const ratios = [];
             if (prot_target > 0) ratios.push((prot_bag / prot_target) * 100);
             if (cho_target > 0) ratios.push((cho_bag / cho_target) * 100);
             if (fat_target > 0) ratios.push((lip_bag / fat_target) * 100);
             const coveragePct = ratios.length ? Math.min(...ratios) : 0;
             const covered = coveragePct >= coverThresh;
-            
+
             const id = r.id;
-            return { 
+            return {
                 "id": id,
                 "nombre": nombre,
                 "prot100": prot100,
@@ -162,14 +157,14 @@ export function compararFormulas(data, formulaciones) {
                 "prot_bag": prot_bag,
                 "cho_bag": cho_bag,
                 "lip_bag": lip_bag,
-                "sp": sp,
-                "sc": sc,
-                "sf": sf,
+                "sim_prot": sim_prot,
+                "sim_cho": sim_cho,
+                "sim_lip": sim_lip,
                 "media": media,
                 "coveragePct": coveragePct,
                 "covered": covered
             };
-        } 
+        }
         else {
             const kcal_prot_form = prot100 * kcalg_aa;
             const kcal_cho_form = cho100 * kcalg_cho;
@@ -183,13 +178,14 @@ export function compararFormulas(data, formulaciones) {
             const target_pct_cho = (kcal_tot > 0) ? 100 * (kcal_cho / kcal_tot) : 0;
             const target_pct_fat = (kcal_tot > 0) ? 100 * (kcal_fat / kcal_tot) : 0;
 
-            const sp = similitud(target_pct_aa, pct_aa_form);
-            const sc = similitud(target_pct_cho, pct_cho_form);
-            const sf = similitud(target_pct_fat, pct_fat_form);
-            const media = (sp + sc + sf) / 3;
+            const sim_prot = computeSimilitud(target_pct_aa, pct_aa_form);
+            const sim_cho = computeSimilitud(target_pct_cho, pct_cho_form);
+            const sim_lip = computeSimilitud(target_pct_fat, pct_fat_form);
+            const toSim = s => s ? Math.max(0, 100 - s.deviationPct) : 0;
+            const media = (toSim(sim_prot) + toSim(sim_cho) + toSim(sim_lip)) / 3;
 
             const id = r.id;
-            return { 
+            return {
                 "id": id,
                 "nombre": nombre,
                 "prot100": prot100,
@@ -201,9 +197,9 @@ export function compararFormulas(data, formulaciones) {
                 "pct_aa_form": pct_aa_form,
                 "pct_cho_form": pct_cho_form,
                 "pct_fat_form": pct_fat_form,
-                "sp": sp,
-                "sc": sc,
-                "sf": sf,
+                "sim_prot": sim_prot,
+                "sim_cho": sim_cho,
+                "sim_lip": sim_lip,
                 "media": media
             };
         }

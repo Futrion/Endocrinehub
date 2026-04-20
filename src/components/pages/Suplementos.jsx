@@ -1,7 +1,7 @@
 import { Box, Button, Divider, Chip, Stack, Typography, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Tooltip, Fab, Grid } from "@mui/material";
 import { DataGrid, GridActionsCell, GridActionsCellItem, gridClasses } from '@mui/x-data-grid';
 import { CalculatorGrid, CalculatorSection, CalculatorInnerDivider } from "../basic/Layout";
-import { CalculatorHeader, DropdownInput, CheckboxInput, SectionHeader, Input, MultiSelectInput } from "../basic/Elements";
+import { CalculatorHeader, DropdownInput, CheckboxInput, SectionHeader, Input, MultiSelectInput, SimilitudCell } from "../basic/Elements";
 import { useForm, FormProvider, Controller } from 'react-hook-form';
 import { ArrowRight, ArrowDown, Calculator, Trash2, Plus, Download, FileUp, RotateCcw } from "lucide-react";
 import suplementos_data from '../../assets/data/suplementos_orales.json'
@@ -50,12 +50,24 @@ const columns_proposal_fn = (isMobile) => [
         headerName: 'Kcal',
         type: 'number',
         editable: false,
+        renderCell: (params) => (
+            <SimilitudCell
+                value={Math.round(params.row.kcal_total)}
+                similitud={params.row.sim_kcal}
+            />
+        ),
     },
     {
         field: 'protein_g_total',
         headerName: 'Proteína (g)',
         type: 'number',
         editable: false,
+        renderCell: (params) => (
+            <SimilitudCell
+                value={params.row.protein_g_total.toFixed(1)}
+                similitud={params.row.sim_protein}
+            />
+        ),
     },
     {
         field: 'carbs_g_total',
@@ -69,7 +81,17 @@ const columns_proposal_fn = (isMobile) => [
         type: 'number',
         editable: false,
     },
-    
+    {
+        field: 'media',
+        headerName: 'Media sim%',
+        type: 'number',
+        editable: false,
+        renderCell: (params) => params.row.media != null ? (
+            <Typography className='text-base font-semibold'>
+                {params.row.media.toFixed(0)}%
+            </Typography>
+        ) : null,
+    },
 ]
 
 const available_tags= [
@@ -157,7 +179,7 @@ function buildResumenSuplementos(snapshot, proposal) {
 
     const top3 = proposal.slice(0, 3);
     if (top3.length) {
-        lines.push(`\nRecomendación (${proposal.length} producto${proposal.length !== 1 ? 's' : ''}${proposal.length > 3 ? ', mostrando top 3' : ''}):`);
+        lines.push(`\nRecomendación (${proposal.length} producto${proposal.length !== 1 ? 's' : ''}${proposal.length > 3 ? ', mostrando los 3 primeros' : ''}):`);
         top3.forEach(p => {
             lines.push(`  - ${p.name}: ${p.units} env · ${p.kcal_total} kcal · ${p.protein_g_total} g prot · ${p.carbs_g_total} g HC · ${p.lipids_g_total} g líp`);
         });
