@@ -52,11 +52,6 @@ export function calcularREQ(data) {
         const tM = +data.height / 100;
         const tCM = +data.height;
 
-        if (!pa) {
-            alert('Peso actual inválido');
-            return;
-        }
-
         let imc = pa / (tM * tM);
         let perd = ((ph - pa) / ph) * 100;
         let pi = calcularPesoIdeal(tCM, gen);

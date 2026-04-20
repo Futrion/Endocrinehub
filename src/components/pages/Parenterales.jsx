@@ -236,8 +236,8 @@ export function Parenterales() {
                                     <Box className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                                         <Input label="Volumen total (ml)" type="number" id="volume_total_ml" placeholder="Introduce un número" required={false}/>
                                         <Input label="Horas de infusión" type="number" id="infusion_hours" placeholder="Introduce un número" required={false}/>
-                                        <Typography variant="subtitle"><i>No afecta al comparador, solo a información contextual.</i></Typography>
-                                        <Typography variant="subtitle"><i>Si se deja en blanco, no se calculan tasas de infusión.</i></Typography>
+                                        <Typography variant="subtitle1"><i>No afecta al comparador, solo a información contextual.</i></Typography>
+                                        <Typography variant="subtitle1"><i>Si se deja en blanco, no se calculan tasas de infusión.</i></Typography>
                                     </Box>
                                 
                                 </AccordionDetails>

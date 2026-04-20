@@ -1,6 +1,6 @@
-import { Box, Button, Divider, Chip, Stack, Typography, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Tooltip, Fab, Grid } from "@mui/material";
+import { Box, Button, Divider, Chip, Stack, Typography, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Grid } from "@mui/material";
 import { CalculatorGrid, CalculatorSection, CalculatorInnerDivider } from "../basic/Layout";
-import { CalculatorHeader, DropdownInput, CheckboxInput, SectionHeader, Input, MultiSelectInput, SimilitudCell } from "../basic/Elements";
+import { DropdownInput, CheckboxInput, SectionHeader, Input, MultiSelectInput, SimilitudCell } from "../basic/Elements";
 import { useForm, FormProvider } from 'react-hook-form';
 import { ArrowRight, ArrowDown, Calculator, RotateCcw } from "lucide-react";
 import enterales_data from '../../assets/data/formulas_enterales.json'
@@ -223,7 +223,7 @@ export function Enterales() {
     }, [actionRowId, deleteActiveRow, handleCloseDialog]);
 
 
-    const useTargets = () => {
+    const handleUseTargets = () => {
         const peso = methods.watch('weight');
         const kcal_kg = methods.watch('kcal_per_kg');
         const prot_kg = methods.watch('protein_per_kg');
@@ -252,19 +252,15 @@ export function Enterales() {
     }
 
     async function importCatalogue(event) {
-        console.log(event.target.files);
         const uploadedFile = event.target.files[0];
         try {
             const newCatalogue = await importToJSON(JSONSchemaArray, uploadedFile);
-            console.log(newCatalogue);
-    
             if (newCatalogue !== false){
                 setFormulas(newCatalogue);
             }
         } catch (error) {
             alert(error);
         }
-
     }
 
     const columns_catalog = [
@@ -368,7 +364,7 @@ export function Enterales() {
                                     <Input required={false} label="Proteína (g)/kg:" type="number" id="protein_per_kg" placeholder="Introduce un número"/>
                                 </Box>
                                 <Box className="flex justify-center md:justify-end">
-                                    <Button variant="contained" color="primary" onClick={useTargets} className="mt-4" endIcon={<><ArrowRight size={16} className="hidden md:block"/> <ArrowDown size={16} className="md:hidden"/></>}>Usar estos objetivos</Button>
+                                    <Button variant="contained" color="primary" onClick={handleUseTargets} className="mt-4" endIcon={<><ArrowRight size={16} className="hidden md:block"/> <ArrowDown size={16} className="md:hidden"/></>}>Usar estos objetivos</Button>
                                 </Box>
                             </CalculatorInnerDivider>
                             <CalculatorInnerDivider>

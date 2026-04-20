@@ -16,20 +16,20 @@ export function DeleteActionsCellItem({id, onDelete}) {
     );
 }
 
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+
 export function CatalogGridActions(props){
     const { setOpenAddDialog, importCatalogue, exportCatalogue, reloadCatalogue } = props;
-
-    const VisuallyHiddenInput = styled('input')({
-      clip: 'rect(0 0 0 0)',
-      clipPath: 'inset(50%)',
-      height: 1,
-      overflow: 'hidden',
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      whiteSpace: 'nowrap',
-      width: 1,
-    });
 
     return (
         <Stack direction="row" spacing={1} className="p-2 mb-4">
@@ -126,7 +126,7 @@ export function CatalogDataGrid({ rows, columns, hideFooter = false }) {
             slots={{
                 noRowsOverlay: () => (
                     <Stack height="100%" alignItems="center" justifyContent="center">
-                    <Typography variant="p" gutterBottom>
+                    <Typography variant="body1" gutterBottom>
                         No se encontraron resultados, revise los parámetros.
                     </Typography>
                     </Stack>

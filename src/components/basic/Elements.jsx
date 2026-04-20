@@ -87,7 +87,6 @@ export function DropdownInput({ label, id, options }) {
 }
 
 export function MultiSelectInput({ controlMethod, label, id, options, placeholder, required = true, labelOnTop = true }) {
-    const { register } = useFormContext();
 
     // const inputError = findInputError(errors, id);
     // const isInvalid = isFormInvalid(inputError);
@@ -173,7 +172,7 @@ export function ResultDisplay({ children }) {
 export function ResultGridElement( { label, subtitle = '', value, valueClassName = '' } ) {
     return (
         <Stack direction="column" spacing={0.2}>
-            <Typography variant='p' className='font-semibold'>{label}</Typography>
+            <Typography variant='body1' className='font-semibold'>{label}</Typography>
             <Typography variant='body1' className={`font-bold font-mono ${valueClassName}`}>{value}</Typography>
             <Typography variant='subtitle2' className='text-gray-500'><i>{subtitle}</i></Typography>
         </Stack>

@@ -1,5 +1,4 @@
 import { createTheme } from '@mui/material/styles';
-import { wrap } from 'motion';
 
 // Direct color mapping from Tailwind config
 const colors = {

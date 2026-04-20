@@ -1,16 +1,13 @@
-import { Box, Button, Divider, Chip, Stack, Typography, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Tooltip, Fab, Grid } from "@mui/material";
-import { DataGrid, GridActionsCell, GridActionsCellItem, gridClasses } from '@mui/x-data-grid';
+import { Box, Button, Divider, Chip, Stack, Typography, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Grid } from "@mui/material";
 import { CalculatorGrid, CalculatorSection, CalculatorInnerDivider } from "../basic/Layout";
-import { CalculatorHeader, DropdownInput, CheckboxInput, SectionHeader, Input, MultiSelectInput, SimilitudCell } from "../basic/Elements";
-import { useForm, FormProvider, Controller } from 'react-hook-form';
+import { DropdownInput, CheckboxInput, SectionHeader, Input, MultiSelectInput, SimilitudCell } from "../basic/Elements";
+import { useForm, FormProvider } from 'react-hook-form';
 import { ArrowRight, ArrowDown, Calculator, Trash2, Plus, Download, FileUp, RotateCcw } from "lucide-react";
 import suplementos_data from '../../assets/data/suplementos_orales.json'
-import { esES } from "@mui/x-data-grid/locales";
 import { recomendarSuplementos } from "../../utils/calculatorLogic/suplementos.js";
-import { useState, useCallback, createContext, useContext, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { z } from 'zod';
 import { importToJSON, exportToJSON } from "../../utils/fileOperations.js";
-import { styled } from '@mui/material/styles';
 import { DeleteActionsCellItem, CatalogGridActions, CatalogDataGrid } from "../basic/DataGridElements.jsx";
 import { CopyableSummary } from "../basic/Elements.jsx";
 import { useIsMobile } from "../../utils/useIsMobile.js";
@@ -233,7 +230,7 @@ export function Suplementos() {
     }, [actionRowId, deleteActiveRow, handleCloseDialog]);
 
 
-    const useTargets = () => {
+    const handleUseTargets = () => {
         const peso = methods.watch('weight');
         const kcal_kg = methods.watch('kcal_per_kg');
         const prot_kg = methods.watch('protein_per_kg');
@@ -262,19 +259,15 @@ export function Suplementos() {
     }
 
     async function importCatalogue(event) {
-        console.log(event.target.files);
         const uploadedFile = event.target.files[0];
         try {
             const newCatalogue = await importToJSON(JSONSchemaArray, uploadedFile);
-            console.log(newCatalogue);
-    
             if (newCatalogue !== false){
                 setSuplementos(newCatalogue);
             }
         } catch (error) {
             alert(error);
         }
-
     }
 
     const columns_catalog = [
@@ -389,7 +382,7 @@ export function Suplementos() {
                                     <Input required={false} label="Proteína (g)/kg:" type="number" id="protein_per_kg" placeholder="Introduce un número"/>
                                 </Box>
                                 <Box className="flex justify-center md:justify-end">
-                                    <Button variant="contained" color="primary" onClick={useTargets} className="mt-4" endIcon={<><ArrowRight size={16} className="hidden md:block"/> <ArrowDown size={16} className="md:hidden"/></>}>Usar estos objetivos</Button>
+                                    <Button variant="contained" color="primary" onClick={handleUseTargets} className="mt-4" endIcon={<><ArrowRight size={16} className="hidden md:block"/> <ArrowDown size={16} className="md:hidden"/></>}>Usar estos objetivos</Button>
                                 </Box>
                             </CalculatorInnerDivider>
                             <CalculatorInnerDivider>
