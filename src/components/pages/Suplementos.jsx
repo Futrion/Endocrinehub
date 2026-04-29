@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Chip, Stack, Typography, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Grid } from "@mui/material";
+import { Box, Button, Divider, Chip, Stack, Typography, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Grid, Alert } from "@mui/material";
 import { CalculatorGrid, CalculatorSection, CalculatorInnerDivider } from "../basic/Layout";
 import { DropdownInput, CheckboxInput, SectionHeader, Input, MultiSelectInput, SimilitudCell } from "../basic/Elements";
 import { useForm, FormProvider } from 'react-hook-form';
@@ -144,7 +144,7 @@ function AddProductDialog(props){
                             <Input label="Carbohidratos (g)" type="number" id="carbs" placeholder="Introduce un número" labelOnTop={false}/>
                             <Input label="Lípidos (g)" type="number" id="lipids" placeholder="Introduce un número" labelOnTop={false}/>
                             <Input label="Fibra (g)" type="number" id="fiber" placeholder="Introduce un número" labelOnTop={false}/>
-                            <Input label="Tipo de fibra" type="text" id="fiber_type" placeholder="Introduce un número" labelOnTop={false}/>
+                            <Input label="Tipo de fibra" type="text" id="fiber_type" placeholder="ej: mixta" labelOnTop={false}/>
                             <MultiSelectInput controlMethod={methods.control} label="Tags" id="tags" options={available_tags} placeholder="Selecciona las categorías" labelOnTop={false}/>    
                             
                         </Grid>                       
@@ -190,10 +190,11 @@ export function Suplementos() {
     const columns_proposal = columns_proposal_fn(isMobile);
     const methods = useForm({ defaultValues: { patology: 'general', fiber: 'cualquiera', compatible_only: true } });
 
-    const [suplementos, setSuplementos] = useState(suplementos_data);   // Stores the state of suplementos that will be used as reference for recommendation
-    const [actionRowId, setActionRowId] = useState(null);               // Stores the id of the row that is being edited
-    const [openAddDialog, setOpenAddDialog] = useState(false);          // Stores the state of the add product dialog
+    const [suplementos, setSuplementos] = useState(suplementos_data);
+    const [actionRowId, setActionRowId] = useState(null);
+    const [openAddDialog, setOpenAddDialog] = useState(false);
     const [resetOpen, setResetOpen] = useState(false);
+    const [importError, setImportError] = useState('');
 
     const [proposal, setProposal] = useState(null);                     // Stores the recommended suplementos
     const [formSnapshot, setFormSnapshot] = useState(null);
@@ -266,7 +267,7 @@ export function Suplementos() {
                 setSuplementos(newCatalogue);
             }
         } catch (error) {
-            alert(error);
+            setImportError('Error al importar: comprueba que el archivo sea JSON válido y tenga el formato correcto.');
         }
     }
 
@@ -401,7 +402,7 @@ export function Suplementos() {
 
 
                         {proposal &&
-                            <CalculatorInnerDivider className="border-info bg-blue-100 border-2 shadow-xl">
+                            <CalculatorInnerDivider className="border-info bg-info-light border-2 shadow-xl">
                                 <SectionHeader title="Propuesta" />
                                 <CatalogDataGrid rows={proposal} columns={columns_proposal} hideFooter={true}/>
                             </CalculatorInnerDivider>
@@ -416,6 +417,7 @@ export function Suplementos() {
                                 <SectionHeader title="Catálogo de productos" />
                                 <CatalogGridActions setOpenAddDialog={setOpenAddDialog } importCatalogue={importCatalogue} exportCatalogue={exportCatalogue} reloadCatalogue={reloadCatalogue}/>
                             </Stack>
+                            {importError && <Alert severity="error" onClose={() => setImportError('')} sx={{ mb: 1 }}>{importError}</Alert>}
                             <CatalogDataGrid rows={suplementos} columns={columns_catalog}/>
                             <AddProductDialog openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog} suplementos={suplementos} setSuplementos={setSuplementos}/>
                             <Dialog open={resetOpen} onClose={() => setResetOpen(false)}>

@@ -3,9 +3,6 @@ import { Link as RouterLink } from "react-router-dom";
 
 export function CalculatorSection({ children, className = '' }) {
     return (
-        // <div className="bg-tertiary rounded-xl p-8 max-w-md">
-        //     {children}
-        // </div>
         <Card className={`bg-tertiary rounded-xl p-3 sm:p-4 md:p-8 ${className}`}>
             {children}
         </Card>
@@ -14,7 +11,7 @@ export function CalculatorSection({ children, className = '' }) {
 
 export function CalculatorInnerDivider({ children, className = '' }) {
     return (
-        <Box className={`border border-gray-300 rounded-lg grow p-4 mt-4 ${className}`}>
+        <Box className={`border border-primary-border rounded-lg grow p-4 mt-4 ${className}`}>
             {children}
         </Box>
     );
@@ -28,11 +25,9 @@ export function LinkMediaCard({ icon, title, link }) {
                     component="img"
                     image={icon}
                     alt={title}
-                    style={{
-                        width: '128px',
-                        height: '128px',
-                        objectFit: 'contain',
-                    }}
+                    width={128}
+                    height={128}
+                    className="w-32 h-32 object-contain"
                 />
                 <CardContent className="p-0 mt-4">
                     <Typography gutterBottom variant="h3" component="div" className="text-center">
@@ -55,9 +50,6 @@ export function CalculatorGrid({ children, cols = 2, className = '' }) {
     };
 
     return (
-        // <div className={`grid gap-8 p-8 rounded-xl bg-white ${colsMap[cols] || colsMap[2]}`}>
-        //     {children}
-        // </div>
         <Card className={`grid gap-4 md:gap-6 p-2 sm:p-4 md:p-6 rounded-xl bg-white items-stretch ${className} ${colsMap[cols] || colsMap[2]}`}>
             {children}
         </Card>

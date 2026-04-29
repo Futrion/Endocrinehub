@@ -10,7 +10,7 @@ export function DeleteActionsCellItem({id, onDelete}) {
     return (
             <GridActionsCellItem
                 label="Eliminar"
-                icon={<Trash2 size={20} className="text-error"/>}
+                icon={<Trash2 size={20} className="text-error" aria-hidden="true"/>}
                 onClick={() => onDelete(id)}
             />
     );
@@ -37,34 +37,38 @@ export function CatalogGridActions(props){
                 <Fab
                     size="small"
                     color="primary"
+                    aria-label="Añadir producto"
                     onClick={() => setOpenAddDialog(true)}
                 >
-                    <Plus size={20} className="text-white"/>
+                    <Plus size={20} className="text-white" aria-hidden="true"/>
                 </Fab>
             </Tooltip>
             <Tooltip title="Importar JSON">
                 <Fab
                     size="small"
                     component="label"
+                    aria-label="Importar JSON"
                 >
-                    <FileUp size={20} />
+                    <FileUp size={20} aria-hidden="true"/>
                     <VisuallyHiddenInput type="file" onChange={importCatalogue} accept=".json" />
                 </Fab>
             </Tooltip>
-            <Tooltip title="Exportar JSON" >
+            <Tooltip title="Exportar JSON">
                 <Fab
                     size="small"
+                    aria-label="Exportar JSON"
                     onClick={exportCatalogue}
                 >
-                    <Download size={20} />
+                    <Download size={20} aria-hidden="true"/>
                 </Fab>
             </Tooltip>
             <Tooltip title="Restaurar catálogo por defecto">
                 <Fab
                     size="small"
+                    aria-label="Restaurar catálogo por defecto"
                     onClick={reloadCatalogue}
                 >
-                    <RotateCcw size={20} />
+                    <RotateCcw size={20} aria-hidden="true"/>
                 </Fab>
             </Tooltip>
         </Stack>
@@ -133,13 +137,14 @@ export function CatalogDataGrid({ rows, columns, hideFooter = false }) {
                 )
             }}
             sx={{
-                [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
-                    outline: 'none',
+                [`& .${gridClasses.cell}:focus-visible, & .${gridClasses.cell}:focus-within`]: {
+                    outline: '2px solid #28527a',
+                    outlineOffset: '-2px',
                 },
-                [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
-                    {
-                    outline: 'none',
-                    },
+                [`& .${gridClasses.columnHeader}:focus-visible, & .${gridClasses.columnHeader}:focus-within`]: {
+                    outline: '2px solid #28527a',
+                    outlineOffset: '-2px',
+                },
                 }}
         />
         </div>

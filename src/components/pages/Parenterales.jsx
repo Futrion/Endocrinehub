@@ -243,7 +243,7 @@ export function Parenterales() {
                                 </AccordionDetails>
                             </Accordion>
                             <Box className="flex justify-center">
-                                <Button variant="contained" type="submit" size="large" onClick={onSubmit} endIcon={<Calculator />}>Calcular Resultados</Button>
+                                <Button variant="contained" type="button" size="large" onClick={onSubmit} endIcon={<Calculator />}>Calcular Resultados</Button>
                             </Box>
                             <Dialog open={resetOpen} onClose={() => setResetOpen(false)}>
                                 <DialogTitle>¿Borrar todos los datos?</DialogTitle>
@@ -258,7 +258,7 @@ export function Parenterales() {
                         </CalculatorInnerDivider>
 
                         {results &&
-                        <CalculatorInnerDivider className="border-info bg-blue-100 border-2 shadow-xl">
+                        <CalculatorInnerDivider className="border-info bg-info-light border-2 shadow-xl">
                             <SectionHeader title="Resultados" />
                             <Box className="grid gap-4 grid-cols-2 sm:grid-cols-4 mb-4">
                                 <ResultGridElement label="IMC" value={results.imc ? results.imc.toFixed(2) : null} subtitle={isFinite(results.imc) ? results.imc < 18.5 ? "Bajo peso" : results.imc < 25 ? "Normopeso" : results.imc < 30 ? "Sobrepeso" : "Obesidad" : null} />
@@ -296,7 +296,7 @@ export function Parenterales() {
 
 
                         {comparison &&
-                        <CalculatorInnerDivider className="border-info bg-blue-100 border-2 shadow-xl">
+                        <CalculatorInnerDivider className="border-info bg-info-light border-2 shadow-xl">
                             {cmpInfo && <Box className="text-center mb-4"><Typography variant="body1" className='text-primary underline'>{cmpInfo}</Typography></Box>}
                             <CatalogDataGrid rows={comparison} columns={comparison_columns} />
                         </CalculatorInnerDivider>

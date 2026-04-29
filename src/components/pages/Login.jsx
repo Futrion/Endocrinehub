@@ -36,7 +36,7 @@ export function Login() {
         <div className="flex items-center justify-center w-full h-full">
             <div className="bg-tertiary rounded-lg shadow-md p-8 w-full max-w-sm">
                 <h1 className="text-2xl font-bold text-primary mb-1">EndocrineHub</h1>
-                <p className="text-sm text-gray-500 mb-6">Inicia sesión para continuar</p>
+                <p className="text-sm text-muted mb-6">Inicia sesión para continuar</p>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <TextField

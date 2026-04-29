@@ -23,8 +23,11 @@ export default function App() {
             <BrowserRouter basename={import.meta.env.BASE_URL}>
                 <AuthProvider>
                     <div className='flex flex-col h-screen'>
+                        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-md">
+                            Saltar al contenido
+                        </a>
                         <Navbar />
-                        <main className='bg-secondary grow'>
+                        <main id="main-content" className='bg-secondary grow'>
                             <div className='w-full flex items-start md:items-center justify-center p-2 sm:p-4 md:p-8 h-full overflow-auto'>
                                 <Suspense fallback={
                                     <div className='flex items-center justify-center w-full h-full'>

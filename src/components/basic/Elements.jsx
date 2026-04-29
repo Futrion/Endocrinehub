@@ -20,7 +20,7 @@ export function Input ({ label, type, id, placeholder, defaultValue, required = 
     return(
     <div className='flex flex-col w-full gap-2'>
         <div className='flex justify-between'>
-            {labelOnTop && 
+            {labelOnTop &&
             <label htmlFor={id} className='font-semibold'>
                 {label}
             </label>
@@ -28,7 +28,8 @@ export function Input ({ label, type, id, placeholder, defaultValue, required = 
             <AnimatePresence mode='wait' initial={false}>
                 {isInvalid && (
                     <InputError
-                        message={inputError.error.message} 
+                        id={`${id}-error`}
+                        message={inputError.error.message}
                     />
                 )}
             </AnimatePresence>
@@ -42,9 +43,10 @@ export function Input ({ label, type, id, placeholder, defaultValue, required = 
             label = {labelOnTop === false ? label : ''}
             defaultValue={defaultValue}
             placeholder={placeholder}
+            inputProps={{ 'aria-describedby': isInvalid ? `${id}-error` : undefined }}
             {...register(id, {
                 required: required ? 'Este campo es obligatorio' : false,
-            })} 
+            })}
         />
         
     </div>
@@ -174,7 +176,7 @@ export function ResultGridElement( { label, subtitle = '', value, valueClassName
         <Stack direction="column" spacing={0.2}>
             <Typography variant='body1' className='font-semibold'>{label}</Typography>
             <Typography variant='body1' className={`font-bold font-mono ${valueClassName}`}>{value}</Typography>
-            <Typography variant='subtitle2' className='text-gray-500'><i>{subtitle}</i></Typography>
+            <Typography variant='subtitle2' className='text-muted'><i>{subtitle}</i></Typography>
         </Stack>
     );
 }
@@ -218,7 +220,7 @@ export function CopyableSummary({ title = 'Resumen para historia clínica', text
     return (
         <CalculatorInnerDivider className="mt-4">
             <SectionHeader title={title} />
-            <Typography variant="body2" className="whitespace-pre-line font-mono text-sm bg-gray-50 rounded p-3 border">
+            <Typography variant="body2" className="whitespace-pre-line font-mono text-sm bg-tertiary rounded p-3 border border-primary-border">
                 {text}
             </Typography>
             <Box className="flex justify-end mt-2">

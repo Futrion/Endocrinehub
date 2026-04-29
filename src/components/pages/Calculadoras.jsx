@@ -7,35 +7,11 @@ import parenteralesIcon from "../../assets/icons/saline.png";
 
 export function Calculadoras() {
     return (
-        <CalculatorGrid cols={3} children={
-            <>
-                <LinkMediaCard 
-                    icon={calculatorIcon}
-                    title="Calculadoras Genéricas"
-                    link="/genericas"
-                >
-                </LinkMediaCard>
-                <LinkMediaCard 
-                    icon={suplementosIcon}
-                    title="Recomendador de suplementos orales"
-                    link="/suplementos"
-                >
-                </LinkMediaCard>
-                <LinkMediaCard 
-                    icon={enteralesIcon}
-                    title="Fórmulas enterales"
-                    link="/enterales"
-                >
-                </LinkMediaCard>
-                <LinkMediaCard 
-                    icon={parenteralesIcon}
-                    title="Comparador de nutrición parenteral tricameral"
-                    link="/parenterales"
-                >
-                </LinkMediaCard>
-            </>
-        }>
-
+        <CalculatorGrid cols={3}>
+            <LinkMediaCard icon={calculatorIcon} title="Calculadoras Genéricas" link="/genericas" />
+            <LinkMediaCard icon={suplementosIcon} title="Recomendador de suplementos orales" link="/suplementos" />
+            <LinkMediaCard icon={enteralesIcon} title="Fórmulas enterales" link="/enterales" />
+            <LinkMediaCard icon={parenteralesIcon} title="Comparador de nutrición parenteral tricameral" link="/parenterales" />
         </CalculatorGrid>
     )
 }

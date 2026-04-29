@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Input, CalculatorHeader, SectionHeader, DropdownInput, ResultDisplay, CopyableSummary } from '../basic/Elements.jsx';
+import { Input, CalculatorHeader, SectionHeader, DropdownInput, ResultDisplay, ResultGridElement, CopyableSummary } from '../basic/Elements.jsx';
 import { CalculatorGrid, CalculatorSection, CalculatorInnerDivider } from '../basic/Layout.jsx';
 import { Button, Box, Table, TableBody, TableCell, TableHead, TableRow, Accordion, AccordionSummary, AccordionDetails, Typography, Tooltip } from '@mui/material';
 import { ChevronDown } from 'lucide-react';
@@ -50,7 +50,7 @@ function CalculadoraIMC() {
                     </div>
                 </form>
             </FormProvider>
-            {imc && <ResultDisplay children={<p className="text-lg font-bold">IMC: {imc}</p>} />}
+            {imc && <ResultDisplay children={<ResultGridElement label="IMC" value={imc} />} />}
             </>
         }/>
         
@@ -91,7 +91,7 @@ function CalculadoraGET() {
                     
                 </form>
             </FormProvider>
-            {get && <ResultDisplay children={<p className="text-lg font-bold">GET (kcal/día): {get}</p>} />}
+            {get && <ResultDisplay children={<ResultGridElement label="GET (kcal/día)" value={get} />} />}
             </>
         }/>
     );
@@ -237,7 +237,6 @@ function CalculadoraREQ() {
                                             <Typography component="h3" className='font-bold'>{durationGroup.duration} horas</Typography>
                                         </AccordionSummary>
                                         <AccordionDetails>
-                                        {/* <TableContainer key={idx}"> */}
                                             <Table size="small" padding='none'>
                                                 <TableHead>
                                                     <TableRow>
@@ -256,7 +255,6 @@ function CalculadoraREQ() {
                                                     ))}
                                                 </TableBody>
                                             </Table>
-                                        {/* </TableContainer> */}
                                         </AccordionDetails>
                                     </Accordion>
                                 ))}

@@ -12,6 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
 import { useAuth } from "../../contexts/AuthContext";
+import { RoleBadge } from "./RoleBadge";
 
 export const navLinks = [
   { name: 'Inicio', path: '/', icon: House },
@@ -71,7 +72,7 @@ export function Navbar() {
                 <div className="hidden md:flex items-center">
                     {session && (
                         <>
-                            <IconButton onClick={openUserMenu} size="small" sx={{ p: 0 }}>
+                            <IconButton onClick={openUserMenu} size="small" sx={{ p: 0 }} aria-label="Menú de usuario">
                                 <Avatar
                                     sx={{
                                         width: 34,
@@ -99,13 +100,9 @@ export function Navbar() {
                                 }}
                             >
                                 <div className="px-4 py-3">
-                                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-0.5">Sesión iniciada como</p>
-                                    <p className="text-sm font-semibold text-gray-800 truncate">{userEmail}</p>
-                                    {role && (
-                                        <span className={`inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded-full ${role === 'admin' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
-                                            {role === 'admin' ? 'Administrador' : 'Usuario'}
-                                        </span>
-                                    )}
+                                    <p className="text-xs text-muted font-medium uppercase tracking-wide mb-0.5">Sesión iniciada como</p>
+                                    <p className="text-sm font-semibold text-primary truncate">{userEmail}</p>
+                                    <RoleBadge role={role} />
                                 </div>
                                 <Divider />
                                 <MenuItem onClick={handleSignOut} sx={{ gap: 1.5, color: 'error.main', py: 1.5 }}>
@@ -121,7 +118,7 @@ export function Navbar() {
                 <div className="flex md:hidden items-center gap-1">
                     {session && (
                         <>
-                            <IconButton onClick={openUserMenu} size="small" sx={{ p: 0.5 }}>
+                            <IconButton onClick={openUserMenu} size="small" sx={{ p: 0.5 }} aria-label="Menú de usuario">
                                 <Avatar
                                     sx={{
                                         width: 30,
@@ -147,13 +144,9 @@ export function Navbar() {
                                 }}
                             >
                                 <div className="px-4 py-3">
-                                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-0.5">Sesión iniciada como</p>
-                                    <p className="text-sm font-semibold text-gray-800 truncate">{userEmail}</p>
-                                    {role && (
-                                        <span className={`inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded-full ${role === 'admin' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
-                                            {role === 'admin' ? 'Administrador' : 'Usuario'}
-                                        </span>
-                                    )}
+                                    <p className="text-xs text-muted font-medium uppercase tracking-wide mb-0.5">Sesión iniciada como</p>
+                                    <p className="text-sm font-semibold text-primary truncate">{userEmail}</p>
+                                    <RoleBadge role={role} />
                                 </div>
                                 <Divider />
                                 <MenuItem onClick={handleSignOut} sx={{ gap: 1.5, color: 'error.main', py: 1.5 }}>
@@ -165,7 +158,7 @@ export function Navbar() {
                     )}
 
                     {session && (
-                        <IconButton onClick={() => setIsMenuOpen(o => !o)} sx={{ color: 'white' }}>
+                        <IconButton onClick={() => setIsMenuOpen(o => !o)} sx={{ color: 'white' }} aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}>
                             {isMenuOpen ? <XIcon size={24} /> : <MenuIcon size={24} />}
                         </IconButton>
                     )}

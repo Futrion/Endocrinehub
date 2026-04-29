@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 
-export function InputError({ message }) {
+export function InputError({ message, id }) {
     return (
         <motion.p
+            id={id}
+            role="alert"
             className="flex items-center ml-2 gap-1 px-1 font-semibold text-xs text-error rounded-md"
             {...framer_error}
         >

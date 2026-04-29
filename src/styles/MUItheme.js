@@ -24,7 +24,7 @@ const colors = {
       background: '#fdecea',
     },
     warning: {
-      main: '#d78f00ff',
+      main: '#d78f00',
       light: '#ffbb33',
       dark: '#b27700',
     },
@@ -39,11 +39,17 @@ const colors = {
         dark: '#70b0c1',
     },
     success: {
-      main: 'rgba(102,187,106,0.9)',
-      light: 'rgba(132,200,135,0.9)',
-      dark: 'rgba(71,130,74,0.9)',
+      main: '#66bb6a',
+      light: '#84c887',
+      dark: '#47824a',
     },
-    divider: '#90beef',
+    infoLight: {
+      main: '#e6f3fb',
+    },
+    muted: {
+      main: '#5b6b7a',
+    },
+    divider: '#90e0ef',
 };
 
 const theme = createTheme({
@@ -122,7 +128,7 @@ const theme = createTheme({
                 root: {
                     textTransform: 'none',
                     borderRadius: '6px',
-                    transition: 'all 0.3s ease',
+                    transition: 'background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, color 0.2s ease',
                 },
                 outlinedSecondary: {
                     borderColor: colors.primary.main,
@@ -143,7 +149,7 @@ const theme = createTheme({
                     borderRadius: '6px',
                     '& .MuiOutlinedInput-root': {
                         '& fieldset': {
-                            borderColor: colors.accent.main,
+                            borderColor: '#7fc3d4',
                         },
                         '&:hover fieldset': {
                             borderColor: colors.primary.main,

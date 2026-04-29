@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Chip, Stack, Typography, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Grid } from "@mui/material";
+import { Box, Button, Divider, Chip, Stack, Typography, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Grid, Alert } from "@mui/material";
 import { CalculatorGrid, CalculatorSection, CalculatorInnerDivider } from "../basic/Layout";
 import { DropdownInput, CheckboxInput, SectionHeader, Input, MultiSelectInput, SimilitudCell } from "../basic/Elements";
 import { useForm, FormProvider } from 'react-hook-form';
@@ -136,7 +136,7 @@ function AddFormulaDialog(props){
                             <Input label="Kcal" type="number" id="kcal" placeholder="Introduce un número" labelOnTop={false}/>
                             <Input label="Proteína (g)" type="number" id="protein" placeholder="Introduce un número" labelOnTop={false}/>
                             <Input label="Fibra (g)" type="number" id="fiber" placeholder="Introduce un número" labelOnTop={false}/>
-                            <Input label="Tipo de fibra" type="text" id="fiber_type" placeholder="Introduce un número" labelOnTop={false}/>
+                            <Input label="Tipo de fibra" type="text" id="fiber_type" placeholder="ej: mixta" labelOnTop={false}/>
                             <MultiSelectInput controlMethod={methods.control} label="Etiquetas" id="tags" options={available_tags} placeholder="Selecciona las categorías" labelOnTop={false}/>
                         </Grid>                       
                     </form>
@@ -183,10 +183,11 @@ export function Enterales() {
     const columns_proposal = columns_proposal_fn(isMobile);
     const methods = useForm({ defaultValues: { patology: 'general', fiber: 'cualquiera', compatible_only: true } });
 
-    const [formulas, setFormulas] = useState(enterales_data);           // Stores the state of suplementos that will be used as reference for recommendation
-    const [actionRowId, setActionRowId] = useState(null);               // Stores the id of the row that is being edited
-    const [openAddDialog, setOpenAddDialog] = useState(false);          // Stores the state of the add product dialog
+    const [formulas, setFormulas] = useState(enterales_data);
+    const [actionRowId, setActionRowId] = useState(null);
+    const [openAddDialog, setOpenAddDialog] = useState(false);
     const [resetOpen, setResetOpen] = useState(false);
+    const [importError, setImportError] = useState('');
 
     const [proposal, setProposal] = useState(null);                     // Stores the recommended suplementos
     const [formSnapshot, setFormSnapshot] = useState(null);
@@ -259,7 +260,7 @@ export function Enterales() {
                 setFormulas(newCatalogue);
             }
         } catch (error) {
-            alert(error);
+            setImportError('Error al importar: comprueba que el archivo sea JSON válido y tenga el formato correcto.');
         }
     }
 
@@ -384,7 +385,7 @@ export function Enterales() {
                         
                         
                         {proposal &&
-                            <CalculatorInnerDivider className="border-info bg-blue-100 border-2 shadow-xl">
+                            <CalculatorInnerDivider className="border-info bg-info-light border-2 shadow-xl">
                                 <SectionHeader title="Propuesta" />
                                 <CatalogDataGrid rows={proposal} columns={columns_proposal} hideFooter/>
                             </CalculatorInnerDivider>
@@ -399,6 +400,7 @@ export function Enterales() {
                                 <SectionHeader title="Catálogo de fórmulas" />
                                 <CatalogGridActions setOpenAddDialog={setOpenAddDialog} importCatalogue={importCatalogue} exportCatalogue={exportCatalogue} reloadCatalogue={reloadCatalogue}/>
                             </Stack>
+                            {importError && <Alert severity="error" onClose={() => setImportError('')} sx={{ mb: 1 }}>{importError}</Alert>}
                             <CatalogDataGrid rows={formulas} columns={columns_catalog}/>
                             <AddFormulaDialog openAddDialog={openAddDialog} setOpenAddDialog={setOpenAddDialog} suplementos={formulas} setSuplementos={setFormulas}/>
                             <Dialog open={resetOpen} onClose={() => setResetOpen(false)}>
