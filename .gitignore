@@ -32,3 +32,6 @@ dist-ssr
 .claude/
 CLAUDE.md
 .mcp.json
+
+# Not yet needed
+src/assets/data/suplementos_orales_new.json

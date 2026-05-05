@@ -206,8 +206,8 @@ export function Parenterales() {
                              <Box className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                                 <Input label="Peso (kg)" type="number" id="weight" placeholder="Introduce un número"/>
                                 <Input label="Talla (cm)" type="number" id="height" placeholder="Introduce un número"/>
-                                <Input label="Kcal/Kg deseadas" type="number" id="kcal_kg_desired" placeholder="Introduce un número"/>
-                                <Input label="Proteínas (g/kg) deseadas" type="number" id="prot_kg_desired" placeholder="Introduce un número"/>
+                                <Input label="Kcal/Kg deseadas" type="number" id="kcal_kg_desired" placeholder="Introduce un número" defaultValue={25}/>
+                                <Input label="Proteínas (g/kg) deseadas" type="number" id="prot_kg_desired" placeholder="Introduce un número" defaultValue={1.2}/>
                             </Box>
                         </CalculatorInnerDivider>
 
@@ -215,18 +215,18 @@ export function Parenterales() {
                         <CalculatorInnerDivider>
                              <SectionHeader title="Ajustes avanzados" />
                              <Box className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-                                <Input label="Reparto NP a CHO (%)" type="number" id="carb_npc_pct" placeholder="Introduce un número"/>
+                                <Input label="Reparto NP a CHO (%)" type="number" id="carb_npc_pct" placeholder="Introduce un número" defaultValue={50}/>
                                 <DropdownInput label="Preset NP" type="number" id="np_preset" options={[
                                     {value: "50_50", label: "50/50"},
                                     {value: "60_40", label: "60/40"},
                                     {value: "70_30", label: "70/30"},
                                 
                                 ]}/>
-                                <Input label="GIR máx (mg/kg/min)" type="number" id="gir_max" placeholder="Introduce un número"/>
-                                <Input label="Lípidos máx (g/kg/día)" type="number" id="lip_max_day" placeholder="Introduce un número"/>
-                                <Input label="kcal/g AA" type="number" id="kcal_aa" placeholder="Introduce un número"/>
-                                <Input label="kcal/g CHO" type="number" id="kcal_cho" placeholder="Introduce un número"/>
-                                <Input label="kcal/g Lípidos" type="number" id="kcal_lipids" placeholder="Introduce un número"/>
+                                <Input label="GIR máx (mg/kg/min)" type="number" id="gir_max" placeholder="Introduce un número" defaultValue={50}/>
+                                <Input label="Lípidos máx (g/kg/día)" type="number" id="lip_max_day" placeholder="Introduce un número" defaultValue={1}/>
+                                <Input label="kcal/g AA" type="number" id="kcal_aa" placeholder="Introduce un número" defaultValue={4}/>
+                                <Input label="kcal/g CHO" type="number" id="kcal_cho" placeholder="Introduce un número" defaultValue={4}/>
+                                <Input label="kcal/g Lípidos" type="number" id="kcal_lipids" placeholder="Introduce un número" defaultValue={10}/>
                             </Box>
                             <Accordion defaultExpanded className="mt-4 bg-secondary">
                                 <AccordionSummary expandIcon= {<ChevronDown />}>
@@ -234,8 +234,8 @@ export function Parenterales() {
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <Box className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-                                        <Input label="Volumen total (ml)" type="number" id="volume_total_ml" placeholder="Introduce un número" required={false}/>
-                                        <Input label="Horas de infusión" type="number" id="infusion_hours" placeholder="Introduce un número" required={false}/>
+                                        <Input label="Volumen total (ml)" type="number" id="volume_total_ml" placeholder="p. ej. 2000" required={false}/>
+                                        <Input label="Horas de infusión" type="number" id="infusion_hours" placeholder="p. ej. 24" required={false}/>
                                         <Typography variant="subtitle1"><i>No afecta al comparador, solo a información contextual.</i></Typography>
                                         <Typography variant="subtitle1"><i>Si se deja en blanco, no se calculan tasas de infusión.</i></Typography>
                                     </Box>
