@@ -11,7 +11,7 @@ import { Copy, Check } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { CalculatorInnerDivider } from './Layout.jsx';
 
-export function Input ({ label, type, id, placeholder, defaultValue, required = true, labelOnTop = true }) {
+export function Input ({ label, type, id, placeholder, defaultValue, required = true, labelOnTop = true, rules = {} }) {
     const { register, formState: { errors } } = useFormContext();
 
     const inputError = findInputError(errors, id);
@@ -46,9 +46,10 @@ export function Input ({ label, type, id, placeholder, defaultValue, required = 
             inputProps={{ 'aria-describedby': isInvalid ? `${id}-error` : undefined }}
             {...register(id, {
                 required: required ? 'Este campo es obligatorio' : false,
+                ...rules,
             })}
         />
-        
+
     </div>
     );
 }
